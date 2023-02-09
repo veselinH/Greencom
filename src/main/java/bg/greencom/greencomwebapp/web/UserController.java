@@ -59,7 +59,7 @@ public class UserController {
             return "redirect:register";
         }
 
-        userService.registerUser();
+//        userService.registerUser();
 
         return "redirect:/";
     }
