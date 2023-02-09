@@ -3,41 +3,40 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/commons::head"></head>
 <body>
-<div class="bg-image">
-  <header th:replace="fragments/commons::navbar"></header>
-  <!-- Section: Design Block -->
-  <section class=" text-center text-lg-start">
-    <div class="card mb-3">
-      <div class="row g-0 d-flex align-items-center">
-        <div class="col-lg-4 d-none d-lg-flex">
-          <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" alt="Trendy Pants and Shoes"
-               class="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
+
+<header th:replace="fragments/commons::navbar"></header>
+
+<main class="p-5 align-content-center bg-blur my-register-div">
+    <section class=" text-center text-lg-start">
+        <div class="card mb-3">
+            <div class="row g-0 d-flex align-items-center">
+                <div class="col-lg-4 d-none d-lg-flex">
+                    <img src="/images/phone.jpg" alt=""
+                         class="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5"/>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card-body py-5 px-md-5">
+
+                        <form>
+                            <div class="form-outline mb-4">
+                                <input type="email" id="form2Example1" class="form-control"/>
+                                <label class="form-label" for="form2Example1">Username</label>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="password" id="form2Example2" class="form-control"/>
+                                <label class="form-label" for="form2Example2">Password</label>
+                            </div>
+                            <button type="button" class="btn btn-success btn-block mb-4">Sign in</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-8">
-          <div class="card-body py-5 px-md-5">
-
-            <form>
-              <div class="form-outline mb-4">
-                <input type="email" id="form2Example1" class="form-control" />
-                <label class="form-label" for="form2Example1">Username</label>
-              </div>
-              <div class="form-outline mb-4">
-                <input type="password" id="form2Example2" class="form-control" />
-                <label class="form-label" for="form2Example2">Password</label>
-              </div>
-              <button type="button" class="btn btn-success btn-block mb-4">Sign in</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- Section: Design Block -->
+    </section>
+</main>
 
 
+<footer th:replace="fragments/commons::footer"></footer>
 
-
-  <footer th:replace="fragments/commons::footer"></footer>
-</div>
 </body>
 </html>

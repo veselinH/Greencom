@@ -15,7 +15,7 @@
 <header th:fragment="navbar">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" th:href="@{/}">
-      <img src="/images/logoz.jpg" width="50" height="30" alt="">
+      <img src="/images/logoz.jpg" width="75" height="50" alt="">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -27,7 +27,7 @@
           <a type="button" class="btn btn-success" href="/users/login">Login</a>
         </li>
         <li style="margin-right: 16px" class="nav-item">
-          <a type="button" class="btn btn-success" href="/">Register</a>
+          <a type="button" class="btn btn-success" href="/users/register">Register</a>
         </li>
         <li style="margin-right: 16px" class="nav-item dropdown">
           <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,6 +43,15 @@
         </li>
         <li style="margin-right: 16px" class="nav-item">
           <a type="button" class="btn btn-success" href="/about">About</a>
+        </li>
+        <li style="margin-left: 820px" class="nav-item">
+          <div class="form-inline my-2 my-lg-0 border px-3">
+            <div class="logged-userEntity">
+              <div>Welcome,
+              </div>
+            </div>
+            <a class="nav-link" href="/">Logout</a>
+          </div>
         </li>
       </ul>
     </div>
