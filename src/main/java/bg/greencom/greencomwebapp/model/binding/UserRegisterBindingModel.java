@@ -1,5 +1,7 @@
 package bg.greencom.greencomwebapp.model.binding;
 
+import bg.greencom.greencomwebapp.validation.annotation.UniqueEmail;
+import bg.greencom.greencomwebapp.validation.annotation.UniqueUsername;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +15,6 @@ public class UserRegisterBindingModel {
     private String email;
     private String password;
     private String confirmPassword;
-
 
 
     @NotBlank(message = "Please enter your first name.")
@@ -38,6 +39,7 @@ public class UserRegisterBindingModel {
         return this;
     }
 
+    @UniqueUsername
     @NotBlank(message = "Please enter a username.")
     @Size(min = 3, max = 8, message = "Username must be between 3 and 8 characters.")
     public String getUsername() {
@@ -49,7 +51,8 @@ public class UserRegisterBindingModel {
         return this;
     }
 
-    @Email
+    @UniqueEmail
+    @Email(message = "Enter a valid email address.")
     public String getEmail() {
         return email;
     }
