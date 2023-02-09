@@ -1,0 +1,26 @@
+/*body {*/
+/*background-color: #35AC6B;*/
+/*}*/
+
+.nav-item li {
+    margin-left: 16px;
+}
+
+body {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    /*backdrop-filter: blur(4px);*/
+    /*padding: 10px;*/
+
+    /*background-attachment: fixed;*/
+    /*margin: 30px 50px;*/
+    /*line-height: 1.4;*/
+}
+
+.bg-image {
+    width: 100%;
+    height: 600px;
+    background-image: url('/images/wall.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
