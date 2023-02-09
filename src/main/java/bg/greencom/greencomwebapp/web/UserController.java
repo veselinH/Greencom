@@ -1,8 +1,10 @@
 package bg.greencom.greencomwebapp.web;
 
 import bg.greencom.greencomwebapp.model.binding.UserRegisterBindingModel;
+import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.service.UserService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,9 +19,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
     private final UserService userService;
+    private final ModelMapper modelMapper;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ModelMapper modelMapper) {
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
     @ModelAttribute
@@ -59,9 +63,9 @@ public class UserController {
             return "redirect:register";
         }
 
-        userService.registerUser();
+        userService.registerUser(modelMapper.map(userRegisterBindingModel, UserServiceModel.class));
 
-        return "redirect:/";
+        return "redirect:login";
     }
 
 }

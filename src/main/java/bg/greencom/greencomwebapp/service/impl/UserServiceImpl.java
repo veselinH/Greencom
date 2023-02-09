@@ -1,10 +1,13 @@
 package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
+import bg.greencom.greencomwebapp.model.entity.UserRoleEntity;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
+import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.service.UserRoleService;
 import bg.greencom.greencomwebapp.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,10 +18,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRoleService userRoleService;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository) {
+    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper) {
         this.userRoleService = userRoleService;
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -39,5 +44,19 @@ public class UserServiceImpl implements UserService {
 
             userRepository.save(user);
         }
+    }
+
+    @Override
+    public UserServiceModel registerUser(UserServiceModel userServiceModel) {
+        UserEntity user = modelMapper.map(userServiceModel, UserEntity.class);
+        UserRoleEntity userRole = userRoleService.findByName(UserRoleEnum.USER);
+
+        user.setRegisteredOn(LocalDateTime.now());
+        user.getRoles().add(userRole);
+        user.setTotalDebtPerMonth(BigDecimal.ZERO);
+
+        userRepository.save(user);
+
+        return userServiceModel;
     }
 }

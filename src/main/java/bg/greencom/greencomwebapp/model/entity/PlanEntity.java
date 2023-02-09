@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 
 @MappedSuperclass
-public class PlanEntity extends BaseEntity {
+public abstract class PlanEntity extends BaseEntity {
 
     private String name;
     private String planDuration;
