@@ -13,39 +13,95 @@
                     <div class="card-body p-5">
                         <h2 class="text-uppercase text-center mb-5">Create an account</h2>
 
-                        <form>
-
+                        <form
+                                th:object="${userRegisterBindingModel}"
+                                th:action="@{/users/register}"
+                                th:method="POST">
                             <div class="form-outline mb-4">
-                                <input type="text" id="form3Example1cg" class="form-control form-control-lg"/>
-                                <label class="form-label" for="form3Example1cg">Your Name</label>
+                                <input
+                                        th:field="*{firstName}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="firstName"
+                                        aria-describedby="firstNameHelper" placeholder="Veselin">
+                                <small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                                       id="firstNameHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="firstName">First name</label>
                             </div>
 
                             <div class="form-outline mb-4">
-                                <input type="email" id="form3Example3cg" class="form-control form-control-lg"/>
-                                <label class="form-label" for="form3Example3cg">Your Email</label>
+                                <input
+                                        th:field="*{lastName}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="lastName"
+                                        aria-describedby="lastNameHelper" placeholder="Hristov"/>
+                                <small th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                                       id="lastNameHelper"
+                                       class="invalid-feedback bg-danger text-light rounded"></small>
+                                <label class="form-label" for="lastName">Last name</label>
                             </div>
 
                             <div class="form-outline mb-4">
-                                <input type="password" id="form3Example4cg" class="form-control form-control-lg"/>
-                                <label class="form-label" for="form3Example4cg">Password</label>
+                                <input
+                                        th:field="*{username}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="username"
+                                        aria-describedby="usernameHelper" placeholder="Enter username here"/>
+                                <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+                                       id="usernameHelper"
+                                       class="invalid-feedback bg-danger text-light rounded"></small>
+                                <label class="form-label" for="username">Username</label>
                             </div>
 
                             <div class="form-outline mb-4">
-                                <input type="password" id="form3Example4cdg" class="form-control form-control-lg"/>
-                                <label class="form-label" for="form3Example4cdg">Confirm your password</label>
+                                <input
+                                        th:field="*{email}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control" id="email"
+                                        aria-describedby="emailHelper" placeholder="email@example.com">
+                                <small id="emailHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                    Enter valid email address.
+                                </small>
+                                <label class="form-label" for="email">Email</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{password}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="password" class="form-control form-control-lg" id="password"
+                                        aria-describedby="passwordHelper" placeholder="Enter password here"/>
+                                <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                                       id="passwordHelper"
+                                       class="invalid-feedback bg-danger text-light rounded"></small>
+                                <label class="form-label" for="password">Password</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{confirmPassword}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="password" class="form-control form-control-lg" id="confirmPassword"
+                                        aria-describedby="confirmPasswordHelper" placeholder="Confirm password here"/>
+                                <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
+                                       id="confirmPasswordHelper"
+                                       class="invalid-feedback bg-danger text-light rounded"></small>
+                                <label class="form-label" for="confirmPassword">Confirm your password</label>
                             </div>
 
                             <div class="d-flex justify-content-center">
-                                <button type="button"
+                                <button type="submit"
                                         class="btn btn-success btn-block btn-lg text-body">Register
                                 </button>
                             </div>
 
-                            <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="/users/login"
-                                                                                                    class="fw-bold text-body"><u>Login
-                                here</u></a></p>
-
+                            <p class="text-center text-muted mt-5 mb-0">Have already an account?
+                                <a href="/users/login"
+                                   class="fw-bold text-body"><u>Login here</u></a></p>
                         </form>
+
                     </div>
                 </div>
             </div>

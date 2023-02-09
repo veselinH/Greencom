@@ -49,7 +49,7 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     public String getFirstName() {
         return firstName;
     }
