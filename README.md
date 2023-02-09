@@ -2,6 +2,8 @@
 # Greencom
 Greencom is a web application for telecomunication services.
 
+Here you can choose a service plan for mobile phone, home network, television and landline phone.
+
 Greencom is a telecommunications company that has made a significant impact on the industry since its founding in 2010. The company was founded with the mission to provide affordable and accessible communication services to individuals and businesses alike. With a focus on innovation and sustainability, Greencom quickly gained a reputation for providing cutting-edge technology and environmentally conscious solutions.
 
 In its early years, Greencom focused on expanding its network infrastructure to reach more and more customers. The company rolled out its wireless network quickly, providing coverage to even the most rural areas. Greencom also made a significant investment in fiber optic technology, laying thousands of miles of fiber optic cables to connect communities across the country.
