@@ -7,6 +7,7 @@
 
 
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+    <!--    TODO-->
     <div class="carousel-inner">
         <div class="carousel-item active">
             <img class="d-block w-100" src="https://placehold.it/1200x400?text=IMAGE" alt="First slide">
@@ -30,23 +31,33 @@
     <h3>Choose a service</h3><br>
     <div class="row">
         <div class="col-sm-4">
-            <a href="/home"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></a>
+            <a th:href="@{/voice-mobile-plans}">
+                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+            </a>
             <p>Voice Mobile Plans</p>
         </div>
         <div class="col-sm-4">
-            <a href="/home"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></a>
+            <a th:href="@{/data-mobile-plans}">
+                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+            </a>
             <p>Data mobile plans</p>
         </div>
         <div class="col-sm-4">
-            <a href="/home"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></a>
+            <a th:href="@{/internet-plans}">
+                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+            </a>
             <p>Internet plans</p>
         </div>
         <div class="col-sm-4">
-            <a href="/home"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></a>
+            <a th:href="@{/television-plans}">
+                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+            </a>
             <p>Television plans</p>
         </div>
         <div class="col-sm-4">
-            <a href="/home"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></a>
+            <a th:href="@{/landline-plans}">
+                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+            </a>
             <p>Landline plans</p>
         </div>
     </div>

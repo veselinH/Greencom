@@ -63,7 +63,6 @@ public class UserController {
             return "redirect:register";
         }
 
-        //TODO unique email and username
         userService.registerUser(modelMapper.map(userRegisterBindingModel, UserServiceModel.class));
 
         return "redirect:login";

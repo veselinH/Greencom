@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::navbar"></header>
+
+<div class="mask d-flex align-items-center h-100">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                <div class="card" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        <h2 class="text-uppercase text-center mb-5">Edit voice mobile plan</h2>
+
+                        <form
+                                th:object="${voicePlanBindingModel}"
+                                th:action="@{/edit-voice-mobile-plan/{name}(name=*{name})}"
+                                th:method="PATCH">
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{name}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="name"
+                                        aria-describedby="nameHelper">
+                                <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                                       id="nameHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="name">Plan name</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{planDuration}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="planDuration"
+                                        aria-describedby="planDurationHelper">
+                                <small th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}"
+                                       id="planDurationHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="planDuration">Plan duration</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{bgMinutes}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="bgMinutes"
+                                        aria-describedby="bgMinutesHelper">
+                                <small th:if="${#fields.hasErrors('bgMinutes')}" th:errors="*{bgMinutes}"
+                                       id="bgMinutesHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="bgMinutes">National minutes</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{roamingMinutes}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="roamingMinutes"
+                                        aria-describedby="roamingMinutesHelper">
+                                <small th:if="${#fields.hasErrors('roamingMinutes')}" th:errors="*{roamingMinutes}"
+                                       id="roamingMinutesHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="roamingMinutes">Roaming minutes</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{bgInternetMegabytes}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="bgInternetMegabytes"
+                                        aria-describedby="bgInternetMegabytesHelper">
+                                <small th:if="${#fields.hasErrors('bgInternetMegabytes')}"
+                                       th:errors="*{bgInternetMegabytes}"
+                                       id="bgInternetMegabytesHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="bgInternetMegabytes">National megabytes</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{roamingInternetMegabytes}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="roamingInternetMegabytes"
+                                        aria-describedby="roamingInternetMegabytesHelper">
+                                <small th:if="${#fields.hasErrors('roamingInternetMegabytes')}"
+                                       th:errors="*{roamingInternetMegabytes}"
+                                       id="roamingInternetMegabytesHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="roamingInternetMegabytes">Roaming megabytes</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{price}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="price"
+                                        aria-describedby="priceHelper">
+                                <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
+                                       id="priceHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="price">Price</label>
+                            </div>
+
+
+                            <div>
+                                <div class="form-group p-3">
+                                    <label class="p-2" for="extras">Extras:</label>
+                                    <input
+                                            th:each="e : ${T(bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum).values()}"
+                                            th:object="${e}" th:text="${e.getValue()}" th:value="${e}"
+                                            class="m-3" type="checkbox" name="mobileExtras" id="extras"
+                                            value="1" text="Category">
+                                    <br>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <button type="submit"
+                                        class="btn btn-success btn-block btn-lg text-body">Add plan
+                                </button>
+                                <a style="margin-left: 15px" type="button"
+                                   class="btn btn-success btn-block btn-lg text-body"
+                                   href="/voice-mobile-plans">Cancel
+                                </a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+
+</html>

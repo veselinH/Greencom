@@ -37,4 +37,12 @@ public class MobileExtraServiceImpl implements MobileExtraService {
                             mobileExtraEntity3));
         }
     }
+
+    @Override
+    public MobileExtraEntity findByName(MobileExtraEnum mobileExtraEnum) {
+
+        return mobileExtraRepository
+                .findByName(mobileExtraEnum)
+                .orElse(null);
+    }
 }
