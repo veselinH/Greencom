@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 public class VoicePlanBindingModel {
+
+    private Long id;
     private String name;
     private String planDuration;
     private String bgMinutes;
@@ -21,6 +23,18 @@ public class VoicePlanBindingModel {
     private BigDecimal price;
     private List<MobileExtraEnum> mobileExtras = new ArrayList<>();
 
+
+    public VoicePlanBindingModel() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public VoicePlanBindingModel setId(Long id) {
+        this.id = id;
+        return this;
+    }
 
     @NotBlank
     @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
@@ -34,7 +48,7 @@ public class VoicePlanBindingModel {
     }
 
     @NotBlank
-    @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
+    @Size(min = 2, max = 9, message = "Size must be between 2 and 9")
     public String getPlanDuration() {
         return planDuration;
     }

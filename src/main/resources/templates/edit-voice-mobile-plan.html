@@ -13,10 +13,9 @@
                     <div class="card-body p-5">
                         <h2 class="text-uppercase text-center mb-5">Edit voice mobile plan</h2>
 
-                        <form
-                                th:object="${voicePlanBindingModel}"
-                                th:action="@{/edit-voice-mobile-plan/{name}(name=*{name})}"
-                                th:method="PATCH">
+                        <form th:object="${voicePlanFromRepo}"
+                              th:action="@{/edit-voice-mobile-plan/{id}(id=*{id})}"
+                              th:method="patch">
                             <div class="form-outline mb-4">
                                 <input
                                         th:field="*{name}"
@@ -125,7 +124,7 @@
 
                             <div class="d-flex justify-content-center">
                                 <button type="submit"
-                                        class="btn btn-success btn-block btn-lg text-body">Add plan
+                                        class="btn btn-success btn-block btn-lg text-body">Edit plan
                                 </button>
                                 <a style="margin-left: 15px" type="button"
                                    class="btn btn-success btn-block btn-lg text-body"

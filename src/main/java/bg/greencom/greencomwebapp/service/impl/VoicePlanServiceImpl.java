@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.service.impl;
 
+import bg.greencom.greencomwebapp.model.binding.VoicePlanBindingModel;
 import bg.greencom.greencomwebapp.model.entity.MobileExtraEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
@@ -11,10 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,4 +81,44 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         VoicePlanEntity planToDelete = findByName(name);
         voicePlanRepository.delete(planToDelete);
     }
+
+    @Override
+    public void updatePlan(VoicePlanServiceModel voicePlanServiceModel) {
+
+        VoicePlanEntity voicePlan =
+                voicePlanRepository
+                        .findById(voicePlanServiceModel.getId())
+                        .orElseThrow(
+                                () -> new NullPointerException
+                                        ("Voice plan with id " + voicePlanServiceModel.getId() + " does not exist!"));
+
+
+        voicePlan
+                .setName(voicePlanServiceModel.getName())
+                .setModifiedOn(LocalDateTime.now())
+                .setPlanDuration(voicePlanServiceModel.getPlanDuration());
+        voicePlan
+                .setBgMinutes(voicePlanServiceModel.getBgMinutes())
+                .setRoamingMinutes(voicePlanServiceModel.getRoamingMinutes())
+                .setBgInternetMegabytes(voicePlanServiceModel.getBgInternetMegabytes())
+                .setPrice(voicePlanServiceModel.getPrice())
+                .setRoamingInternetMegabytes(voicePlanServiceModel.getRoamingInternetMegabytes())
+                .setMobileExtras(voicePlanServiceModel
+                        .getMobileExtras()
+                        .stream()
+                        .map(mobileExtraService::findByName)
+                        .collect(Collectors.toList()));
+
+        voicePlanRepository.save(voicePlan);
+    }
+
+    @Override
+    public VoicePlanViewModel findById(Long id) {
+        VoicePlanEntity voicePlanEntity = voicePlanRepository
+                .findById(id)
+                .orElse(null);
+
+        return modelMapper.map(voicePlanEntity, VoicePlanViewModel.class);
+    }
+
 }

@@ -2,6 +2,7 @@ package bg.greencom.greencomwebapp.web;
 
 import bg.greencom.greencomwebapp.model.binding.VoicePlanBindingModel;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
+import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -65,11 +66,6 @@ public class MobileController {
         return "redirect:voice-mobile-plans";
     }
 
-    @GetMapping("/voice-mobile-plans/{name}")
-    public String voicePlanDetail(@PathVariable String name) {
-
-        return "voice-mobile-plans";
-    }
 
     @DeleteMapping("/voice-mobile-plans/{name}")
     public String removeVoicePlan(@PathVariable String name) {
@@ -79,10 +75,33 @@ public class MobileController {
         return "redirect:/voice-mobile-plans";
     }
 
-    @GetMapping("/edit-voice-mobile-plan/{name}")
-    public String editVoicePlan(@PathVariable String name) {
+    @GetMapping("/edit-voice-mobile-plan/{id}")
+    public String editVoicePlan(@PathVariable Long id, Model model) {
+        VoicePlanViewModel voicePlanById =voicePlanService.findById(id);
 
+        model.addAttribute("voicePlanFromRepo", voicePlanById);
 
         return "edit-voice-mobile-plan";
+    }
+
+
+    @PatchMapping("/edit-voice-mobile-plan/{id}")
+    public String editVoicePlanConfirm(@PathVariable Long id,
+                                       @Valid VoicePlanBindingModel voicePlanBindingModel,
+                                       BindingResult bindingResult,
+                                       RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+
+            redirectAttributes
+                    .addFlashAttribute("voicePlanBindingModel", voicePlanBindingModel)
+                    .addFlashAttribute("org.springframework.validation.BindingResult.voicePlanBindingModel", bindingResult);
+
+            return "redirect:edit-voice-mobile-plan/" + id;
+        }
+
+        voicePlanService.updatePlan(modelMapper.map(voicePlanBindingModel, VoicePlanServiceModel.class));
+
+        return "redirect:/voice-mobile-plans";
     }
 }

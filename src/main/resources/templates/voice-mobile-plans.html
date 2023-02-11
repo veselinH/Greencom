@@ -5,7 +5,7 @@
 <body>
 <header th:replace="fragments/commons::navbar"></header>
 <div class="carousel-inner">
-    <img class="d-block w-100" src="https://placehold.it/1200x400?text=IMAGE" alt="First slide">
+    <img class="d-block w-100" src="/images/tanya.JPG" height="1000" alt="">
 </div>
 
 <div class="container-fluid">
@@ -24,7 +24,7 @@
                             <button class="btn btn-outline-dark btn-block">Sign</button>
                         </div>
                         <div class="d-grid my-3">
-                            <a th:href="@{/edit-voice-mobile-plan/{name}(name=*{name})}"
+                            <a th:href="@{/edit-voice-mobile-plan/{id}(id=*{id})}"
                                class="btn btn-outline-dark btn-block">Edit</a>
                         </div>
                         <form th:action="@{/voice-mobile-plans/{name}(name=*{name})}" th:method="delete">
