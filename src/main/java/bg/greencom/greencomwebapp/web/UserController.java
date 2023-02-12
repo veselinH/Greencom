@@ -31,10 +31,20 @@ public class UserController {
         return new UserRegisterBindingModel();
     }
 
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
+
+//    @PostMapping("/login")
+//    public String loginUser(UserLoginBindingModel userLoginBindingModel) {
+//
+//        userService.loginUser(userLoginBindingModel);
+//
+//
+//        return "redirect:home";
+//    }
 
     @GetMapping("/register")
     public String register() {
@@ -65,7 +75,7 @@ public class UserController {
 
         userService.registerUser(modelMapper.map(userRegisterBindingModel, UserServiceModel.class));
 
-        return "redirect:login";
+        return "redirect:/";
     }
 
 }

@@ -32,11 +32,11 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li style="margin-right: 16px" class="nav-item">
-                    <a type="button" class="btn btn-success" href="/users/login">Login</a>
+                <li style="margin-right: 16px" class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a type="button" class="btn btn-success" th:href="@{/users/login}">Login</a>
                 </li>
-                <li style="margin-right: 16px" class="nav-item">
-                    <a type="button" class="btn btn-success" href="/users/register">Register</a>
+                <li style="margin-right: 16px" class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a type="button" class="btn btn-success" th:href="@{/users/register}">Register</a>
                 </li>
                 <li sec:authorize="hasRole('ADMIN')" style="margin-right: 16px" class="nav-item dropdown">
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"

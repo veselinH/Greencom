@@ -30,7 +30,7 @@ public class GreencomUserDetailsService implements UserDetailsService {
                         .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found!"));
 
 
-        return null;
+        return mapToUserDetails(userEntity);
     }
 
     private static UserDetails mapToUserDetails(UserEntity userEntity) {
