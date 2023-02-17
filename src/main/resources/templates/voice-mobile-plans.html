@@ -5,7 +5,7 @@
 <body>
 <header th:replace="fragments/commons::navbar"></header>
 <div class="carousel-inner">
-    <img class="d-block w-100" src="/images/tanya.JPG" height="1000" alt="">
+    <img class="d-block w-100" src="" height="1000" alt="">
 </div>
 
 <div class="container-fluid">
@@ -20,9 +20,11 @@
                         <br><br>
                         <span th:text="*{price}" class="h2">$8</span>$/month
                         <br><br>
-                        <div class="d-grid my-3">
-                            <button class="btn btn-outline-dark btn-block">Sign</button>
-                        </div>
+                        <form th:action="@{/voice-mobile-plans/{id}(id=*{id})}"
+                              th:method="patch"
+                              class="d-grid my-3">
+                            <input type="submit" class="btn btn-outline-dark btn-block" value="Sign"></input>
+                        </form>
                         <div class="d-grid my-3">
                             <a th:href="@{/edit-voice-mobile-plan/{id}(id=*{id})}"
                                class="btn btn-outline-dark btn-block">Edit</a>

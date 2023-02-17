@@ -2,18 +2,21 @@ package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.UserRoleEntity;
+import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
+import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
+import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.service.UserRoleService;
 import bg.greencom.greencomwebapp.service.UserService;
+import bg.greencom.greencomwebapp.service.VoicePlanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +31,15 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final VoicePlanService voicePlanService;
 
-    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService) {
         this.userRoleService = userRoleService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
+        this.voicePlanService = voicePlanService;
     }
 
     @Override
@@ -95,5 +100,15 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findByUsername(username)
                 .orElse(null);
+    }
+
+    @Override
+    public void addVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails) {
+        UserEntity user = this.findUserByUsername(userDetails.getUsername());
+        VoicePlanEntity voicePlanFromDB = voicePlanService.findByName(voicePlan.getName());
+
+        user.getUserVoiceMobilePlans().add(voicePlanFromDB);
+
+        userRepository.saveAndFlush(user);
     }
 }

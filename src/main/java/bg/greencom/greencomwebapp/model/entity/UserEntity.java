@@ -119,7 +119,7 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     public List<VoicePlanEntity> getUserVoiceMobilePlans() {
         return userVoiceMobilePlans;
     }
