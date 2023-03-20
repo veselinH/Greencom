@@ -1,13 +1,16 @@
 package bg.greencom.greencomwebapp.service.impl;
 
+import bg.greencom.greencomwebapp.model.entity.DataPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.UserRoleEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
+import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.UserRepository;
+import bg.greencom.greencomwebapp.service.DataPlanService;
 import bg.greencom.greencomwebapp.service.UserRoleService;
 import bg.greencom.greencomwebapp.service.UserService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
@@ -32,14 +35,16 @@ public class UserServiceImpl implements UserService {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final VoicePlanService voicePlanService;
+    private final DataPlanService dataPlanService;
 
-    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService) {
+    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService) {
         this.userRoleService = userRoleService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.voicePlanService = voicePlanService;
+        this.dataPlanService = dataPlanService;
     }
 
     @Override
@@ -108,6 +113,16 @@ public class UserServiceImpl implements UserService {
         VoicePlanEntity voicePlanFromDB = voicePlanService.findByName(voicePlan.getName());
 
         user.getUserVoiceMobilePlans().add(voicePlanFromDB);
+
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails) {
+        UserEntity user = this.findUserByUsername(userDetails.getUsername());
+        DataPlanEntity dataPlanFromDB = dataPlanService.findByName(dataPlan.getName());
+
+        user.getUserDataPlans().add(dataPlanFromDB);
 
         userRepository.saveAndFlush(user);
     }

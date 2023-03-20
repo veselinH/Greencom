@@ -63,7 +63,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         }
 
 
-        voicePlanRepository.save(voicePlanEntity);
+        voicePlanRepository.saveAndFlush(voicePlanEntity);
 
         return voicePlanServiceModel;
     }
@@ -109,7 +109,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                         .map(mobileExtraService::findByName)
                         .collect(Collectors.toList()));
 
-        voicePlanRepository.save(voicePlan);
+        voicePlanRepository.saveAndFlush(voicePlan);
     }
 
     @Override
