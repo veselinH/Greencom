@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
+@RequestMapping("/mobile")
 public class MobileController {
 
     private final VoicePlanService voicePlanService;
@@ -35,7 +36,7 @@ public class MobileController {
     }
 
 
-    @GetMapping("/voice-mobile-plans")
+    @GetMapping("/voice-plans")
     public String voicePlans(Model model) {
 
         model.addAttribute("allVoicePlans", voicePlanService.findAllPlansOrderedByPrice());
@@ -48,12 +49,12 @@ public class MobileController {
         return "data-mobile-plans";
     }
 
-    @GetMapping("/add-voice-mobile-plan")
+    @GetMapping("/add-voice-plan")
     public String addVoicePlan() {
         return "add-voice-mobile-plan";
     }
 
-    @PostMapping("/add-voice-mobile-plan")
+    @PostMapping("/add-voice-plan")
     public String addVoicePlanConfirm(@Valid VoicePlanBindingModel voicePlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
@@ -63,26 +64,26 @@ public class MobileController {
                     .addFlashAttribute("voicePlanBindingModel", voicePlanBindingModel)
                     .addFlashAttribute("org.springframework.validation.BindingResult.voicePlanBindingModel", bindingResult);
 
-            return "redirect:add-voice-mobile-plan";
+            return "redirect:/mobile/add-voice-plan";
         }
 
 
         VoicePlanServiceModel voicePlanServiceModel = modelMapper.map(voicePlanBindingModel, VoicePlanServiceModel.class);
         voicePlanService.addPlan(voicePlanServiceModel);
 
-        return "redirect:voice-mobile-plans";
+        return "redirect:/mobile/voice-plans";
     }
 
 
-    @DeleteMapping("/voice-mobile-plans/{name}")
+    @DeleteMapping("/voice-plan/{name}")
     public String removeVoicePlan(@PathVariable String name) {
 
         voicePlanService.deleteVoicePlan(name);
 
-        return "redirect:/voice-mobile-plans";
+        return "redirect:/mobile/voice-plans";
     }
 
-    @GetMapping("/edit-voice-mobile-plan/{id}")
+    @GetMapping("/edit-voice-plan/{id}")
     public String editVoicePlan(@PathVariable Long id, Model model) {
         VoicePlanViewModel voicePlanById = voicePlanService.findById(id);
 
@@ -92,7 +93,7 @@ public class MobileController {
     }
 
 
-    @PatchMapping("/edit-voice-mobile-plan/{id}")
+    @PatchMapping("/edit-voice-plan/{id}")
     public String editVoicePlanConfirm(@PathVariable Long id,
                                        @Valid VoicePlanBindingModel voicePlanBindingModel,
                                        BindingResult bindingResult,
@@ -104,15 +105,15 @@ public class MobileController {
                     .addFlashAttribute("voicePlanBindingModel", voicePlanBindingModel)
                     .addFlashAttribute("org.springframework.validation.BindingResult.voicePlanBindingModel", bindingResult);
 
-            return "redirect:edit-voice-mobile-plan/" + id;
+            return "redirect:/mobile/edit-voice-plan/" + id;
         }
 
         voicePlanService.updatePlan(modelMapper.map(voicePlanBindingModel, VoicePlanServiceModel.class));
 
-        return "redirect:/voice-mobile-plans";
+        return "redirect:/mobile/voice-plan";
     }
 
-    @GetMapping("/voice-mobile-plans/{id}")
+    @GetMapping("/voice-plan/{id}")
     public String signVoicePlan(@PathVariable Long id, Model model) {
         VoicePlanViewModel voicePlanById = voicePlanService.findById(id);
 
@@ -121,7 +122,7 @@ public class MobileController {
         return "voice-mobile-plans";
     }
 
-    @PatchMapping("/voice-mobile-plans/{id}")
+    @PatchMapping("/voice-plan/{id}")
     public String signVoicePlanConfirm(@PathVariable Long id,
                            PlanSignBindingModel planSignBindingModel,
                            @AuthenticationPrincipal GreencomUserDetails userDetails) {
@@ -131,6 +132,6 @@ public class MobileController {
 
         userService.addVoicePlan(voicePlan, userDetails);
 
-        return "redirect:/voice-mobile-plans";
+        return "redirect:/mobile/voice-plans";
     }
 }

@@ -15,7 +15,7 @@
 
                         <form
                                 th:object="${voicePlanBindingModel}"
-                                th:action="@{/add-voice-mobile-plan}"
+                                th:action="@{/mobile/add-voice-plan}"
                                 th:method="POST">
                             <div class="form-outline mb-4">
                                 <input
@@ -129,7 +129,7 @@
                                 </button>
                                 <a style="margin-left: 15px" type="button"
                                    class="btn btn-success btn-block btn-lg text-body"
-                                   href="/voice-mobile-plans">Cancel
+                                   th:href="@{/mobile/voice-plans}">Cancel
                                 </a>
                             </div>
 

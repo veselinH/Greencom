@@ -14,7 +14,7 @@
                         <h2 class="text-uppercase text-center mb-5">Edit voice mobile plan</h2>
 
                         <form th:object="${voicePlanFromRepo}"
-                              th:action="@{/edit-voice-mobile-plan/{id}(id=*{id})}"
+                              th:action="@{/mobile/edit-voice-plan/{id}(id=*{id})}"
                               th:method="patch">
                             <div class="form-outline mb-4">
                                 <input
