@@ -29,17 +29,15 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/", "/users/login", "/users/register", "/about").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login.html")
-                .loginProcessingUrl("/users/login")
-                .usernameParameter(SPRING_SECURITY_FORM_USERNAME_KEY)
-                .passwordParameter(SPRING_SECURITY_FORM_PASSWORD_KEY)
-                .defaultSuccessUrl("/home", true)
-                .failureForwardUrl("/login/errors")
+                .requestMatchers("/", "/users/login", "/users/register", "/about", "/users/login-errors").permitAll()
+                .anyRequest().authenticated().
+                  and().
+                  formLogin().
+                    loginPage("/users/login").
+                    usernameParameter(SPRING_SECURITY_FORM_USERNAME_KEY).
+                    passwordParameter(SPRING_SECURITY_FORM_PASSWORD_KEY).
+                defaultSuccessUrl("/home", true)
+                .failureForwardUrl("/users/login-errors")
                 .and()
                 .logout(logout -> {
                     logout

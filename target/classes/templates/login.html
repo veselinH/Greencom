@@ -19,6 +19,8 @@
 
                         <form th:action="@{/users/login}" th:method="post">
                             <div class="form-outline mb-4">
+                                <p class="errors alert alert-danger" th:if="${bad_credentials}">
+                                    Invalid username or password</p>
                                 <input
                                         th:value="${username}"
                                         id="username"

@@ -22,7 +22,10 @@
 <body>
 <header th:fragment="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" th:href="@{/}">
+        <a class="navbar-brand" th:href="@{/}" sec:authorize="!isAuthenticated()">
+            <img src="/images/logoz.jpg" width="75" height="50" alt="">
+        </a>
+        <a class="navbar-brand" th:href="@{/home}" sec:authorize="isAuthenticated()">
             <img src="/images/logoz.jpg" width="75" height="50" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -39,19 +42,7 @@
                     <a type="button" class="btn btn-success" th:href="@{/users/register}">Register</a>
                 </li>
                 <!--sec:authorize="hasRole('ADMIN')"-->
-                <li style="margin-right: 16px" class="nav-item dropdown">
-                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        Profile
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Profile information</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">My contracts</a>
-                        <div class="dropdown-divider"></div>
-                    </div>
-                </li>
-                <li style="margin-right: 16px" class="nav-item dropdown">
+                <li style="margin-right: 16px" class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         Add plan
@@ -71,13 +62,22 @@
                 <li style="margin-right: 16px" class="nav-item">
                     <a type="button" class="btn btn-success" th:href="@{/about}">About</a>
                 </li>
-                <li style="margin-left: 820px" class="nav-item" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/users/logout}" th:method="post">
-                        <input class="btn btn-success" type="submit" value="Logout">
-                    </form>
-        </div>
-        </li>
-        </ul>
+                <li style="margin-left: 1000px" class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        Welcome,
+                        <th:block sec:authentication="name"></th:block>
+                        !
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/add-voice-mobile-plan">Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <form th:action="@{/users/logout}" th:method="post">
+                            <input class="dropdown-item" type="submit" value="Logout">
+                        </form>
+                    </div>
+
+            </ul>
         </div>
     </nav>
 </header>

@@ -6,6 +6,7 @@ import bg.greencom.greencomwebapp.service.UserService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
+
         return "login";
     }
 
@@ -45,6 +47,14 @@ public class UserController {
 //
 //        return "redirect:home";
 //    }
+
+    @PostMapping("/login-errors")
+    public String onFailedLogin(RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("bad_credentials", true);
+
+        return "redirect:/users/login";
+    }
 
     @GetMapping("/register")
     public String register() {
@@ -75,7 +85,7 @@ public class UserController {
 
         userService.registerUser(modelMapper.map(userRegisterBindingModel, UserServiceModel.class));
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 
 }

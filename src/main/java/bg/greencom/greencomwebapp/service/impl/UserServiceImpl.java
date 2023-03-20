@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
                     .setLastName("Hristov")
                     .setEmail("admin@greencom.bg")
                     .setTotalDebtPerMonth(BigDecimal.ZERO)
-                    .setPassword("12345")
+                    .setPassword(passwordEncoder.encode("admin"))
                     .setRegisteredOn(LocalDateTime.now());
 
             userRepository.save(user);
