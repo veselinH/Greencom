@@ -5,6 +5,7 @@ import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.service.UserService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,19 +40,14 @@ public class UserController {
         return "login";
     }
 
-//    @PostMapping("/login")
-//    public String loginUser(UserLoginBindingModel userLoginBindingModel) {
-//
-//        userService.loginUser(userLoginBindingModel);
-//
-//
-//        return "redirect:home";
-//    }
-
     @PostMapping("/login-errors")
-    public String onFailedLogin(RedirectAttributes redirectAttributes) {
+    public String onFailedLogin(
+            @ModelAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY) String username,
+            RedirectAttributes redirectAttributes) {
 
-        redirectAttributes.addFlashAttribute("bad_credentials", true);
+        redirectAttributes
+                .addFlashAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY, username)
+                .addFlashAttribute("bad_credentials", true);
 
         return "redirect:/users/login";
     }
