@@ -5,11 +5,14 @@ import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
+import org.springframework.security.core.Authentication;
+
+import java.util.function.Consumer;
 
 public interface UserService {
     void initialize();
 
-    UserServiceModel registerUser(UserServiceModel user);
+    void registerUser(UserServiceModel user, Consumer<Authentication> successfulLoginProcessor);
 
     UserEntity findUserByEmail(String email);
 

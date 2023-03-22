@@ -3,6 +3,7 @@ package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.model.binding.VoicePlanBindingModel;
 import bg.greencom.greencomwebapp.model.entity.MobileExtraEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
+import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.VoicePlanRepository;
@@ -116,7 +117,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
     public VoicePlanViewModel findById(Long id) {
         VoicePlanEntity voicePlanEntity = voicePlanRepository
                 .findById(id)
-                .orElse(null);
+                .orElseThrow(() -> new PlanNotFoundException(id));
 
         return modelMapper.map(voicePlanEntity, VoicePlanViewModel.class);
     }

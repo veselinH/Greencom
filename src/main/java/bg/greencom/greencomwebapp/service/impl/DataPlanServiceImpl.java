@@ -1,6 +1,7 @@
 package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.DataPlanEntity;
+import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.DataPlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
 import bg.greencom.greencomwebapp.repository.DataPlanRepository;
@@ -80,7 +81,7 @@ public class DataPlanServiceImpl implements DataPlanService {
     public DataPlanViewModel findById(Long id) {
         DataPlanEntity dataPlanEntity = dataPlanRepository
                 .findById(id)
-                .orElse(null);
+                .orElseThrow(() -> new PlanNotFoundException(id));
 
         return modelMapper.map(dataPlanEntity, DataPlanViewModel.class);
 

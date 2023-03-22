@@ -3,6 +3,7 @@ package bg.greencom.greencomwebapp.web;
 import bg.greencom.greencomwebapp.model.binding.DataPlanBindingModel;
 import bg.greencom.greencomwebapp.model.binding.PlanSignBindingModel;
 import bg.greencom.greencomwebapp.model.binding.VoicePlanBindingModel;
+import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.DataPlanServiceModel;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -42,6 +44,7 @@ public class MobileController {
     public VoicePlanBindingModel voicePlanBindingModel() {
         return new VoicePlanBindingModel();
     }
+
 
 
     @GetMapping("/voice-plans")
@@ -89,31 +92,45 @@ public class MobileController {
     @GetMapping("/edit-voice-plan/{id}")
     public String editVoicePlan(@PathVariable Long id, Model model) {
         VoicePlanViewModel voicePlanById = voicePlanService.findById(id);
+        VoicePlanBindingModel voicePlanFromRepo = modelMapper.map(voicePlanById, VoicePlanBindingModel.class);
 
-        model.addAttribute("voicePlanFromRepo", voicePlanById);
+        model.addAttribute("voicePlanFromRepo", voicePlanFromRepo);
 
         return "mobile-plans/voice-plans/edit-voice-mobile-plan";
     }
 
+    @ExceptionHandler(PlanNotFoundException.class)
+    public ModelAndView onPlanNotFound(PlanNotFoundException exception) {
+
+        ModelAndView modelAndView = new ModelAndView("error/custom-errors/plan-not-found");
+        modelAndView.addObject("planId", exception.getPlanId());
+        return modelAndView;
+    }
+
+    @GetMapping("/edit-voice-plan/{id}/errors")
+    public String editVoicePlanError(@PathVariable Long id) {
+
+        return "mobile-plans/voice-plans/edit-voice-mobile-plan";
+    }
 
     @PatchMapping("/edit-voice-plan/{id}")
     public String editVoicePlanConfirm(@PathVariable Long id,
-                                       @Valid VoicePlanBindingModel voicePlanBindingModel,
+                                       @Valid VoicePlanBindingModel voicePlanFromRepo,
                                        BindingResult bindingResult,
                                        RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
 
             redirectAttributes
-                    .addFlashAttribute("voicePlanBindingModel", voicePlanBindingModel)
-                    .addFlashAttribute("org.springframework.validation.BindingResult.voicePlanBindingModel", bindingResult);
+                    .addFlashAttribute("voicePlanFromRepo", voicePlanFromRepo)
+                    .addFlashAttribute("org.springframework.validation.BindingResult.voicePlanFromRepo", bindingResult);
 
-            return "redirect:/mobile/edit-voice-plan/" + id;
+            return "redirect:/mobile/edit-voice-plan/" + id + "/errors";
         }
 
-        voicePlanService.updatePlan(modelMapper.map(voicePlanBindingModel, VoicePlanServiceModel.class));
+        voicePlanService.updatePlan(modelMapper.map(voicePlanFromRepo, VoicePlanServiceModel.class));
 
-        return "redirect:/mobile/voice-plan";
+        return "redirect:/mobile/voice-plans";
     }
 
     @GetMapping("/voice-plan/{id}")
@@ -228,8 +245,8 @@ public class MobileController {
 
     @PatchMapping("/data-plan/{id}")
     public String signDataPlanConfirm(@PathVariable Long id,
-                                       PlanSignBindingModel planSignBindingModel,
-                                       @AuthenticationPrincipal GreencomUserDetails userDetails) {
+                                      PlanSignBindingModel planSignBindingModel,
+                                      @AuthenticationPrincipal GreencomUserDetails userDetails) {
 
 
         DataPlanViewModel dataPlan = dataPlanService.findById(id);

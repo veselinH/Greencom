@@ -11,6 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
 import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
@@ -24,29 +28,31 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http, SecurityContextRepository securityContextRepository) throws Exception {
 
         http
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/", "/users/login", "/users/register", "/about", "/users/login-errors").permitAll()
                 .anyRequest().authenticated().
-                  and().
-                  formLogin().
-                    loginPage("/users/login").
-                    usernameParameter(SPRING_SECURITY_FORM_USERNAME_KEY).
-                    passwordParameter(SPRING_SECURITY_FORM_PASSWORD_KEY).
+                and().
+                formLogin().
+                loginPage("/users/login").
+                usernameParameter(SPRING_SECURITY_FORM_USERNAME_KEY).
+                passwordParameter(SPRING_SECURITY_FORM_PASSWORD_KEY).
                 defaultSuccessUrl("/home", true)
                 .failureForwardUrl("/users/login-errors")
                 .and()
-                .logout(logout -> {
-                    logout
-                            .logoutUrl("/users/logout")
-                            .logoutSuccessUrl("/")
-                            .logoutSuccessHandler(logout.getLogoutSuccessHandler())
-                            .invalidateHttpSession(true)
-                            .deleteCookies("JSESSIONID");
-                });
+                .logout()
+                .logoutUrl("/users/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .and()
+                .securityContext()
+                .securityContextRepository(securityContextRepository);
+
 
         return http.build();
     }
@@ -54,5 +60,13 @@ public class SecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new GreencomUserDetailsService(userRepository);
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new DelegatingSecurityContextRepository(
+                new RequestAttributeSecurityContextRepository(),
+                new HttpSessionSecurityContextRepository()
+        );
     }
 }

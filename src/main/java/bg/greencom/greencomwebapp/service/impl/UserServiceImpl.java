@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -68,7 +69,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserServiceModel registerUser(UserServiceModel userServiceModel) {
+    public void registerUser(UserServiceModel userServiceModel,
+                                         Consumer<Authentication> successfulLoginProcessor) {
+
         UserEntity user = modelMapper.map(userServiceModel, UserEntity.class);
         UserRoleEntity userRole = userRoleService.findByName(UserRoleEnum.USER);
 
@@ -79,17 +82,15 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userServiceModel.getUsername());
 
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails.getUsername(),
-                        userDetails.getPassword(),
-                        userDetails.getAuthorities()
-                );
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDetails.getPassword(),
+                userDetails.getAuthorities()
+        );
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        return userServiceModel;
+        successfulLoginProcessor.accept(auth);
     }
 
     @Override
