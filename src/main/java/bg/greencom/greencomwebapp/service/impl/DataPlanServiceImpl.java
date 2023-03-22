@@ -1,6 +1,7 @@
 package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.DataPlanEntity;
+import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.DataPlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class DataPlanServiceImpl implements DataPlanService {
 
+    private static final String OBJECT_TYPE = "data plan";
     private final DataPlanRepository dataPlanRepository;
     private final ModelMapper modelMapper;
     private final MobileExtraService mobileExtraService;
@@ -81,7 +83,7 @@ public class DataPlanServiceImpl implements DataPlanService {
     public DataPlanViewModel findById(Long id) {
         DataPlanEntity dataPlanEntity = dataPlanRepository
                 .findById(id)
-                .orElseThrow(() -> new PlanNotFoundException(id));
+                .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
 
         return modelMapper.map(dataPlanEntity, DataPlanViewModel.class);
 
@@ -94,7 +96,7 @@ public class DataPlanServiceImpl implements DataPlanService {
                 dataPlanRepository
                         .findById(dataPlanServiceModel.getId())
                         .orElseThrow(
-                                () -> new NullPointerException("Voice plan with id " + dataPlanServiceModel.getId() + " does not exist!")
+                                () -> new ObjectNotFoundException(dataPlanServiceModel.getId(), OBJECT_TYPE)
                         );
 
         dataPlan

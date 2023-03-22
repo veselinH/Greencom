@@ -3,6 +3,7 @@ package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.model.binding.VoicePlanBindingModel;
 import bg.greencom.greencomwebapp.model.entity.MobileExtraEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
+import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
@@ -19,6 +20,8 @@ import java.util.stream.Stream;
 
 @Service
 public class VoicePlanServiceImpl implements VoicePlanService {
+
+    private static final String OBJECT_TYPE = "voice plan";
 
     private final VoicePlanRepository voicePlanRepository;
     private final ModelMapper modelMapper;
@@ -90,8 +93,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                 voicePlanRepository
                         .findById(voicePlanServiceModel.getId())
                         .orElseThrow(
-                                () -> new NullPointerException
-                                        ("Voice plan with id " + voicePlanServiceModel.getId() + " does not exist!"));
+                                () -> new ObjectNotFoundException(voicePlanServiceModel.getId(), OBJECT_TYPE));
 
 
         voicePlan
@@ -117,7 +119,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
     public VoicePlanViewModel findById(Long id) {
         VoicePlanEntity voicePlanEntity = voicePlanRepository
                 .findById(id)
-                .orElseThrow(() -> new PlanNotFoundException(id));
+                .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
 
         return modelMapper.map(voicePlanEntity, VoicePlanViewModel.class);
     }

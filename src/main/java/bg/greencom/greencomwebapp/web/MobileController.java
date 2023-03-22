@@ -99,14 +99,6 @@ public class MobileController {
         return "mobile-plans/voice-plans/edit-voice-mobile-plan";
     }
 
-    @ExceptionHandler(PlanNotFoundException.class)
-    public ModelAndView onPlanNotFound(PlanNotFoundException exception) {
-
-        ModelAndView modelAndView = new ModelAndView("error/custom-errors/plan-not-found");
-        modelAndView.addObject("planId", exception.getPlanId());
-        return modelAndView;
-    }
-
     @GetMapping("/edit-voice-plan/{id}/errors")
     public String editVoicePlanError(@PathVariable Long id) {
 
