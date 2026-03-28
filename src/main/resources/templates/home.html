@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head"></head>
+<head th:replace="fragments/commons::head"><title>Greencom</title></head>
 <body>
 <header th:replace="fragments/commons::navbar"></header>
 
@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-sm-4">
             <a th:href="@{/mobile/voice-plans}">
-                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+                <img src="/images/VoicePlanImage.webp" class="img-responsive" style="width:100%" alt="Image">
             </a>
             <p>Voice Mobile Plans</p>
         </div>
