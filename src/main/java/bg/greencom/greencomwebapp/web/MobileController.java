@@ -206,22 +206,28 @@ public class MobileController {
         return "mobile-plans/data-plans/edit-data-mobile-plan";
     }
 
+    @GetMapping("/edit-data-plan/{id}/errors")
+    public String editDataPlanError(@PathVariable Long id) {
+
+        return "mobile-plans/data-plans/edit-data-mobile-plan";
+    }
+
     @PatchMapping("/edit-data-plan/{id}")
     public String editDataPlanConfirm(@PathVariable Long id,
-                                      @Valid DataPlanViewModel dataPlanBindingModel,
+                                      @Valid DataPlanBindingModel dataPlanFromRepo,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
 
             redirectAttributes
-                    .addFlashAttribute("dataPlanBindingModel", dataPlanBindingModel)
-                    .addFlashAttribute("org.springframework.validation.BindingResult.dataPlanBindingModel", bindingResult);
+                    .addFlashAttribute("dataPlanFromRepo", dataPlanFromRepo)
+                    .addFlashAttribute("org.springframework.validation.BindingResult.dataPlanFromRepo", bindingResult);
 
-            return "redirect:/mobile/edit-data-plan/" + id;
+            return "redirect:/mobile/edit-data-plan/" + id + "/errors";
         }
 
-        dataPlanService.updatePlan(modelMapper.map(dataPlanBindingModel, DataPlanServiceModel.class));
+        dataPlanService.updatePlan(modelMapper.map(dataPlanFromRepo, DataPlanServiceModel.class));
 
         return "redirect:/mobile/data-plans";
     }
@@ -239,7 +245,6 @@ public class MobileController {
     public String signDataPlanConfirm(@PathVariable Long id,
                                       PlanSignBindingModel planSignBindingModel,
                                       @AuthenticationPrincipal GreencomUserDetails userDetails) {
-
 
         DataPlanViewModel dataPlan = dataPlanService.findById(id);
 
