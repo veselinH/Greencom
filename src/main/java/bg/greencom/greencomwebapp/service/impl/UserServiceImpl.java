@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
@@ -110,21 +111,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails) {
+//    Add voice plan to the user and increase the debt
+//      Retrieve both user and voicePlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
         VoicePlanEntity voicePlanFromDB = voicePlanService.findByName(voicePlan.getName());
-
+//      Add the new plan to the user entity
         user.getUserVoiceMobilePlans().add(voicePlanFromDB);
-
+//      Increase the total debt
+        BigDecimal totalDebt = user.getTotalDebtPerMonth();
+        totalDebt = totalDebt.add(voicePlanFromDB.getPrice());
+        user.setTotalDebtPerMonth(totalDebt);
+//      Save to database by updating the user
         userRepository.saveAndFlush(user);
     }
 
     @Override
     public void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails) {
+//      Add voice plan to the user and increase the debt
+//      Retrieve both user and voicePlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
         DataPlanEntity dataPlanFromDB = dataPlanService.findByName(dataPlan.getName());
-
+//      Add the new plan to the user entity
         user.getUserDataPlans().add(dataPlanFromDB);
-
+//      Increase the total debt
+        BigDecimal totalDebt = user.getTotalDebtPerMonth();
+        totalDebt = totalDebt.add(dataPlanFromDB.getPrice());
+        user.setTotalDebtPerMonth(totalDebt);
+//      Save to database by updating the user
         userRepository.saveAndFlush(user);
     }
 }

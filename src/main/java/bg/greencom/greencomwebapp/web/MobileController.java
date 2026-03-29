@@ -134,9 +134,9 @@ public class MobileController {
         return "mobile-plans/voice-plans/voice-mobile-plans";
     }
 
+//  Add voice plan to the user
     @PatchMapping("/voice-plan/{id}")
     public String signVoicePlanConfirm(@PathVariable Long id,
-                                       PlanSignBindingModel planSignBindingModel,
                                        @AuthenticationPrincipal GreencomUserDetails userDetails) {
 
 
