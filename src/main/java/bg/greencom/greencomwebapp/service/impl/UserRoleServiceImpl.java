@@ -1,14 +1,11 @@
 package bg.greencom.greencomwebapp.service.impl;
 
-import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.UserRoleEntity;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.repository.UserRoleRepository;
 import bg.greencom.greencomwebapp.service.UserRoleService;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service

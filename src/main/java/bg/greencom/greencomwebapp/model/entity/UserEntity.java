@@ -109,7 +109,7 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<InternetPlanEntity> getUserInternetPlans() {
         return userInternetPlans;
     }
@@ -119,7 +119,7 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<VoicePlanEntity> getUserVoiceMobilePlans() {
         return userVoiceMobilePlans;
     }
@@ -129,7 +129,7 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<DataPlanEntity> getUserDataPlans() {
         return userDataPlans;
     }
@@ -139,7 +139,7 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<TelevisionPlanEntity> getUserTelevisionPlans() {
         return userTelevisionPlans;
     }
@@ -149,7 +149,7 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<FixedVoicePlanEntity> getUserFixedVoicePlans() {
         return userFixedVoicePlans;
     }

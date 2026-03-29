@@ -1,22 +1,20 @@
 package bg.greencom.greencomwebapp.service.impl;
-
-import bg.greencom.greencomwebapp.model.binding.VoicePlanBindingModel;
-import bg.greencom.greencomwebapp.model.entity.MobileExtraEntity;
+import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
-import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
+import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.repository.VoicePlanRepository;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class VoicePlanServiceImpl implements VoicePlanService {
@@ -24,11 +22,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
     private static final String OBJECT_TYPE = "voice plan";
 
     private final VoicePlanRepository voicePlanRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final MobileExtraService mobileExtraService;
 
-    public VoicePlanServiceImpl(VoicePlanRepository voicePlanRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService) {
+    public VoicePlanServiceImpl(VoicePlanRepository voicePlanRepository, UserRepository userRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService) {
         this.voicePlanRepository = voicePlanRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.mobileExtraService = mobileExtraService;
     }
@@ -80,9 +80,14 @@ public class VoicePlanServiceImpl implements VoicePlanService {
     }
 
     @Override
+    //  Using transactional in order to delete the plan and the foreign
+    @Transactional
     public void deleteVoicePlan(String name) {
 
         VoicePlanEntity planToDelete = findByName(name);
+        List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserVoiceMobilePlansContains(planToDelete);
+        usersWithPlanToDelete.forEach(userEntity -> userEntity.getUserVoiceMobilePlans().remove(planToDelete));
+        userRepository.saveAllAndFlush(usersWithPlanToDelete);
         voicePlanRepository.delete(planToDelete);
     }
 

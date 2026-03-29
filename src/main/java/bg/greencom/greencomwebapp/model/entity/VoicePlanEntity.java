@@ -34,4 +34,5 @@ public class VoicePlanEntity extends MobilePlanEntity {
         this.roamingMinutes = roamingMinutes;
         return this;
     }
+
 }

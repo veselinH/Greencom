@@ -1,15 +1,17 @@
 package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.DataPlanEntity;
+import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
-import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.DataPlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
 import bg.greencom.greencomwebapp.repository.DataPlanRepository;
+import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.service.DataPlanService;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -21,11 +23,13 @@ public class DataPlanServiceImpl implements DataPlanService {
 
     private static final String OBJECT_TYPE = "data plan";
     private final DataPlanRepository dataPlanRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final MobileExtraService mobileExtraService;
 
-    public DataPlanServiceImpl(DataPlanRepository dataPlanRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService) {
+    public DataPlanServiceImpl(DataPlanRepository dataPlanRepository, UserRepository userRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService) {
         this.dataPlanRepository = dataPlanRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.mobileExtraService = mobileExtraService;
     }
@@ -74,8 +78,13 @@ public class DataPlanServiceImpl implements DataPlanService {
     }
 
     @Override
+//  Using transactional in order to delete the plan and the foreign
+    @Transactional
     public void deletePlan(String name) {
         DataPlanEntity planToDelete = findByName(name);
+        List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserDataPlansContains(planToDelete);
+        usersWithPlanToDelete.forEach(userEntity -> userEntity.getUserDataPlans().remove(planToDelete));
+        userRepository.saveAllAndFlush(usersWithPlanToDelete);
         dataPlanRepository.delete(planToDelete);
     }
 
