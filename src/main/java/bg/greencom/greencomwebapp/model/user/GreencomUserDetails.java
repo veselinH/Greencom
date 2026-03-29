@@ -9,11 +9,14 @@ public class GreencomUserDetails implements UserDetails {
 
     private String username;
     private String password;
+    private String firstName;
+
     private Collection<GrantedAuthority> authorities;
 
-    public GreencomUserDetails(String username, String password, Collection<GrantedAuthority> authorities) {
+    public GreencomUserDetails(String username, String password, String firstName, Collection<GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
         this.authorities = authorities;
     }
 
@@ -30,6 +33,10 @@ public class GreencomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
 
     @Override

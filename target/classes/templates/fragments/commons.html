@@ -66,7 +66,7 @@
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         Welcome,
-                        <th:block sec:authentication="name"></th:block>
+                        <th:block sec:authentication="principal.firstName"></th:block>
                         !
                     </button>
                     <div class="dropdown-menu">
@@ -76,7 +76,6 @@
                             <input class="dropdown-item" type="submit" value="Logout">
                         </form>
                     </div>
-
             </ul>
         </div>
     </nav>

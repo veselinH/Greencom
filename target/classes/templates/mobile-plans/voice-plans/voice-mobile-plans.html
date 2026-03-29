@@ -2,12 +2,9 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/commons::head"></head>
+<head th:replace="fragments/commons::head"><title>GreenCom</title></head>
 <body>
 <header th:replace="fragments/commons::navbar"></header>
-<!--<div class="carousel-inner">-->
-<!--    <img class="d-block w-100" src="" height="1000" alt="">-->
-<!--</div>-->
 
 <div class="container-fluid">
     <div class="container p-5">
@@ -24,7 +21,7 @@
                         <form th:action="@{/mobile/voice-plan/{id}(id=*{id})}"
                               th:method="patch"
                               class="d-grid my-3">
-                            <input type="submit" class="btn btn-outline-dark btn-block" value="Sign"></input>
+                            <input type="submit" class="btn btn-outline-dark btn-block" value="Sign">
                         </form>
                         <div class="d-grid my-3" sec:authorize="hasRole('ADMIN')">
                             <a th:href="@{/mobile/edit-voice-plan/{id}(id=*{id})}"
@@ -33,7 +30,7 @@
                         <form th:action="@{/mobile/voice-plan/{name}(name=*{name})}"
                               th:method="delete"
                               sec:authorize="hasRole('ADMIN')">
-                            <input type="submit" class="btn btn-outline-dark btn-block" value="Remove"></input>
+                            <input type="submit" class="btn btn-outline-dark btn-block" value="Remove">
                         </form>
 
                         <ul>

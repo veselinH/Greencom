@@ -44,6 +44,7 @@ public class GreencomUserDetailsService implements UserDetailsService {
         return new GreencomUserDetails(
                 userEntity.getUsername(),
                 userEntity.getPassword(),
+                userEntity.getFirstName(),
                 authorities);
     }
 }
