@@ -45,7 +45,6 @@ public class UserController {
         return new UserRegisterBindingModel();
     }
 
-
     @GetMapping("/login")
     public String login(@AuthenticationPrincipal GreencomUserDetails user) {
         if (user != null) {
@@ -81,6 +80,7 @@ public class UserController {
                                HttpServletRequest request,
                                HttpServletResponse response) {
 
+//      Control on the password
         if (!userRegisterBindingModel.getPassword().equals(userRegisterBindingModel.getConfirmPassword())) {
             bindingResult.addError(
                     new FieldError(
@@ -89,7 +89,7 @@ public class UserController {
                             "Passwords must be the same."));
         }
 
-
+//      If bindingResult return errors from the bindingModel we redirect to the same page with the errors on the fields
         if (bindingResult.hasErrors()) {
             redirectAttributes
                     .addFlashAttribute("userRegisterBindingModel", userRegisterBindingModel)
@@ -100,7 +100,7 @@ public class UserController {
 
 
         userService.registerUser(modelMapper.map(userRegisterBindingModel, UserServiceModel.class), successfulAuth -> {
-
+//          Auto login after registering an account
             SecurityContextHolderStrategy strategy = SecurityContextHolder.getContextHolderStrategy();
 
             SecurityContext context = strategy.createEmptyContext();
@@ -109,6 +109,7 @@ public class UserController {
             strategy.setContext(context);
 
             securityContextRepository.saveContext(context, request, response);
+
         });
 
         return "redirect:/home";

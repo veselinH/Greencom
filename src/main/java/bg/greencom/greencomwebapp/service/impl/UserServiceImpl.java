@@ -81,6 +81,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+//      Automatically login the user after registering an account
         UserDetails userDetails = userDetailsService.loadUserByUsername(userServiceModel.getUsername());
 
         Authentication auth = new UsernamePasswordAuthenticationToken(

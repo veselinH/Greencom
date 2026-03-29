@@ -66,6 +66,8 @@
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         Welcome,
+<!--                    UserDetails doesn't have firstName but out custom GreencomeUserDetails does-->
+<!--                    That is why the IDE is displaying Cannot resolve-->
                         <th:block sec:authentication="principal.firstName"></th:block>
                         !
                     </button>

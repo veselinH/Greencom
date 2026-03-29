@@ -1,3 +1,6 @@
+//GreencomUserDetails is our current logged user
+//We can display certain staff specific for the user in the html template with principal.Field
+//We can check its authorities in html template via thymelaf
 package bg.greencom.greencomwebapp.model.user;
 
 import org.springframework.security.core.GrantedAuthority;
