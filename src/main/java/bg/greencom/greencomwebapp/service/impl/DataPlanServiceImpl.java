@@ -83,7 +83,8 @@ public class DataPlanServiceImpl implements DataPlanService {
     public void deletePlan(String name) {
         DataPlanEntity planToDelete = findByName(name);
         List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserDataPlansContains(planToDelete);
-        usersWithPlanToDelete.forEach(userEntity -> userEntity.getUserDataPlans().remove(planToDelete));
+//      We ensure to delete all instances of the planToDelete from the users plans
+        usersWithPlanToDelete.forEach(userEntity -> userEntity.getUserDataPlans().removeIf(dataPlanEntity -> dataPlanEntity.equals(planToDelete)));
         userRepository.saveAllAndFlush(usersWithPlanToDelete);
         dataPlanRepository.delete(planToDelete);
     }

@@ -86,7 +86,8 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
         VoicePlanEntity planToDelete = findByName(name);
         List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserVoiceMobilePlansContains(planToDelete);
-        usersWithPlanToDelete.forEach(userEntity -> userEntity.getUserVoiceMobilePlans().remove(planToDelete));
+//      We ensure to delete all instances of the planToDelete from the users plans
+        usersWithPlanToDelete.forEach(userEntity -> userEntity.getUserVoiceMobilePlans().removeIf(voicePlan -> voicePlan.equals(planToDelete)));
         userRepository.saveAllAndFlush(usersWithPlanToDelete);
         voicePlanRepository.delete(planToDelete);
     }
