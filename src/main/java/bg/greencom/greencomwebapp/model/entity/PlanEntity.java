@@ -3,6 +3,7 @@ package bg.greencom.greencomwebapp.model.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -11,6 +12,7 @@ public abstract class PlanEntity extends BaseEntity {
 
     private String name;
     private String planDuration;
+    private BigDecimal price;
     private LocalDateTime createdOn;
     private LocalDateTime modifiedOn;
 
@@ -35,6 +37,16 @@ public abstract class PlanEntity extends BaseEntity {
 
     public PlanEntity setPlanDuration(String planDuration) {
         this.planDuration = planDuration;
+        return this;
+    }
+
+    @Column(nullable = false)
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public PlanEntity setPrice(BigDecimal price) {
+        this.price = price;
         return this;
     }
 

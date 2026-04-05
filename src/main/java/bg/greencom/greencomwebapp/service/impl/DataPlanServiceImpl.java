@@ -115,13 +115,13 @@ public class DataPlanServiceImpl implements DataPlanService {
                 .setPlanDuration(dataPlanServiceModel.getPlanDuration());
         dataPlan
                 .setBgInternetMegabytes(dataPlanServiceModel.getBgInternetMegabytes())
-                .setPrice(dataPlanServiceModel.getPrice())
                 .setRoamingInternetMegabytes(dataPlanServiceModel.getRoamingInternetMegabytes())
                 .setMobileExtras(dataPlanServiceModel
                         .getMobileExtras()
                         .stream()
                         .map(mobileExtraService::findByName)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList()))
+                .setPrice(dataPlanServiceModel.getPrice());
 
         dataPlanRepository.saveAndFlush(dataPlan);
     }

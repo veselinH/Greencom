@@ -1,4 +1,5 @@
 package bg.greencom.greencomwebapp.service.impl;
+import bg.greencom.greencomwebapp.model.entity.PlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
@@ -7,11 +8,13 @@ import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.repository.VoicePlanRepository;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
+import bg.greencom.greencomwebapp.service.PlanService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,12 +28,14 @@ public class VoicePlanServiceImpl implements VoicePlanService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final MobileExtraService mobileExtraService;
+    private final PlanService planService;
 
-    public VoicePlanServiceImpl(VoicePlanRepository voicePlanRepository, UserRepository userRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService) {
+    public VoicePlanServiceImpl(VoicePlanRepository voicePlanRepository, UserRepository userRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService, PlanService planService) {
         this.voicePlanRepository = voicePlanRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.mobileExtraService = mobileExtraService;
+        this.planService = planService;
     }
 
 
@@ -86,8 +91,24 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
         VoicePlanEntity planToDelete = findByName(name);
         List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserVoiceMobilePlansContains(planToDelete);
-//      We ensure to delete all instances of the planToDelete from the users plans
-        usersWithPlanToDelete.forEach(userEntity -> userEntity.getUserVoiceMobilePlans().removeIf(voicePlan -> voicePlan.equals(planToDelete)));
+//      We ensure to subtract the debt for the planToDelete from the users that have that plan and delete the plan from them
+//        for (UserEntity userEntity : usersWithPlanToDelete) {
+//            // Count how many times the user has this specific plan
+//            long count = userEntity.getUserVoiceMobilePlans().stream()
+//                    .filter(plan -> plan.equals(planToDelete))
+//                    .count();
+//
+//            if (count > 0) {
+//                // Subtract (Price * Count) from the total debt
+//                BigDecimal totalReduction = planToDelete.getPrice().multiply(BigDecimal.valueOf(count));
+//                userEntity.setTotalDebtPerMonth(userEntity.getTotalDebtPerMonth().subtract(totalReduction));
+//
+//                // Remove all instances of the plan from the list
+//                userEntity.getUserVoiceMobilePlans().removeIf(plan -> plan.equals(planToDelete));
+//            }
+//        }
+        planService.removePlanAndAdjustDebt(usersWithPlanToDelete, planToDelete);
+
         userRepository.saveAllAndFlush(usersWithPlanToDelete);
         voicePlanRepository.delete(planToDelete);
     }
@@ -110,13 +131,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                 .setBgMinutes(voicePlanServiceModel.getBgMinutes())
                 .setRoamingMinutes(voicePlanServiceModel.getRoamingMinutes())
                 .setBgInternetMegabytes(voicePlanServiceModel.getBgInternetMegabytes())
-                .setPrice(voicePlanServiceModel.getPrice())
                 .setRoamingInternetMegabytes(voicePlanServiceModel.getRoamingInternetMegabytes())
                 .setMobileExtras(voicePlanServiceModel
                         .getMobileExtras()
                         .stream()
                         .map(mobileExtraService::findByName)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList()))
+                .setPrice(voicePlanServiceModel.getPrice());
 
         voicePlanRepository.saveAndFlush(voicePlan);
     }
@@ -129,5 +150,4 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
         return modelMapper.map(voicePlanEntity, VoicePlanViewModel.class);
     }
-
 }

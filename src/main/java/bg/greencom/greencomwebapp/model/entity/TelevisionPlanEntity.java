@@ -11,7 +11,6 @@ public class TelevisionPlanEntity extends PlanEntity {
 
     private Integer channelCount;
     private Integer channelCountInHD;
-    private BigDecimal price;
     private Set<AdditionalPackageEntity> additionalPackages;
     private TelevisionTypeEntity televisionType;
 
@@ -35,16 +34,6 @@ public class TelevisionPlanEntity extends PlanEntity {
 
     public TelevisionPlanEntity setChannelCountInHD(Integer channelCountInHD) {
         this.channelCountInHD = channelCountInHD;
-        return this;
-    }
-
-    @Column(nullable = false)
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public TelevisionPlanEntity setPrice(BigDecimal price) {
-        this.price = price;
         return this;
     }
 
