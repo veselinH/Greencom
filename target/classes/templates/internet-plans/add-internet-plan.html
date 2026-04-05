@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"><title>Add internet plan</title></head>
+<body>
+<header th:replace="fragments/commons::navbar"></header>
+
+<div class="mask d-flex align-items-center h-100">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+        <div class="card" style="border-radius: 15px;">
+          <div class="card-body p-5">
+            <h2 class="text-uppercase text-center mb-5">Create an internet plan</h2>
+
+            <form
+                    th:object="${internetPlanBindingModel}"
+                    th:action="@{/internet/add-internet-plan}"
+                    th:method="POST">
+              <div class="form-outline mb-4">
+                <input
+                        th:field="*{name}"
+                        th:errorclass="'is-invalid bg-danger'"
+                        type="text" class="form-control form-control-lg" id="name"
+                        aria-describedby="nameHelper">
+                <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                       id="nameHelper"
+                       class="invalid-feedback bg-danger text-light rounded">
+                </small>
+                <label class="form-label" for="name">Plan name</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <input
+                        th:field="*{planDuration}"
+                        th:errorclass="'is-invalid bg-danger'"
+                        type="text" class="form-control form-control-lg" id="planDuration"
+                        aria-describedby="planDurationHelper">
+                <small th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}"
+                       id="planDurationHelper"
+                       class="invalid-feedback bg-danger text-light rounded">
+                </small>
+                <label class="form-label" for="planDuration">Plan duration</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <input
+                        th:field="*{downloadMbps}"
+                        th:errorclass="'is-invalid bg-danger'"
+                        type="text" class="form-control form-control-lg" id="downloadMbps"
+                        aria-describedby="downloadMbpsHelper">
+                <small th:if="${#fields.hasErrors('downloadMbps')}" th:errors="*{downloadMbps}"
+                       id="downloadMbpsHelper"
+                       class="invalid-feedback bg-danger text-light rounded">
+                </small>
+                <label class="form-label" for="downloadMbps">Download speed</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <input
+                        th:field="*{uploadMbps}"
+                        th:errorclass="'is-invalid bg-danger'"
+                        type="text" class="form-control form-control-lg" id="uploadMbps"
+                        aria-describedby="uploadMbpsHelper">
+                <small th:if="${#fields.hasErrors('uploadMbps')}" th:errors="*{uploadMbps}"
+                       id="uploadMbpsHelper"
+                       class="invalid-feedback bg-danger text-light rounded">
+                </small>
+                <label class="form-label" for="uploadMbps">Upload speed</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <input
+                        th:field="*{price}"
+                        th:errorclass="'is-invalid bg-danger'"
+                        type="text" class="form-control form-control-lg" id="price"
+                        aria-describedby="priceHelper">
+                <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
+                       id="priceHelper"
+                       class="invalid-feedback bg-danger text-light rounded">
+                </small>
+                <label class="form-label" for="price">Price</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <select th:field="*{internetType}"
+                        th:errorclass="'is-invalid bg-danger'"
+                        class="form-control form-control-lg" id="internetType">
+                  <option th:each="type : ${T(bg.greencom.greencomwebapp.model.entity.enums.InternetTypeEnum).values()}"
+                          th:value="${type.name()}"
+                          th:text="${type.getValue()}">
+                  </option>
+                </select>
+
+                <small th:if="${#fields.hasErrors('internetType')}" th:errors="*{internetType}"
+                       class="invalid-feedback bg-danger text-light rounded">
+                </small>
+                <label class="form-label" for="internetType">Internet type</label>
+              </div>
+
+              <div>
+                <div class="form-group p-3">
+                  <label class="p-2" for="extras">Extras:</label>
+                  <input
+                          th:each="e : ${T(bg.greencom.greencomwebapp.model.entity.enums.InternetExtraEnum).values()}"
+                          th:object="${e}" th:text="${e.getValue()}" th:value="${e}"
+                          class="m-3" type="checkbox" name="internetExtras" id="extras"
+                          value="1" text="Category">
+                  <br>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center">
+                <button type="submit"
+                        class="btn btn-success btn-block btn-lg text-body">Add plan
+                </button>
+                <a style="margin-left: 15px" type="button"
+                   class="btn btn-success btn-block btn-lg text-body"
+                   th:href="@{/internet/internet-plans}">Cancel
+                </a>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+
+</html>

@@ -29,4 +29,9 @@ public class InternetTypeServiceImpl implements InternetTypeService {
             internetTypeRepository.saveAll(Set.of(type1, type2));
         }
     }
+
+    @Override
+    public InternetTypeEntity findByName(InternetTypeEnum name) {
+        return internetTypeRepository.findByName(name);
+    }
 }

@@ -91,24 +91,8 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
         VoicePlanEntity planToDelete = findByName(name);
         List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserVoiceMobilePlansContains(planToDelete);
-//      We ensure to subtract the debt for the planToDelete from the users that have that plan and delete the plan from them
-//        for (UserEntity userEntity : usersWithPlanToDelete) {
-//            // Count how many times the user has this specific plan
-//            long count = userEntity.getUserVoiceMobilePlans().stream()
-//                    .filter(plan -> plan.equals(planToDelete))
-//                    .count();
-//
-//            if (count > 0) {
-//                // Subtract (Price * Count) from the total debt
-//                BigDecimal totalReduction = planToDelete.getPrice().multiply(BigDecimal.valueOf(count));
-//                userEntity.setTotalDebtPerMonth(userEntity.getTotalDebtPerMonth().subtract(totalReduction));
-//
-//                // Remove all instances of the plan from the list
-//                userEntity.getUserVoiceMobilePlans().removeIf(plan -> plan.equals(planToDelete));
-//            }
-//        }
-        planService.removePlanAndAdjustDebt(usersWithPlanToDelete, planToDelete);
 
+        planService.removePlanAndAdjustDebt(usersWithPlanToDelete, planToDelete);
         userRepository.saveAllAndFlush(usersWithPlanToDelete);
         voicePlanRepository.delete(planToDelete);
     }

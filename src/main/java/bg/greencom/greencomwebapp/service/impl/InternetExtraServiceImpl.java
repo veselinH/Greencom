@@ -36,4 +36,11 @@ public class InternetExtraServiceImpl implements InternetExtraService {
                     ));
         }
     }
+
+    @Override
+    public InternetExtrasEntity findByName(InternetExtraEnum internetExtraEnum) {
+        return internetExtraRepository
+                .findByName(internetExtraEnum)
+                .orElse(null);
+    }
 }
