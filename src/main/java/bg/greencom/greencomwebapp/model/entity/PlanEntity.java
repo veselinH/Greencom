@@ -1,13 +1,15 @@
 package bg.greencom.greencomwebapp.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
-@MappedSuperclass
+@Entity
+@Table(name = "plans")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class PlanEntity extends BaseEntity {
 
     private String name;
@@ -16,6 +18,7 @@ public abstract class PlanEntity extends BaseEntity {
     private LocalDateTime createdOn;
     private LocalDateTime modifiedOn;
 
+    private List<SignatureEntity> signature;
 
     public PlanEntity() {
     }
@@ -68,5 +71,14 @@ public abstract class PlanEntity extends BaseEntity {
     public PlanEntity setModifiedOn(LocalDateTime modifiedOn) {
         this.modifiedOn = modifiedOn;
         return this;
+    }
+
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    public List<SignatureEntity> getSignature() {
+        return signature;
+    }
+
+    public void setSignature(List<SignatureEntity> signature) {
+        this.signature = signature;
     }
 }

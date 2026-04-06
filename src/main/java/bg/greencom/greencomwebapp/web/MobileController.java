@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Base64;
+
 @Controller
 @RequestMapping("/mobile")
 public class MobileController {
@@ -137,12 +139,16 @@ public class MobileController {
 //  Add voice plan to the user
     @PatchMapping("/voice-plan/{id}")
     public String signVoicePlanConfirm(@PathVariable Long id,
-                                       @AuthenticationPrincipal GreencomUserDetails userDetails) {
+                                       @AuthenticationPrincipal GreencomUserDetails userDetails,
+                                       @RequestParam String signature) {
 
-
+//        Decode the signature image
+        String base64Data = signature.split(",")[1];
+        byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+//        Retrieve the voice plan
         VoicePlanViewModel voicePlan = voicePlanService.findById(id);
 
-        userService.addVoicePlan(voicePlan, userDetails);
+        userService.addVoicePlan(voicePlan, userDetails, imageBytes);
 
         return "redirect:/mobile/voice-plans";
     }

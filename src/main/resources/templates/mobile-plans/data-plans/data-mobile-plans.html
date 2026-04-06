@@ -18,11 +18,21 @@
                         <br><br>
                         <span th:text="*{price}" class="h2">$8</span>$/month
                         <br><br>
-                        <form th:action="@{/mobile/data-plan/{id}(id=*{id})}"
-                              th:method="patch"
-                              class="d-grid my-3">
-                            <input type="submit" class="btn btn-outline-dark btn-block" value="Sign">
-                        </form>
+<!--                        <form th:action="@{/mobile/data-plan/{id}(id=*{id})}"-->
+<!--                              th:method="patch"-->
+<!--                              class="d-grid my-3">-->
+<!--                            <input type="submit" class="btn btn-outline-dark btn-block" value="Sign">-->
+<!--                        </form>-->
+                        <div class="d-grid my-3">
+                            <button type="button"
+                                    class="btn btn-outline-dark btn-block"
+                                    data-toggle="modal"
+                                    data-target="#signatureModal"
+                                    th:data-id="${id}"
+                                    th:data-action="@{/mobile/data-plan/{id}(id=*{id})}">
+                                Sign
+                            </button>
+                        </div>
                         <div class="d-grid my-3" sec:authorize="hasRole('ADMIN')">
                             <a th:href="@{/mobile/edit-data-plan/{id}(id=*{id})}"
                                class="btn btn-outline-dark btn-block">Edit</a>

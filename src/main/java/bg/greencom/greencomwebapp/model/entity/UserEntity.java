@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class UserEntity extends BaseEntity {
     private List<DataPlanEntity> userDataPlans;
     private List<TelevisionPlanEntity> userTelevisionPlans;
     private List<FixedVoicePlanEntity> userFixedVoicePlans;
+    private List<SignatureEntity> userSignatures = new ArrayList<>();
 
     public UserEntity() {
     }
@@ -157,5 +159,14 @@ public class UserEntity extends BaseEntity {
     public UserEntity setUserFixedVoicePlans(List<FixedVoicePlanEntity> userFixedVoicePlans) {
         this.userFixedVoicePlans = userFixedVoicePlans;
         return this;
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    public List<SignatureEntity> getUserSignatures() {
+        return userSignatures;
+    }
+
+    public void setUserSignatures(List<SignatureEntity> userSignatures) {
+        this.userSignatures = userSignatures;
     }
 }
