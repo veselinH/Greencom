@@ -6,5 +6,5 @@ import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import java.util.List;
 
 public interface PlanService {
-    void removePlanAndAdjustDebt(List<UserEntity> users, PlanEntity plan);
+    PlanEntity findPlanByName(String name);
 }

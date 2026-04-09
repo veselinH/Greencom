@@ -5,6 +5,7 @@ import bg.greencom.greencomwebapp.model.service.InternetPlanServiceModel;
 import bg.greencom.greencomwebapp.service.InternetPlanService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,9 +37,11 @@ public class InternetController {
     }
 
     @GetMapping("/add-internet-plan")
+    @PreAuthorize("hasRole('ADMIN')")
     public String addVoicePlan() {return "internet-plans/add-internet-plan";}
 
     @PostMapping("/add-internet-plan")
+    @PreAuthorize("hasRole('ADMIN')")
     public String addVoicePlanConfirm(@Valid InternetPlanBindingModel internetPlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {

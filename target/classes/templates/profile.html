@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"><title>Greencom</title></head>
+<body>
+<header th:replace="fragments/commons::navbar"></header>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- This is the 'box' (Bootstrap Card) -->
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h3>User Profile</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Username:</strong>
+                            <span th:text="${#authentication.name}">Username</span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>First Name:</strong>
+                            <span th:text="${#authentication.principal.firstName}">First Name</span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Last Name:</strong>
+                            <span th:text="${#authentication.principal.lastName}">Last Name</span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Email:</strong>
+                            <span th:text="${#authentication.principal.email}">Email</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">My Voice Plans</h2>
+
+    <!-- Row wraps the individual columns -->
+    <div class="row">
+
+        <!-- This div repeats for every plan in the list -->
+        <div th:each="v : ${userVoicePlans}" th:object="${v}" class="col-lg-4 col-md-6 col-sm-12 mb-4">
+
+            <!-- Inside each column, we put a Card for the "box" look -->
+            <div class="card h-100 shadow-sm border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success" th:text="*{name}">Plan Name</h5>
+                    <p class="card-text">
+                        <strong>Minutes:</strong> <span th:text="*{bgMinutes}">0</span><br>
+                        <strong>Data:</strong> <span th:text="*{bgInternetMegabytes}">0</span> MB
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <button class="btn btn-sm btn-outline-success">View Details</button>
+                </div>
+            </div>
+
+        </div> <!-- End th:each -->
+
+    </div> <!-- End Row -->
+
+    <!-- Optional: Show this if no plans are found -->
+    <div th:if="${userVoicePlans.isEmpty()}" class="alert alert-warning text-center">
+        No voice plans found for your account.
+    </div>
+</div>
+
+
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>

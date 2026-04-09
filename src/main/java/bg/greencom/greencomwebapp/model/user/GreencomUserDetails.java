@@ -13,13 +13,16 @@ public class GreencomUserDetails implements UserDetails {
     private String username;
     private String password;
     private String firstName;
-
+    private String lastName;
+    private String email;
     private Collection<GrantedAuthority> authorities;
 
-    public GreencomUserDetails(String username, String password, String firstName, Collection<GrantedAuthority> authorities) {
+    public GreencomUserDetails(String username, String password, String firstName, String lastName, String email, Collection<GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.authorities = authorities;
     }
 
@@ -40,6 +43,14 @@ public class GreencomUserDetails implements UserDetails {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @Override

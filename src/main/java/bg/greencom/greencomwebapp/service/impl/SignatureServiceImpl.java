@@ -9,6 +9,8 @@ import bg.greencom.greencomwebapp.repository.SignatureRepository;
 import bg.greencom.greencomwebapp.service.SignatureService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class SignatureServiceImpl implements SignatureService {
     private final SignatureRepository signatureRepository;
@@ -23,6 +25,7 @@ public class SignatureServiceImpl implements SignatureService {
         signatureToAdd
                 .setUser(userEntity)
                 .setPlan(planEntity)
+                .setSignedOn(LocalDate.now())
                 .setSignature(signature);
 
         signatureRepository.saveAndFlush(signatureToAdd);

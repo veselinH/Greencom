@@ -1,20 +1,24 @@
 package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.model.entity.PlanEntity;
+import bg.greencom.greencomwebapp.model.entity.SignatureEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
+import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.repository.VoicePlanRepository;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
 import bg.greencom.greencomwebapp.service.PlanService;
+import bg.greencom.greencomwebapp.service.UserService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.security.Signature;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,17 +29,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
     private static final String OBJECT_TYPE = "voice plan";
 
     private final VoicePlanRepository voicePlanRepository;
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final MobileExtraService mobileExtraService;
-    private final PlanService planService;
 
-    public VoicePlanServiceImpl(VoicePlanRepository voicePlanRepository, UserRepository userRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService, PlanService planService) {
+    public VoicePlanServiceImpl(VoicePlanRepository voicePlanRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService) {
         this.voicePlanRepository = voicePlanRepository;
-        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.mobileExtraService = mobileExtraService;
-        this.planService = planService;
     }
 
 
@@ -82,19 +82,6 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         return voicePlanRepository
                 .findByName(name)
                 .orElse(null);
-    }
-
-    @Override
-    //  Using transactional in order to delete the plan and the foreign
-    @Transactional
-    public void deleteVoicePlan(String name) {
-
-        VoicePlanEntity planToDelete = findByName(name);
-        List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserVoiceMobilePlansContains(planToDelete);
-
-        planService.removePlanAndAdjustDebt(usersWithPlanToDelete, planToDelete);
-        userRepository.saveAllAndFlush(usersWithPlanToDelete);
-        voicePlanRepository.delete(planToDelete);
     }
 
     @Override

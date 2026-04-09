@@ -2,12 +2,15 @@ package bg.greencom.greencomwebapp.model.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "signatures")
 public class SignatureEntity extends BaseEntity{
 
     private UserEntity user;
     private PlanEntity plan;
+    private LocalDate signedOn;
     private byte[] signature;
 
     public SignatureEntity() {
@@ -32,6 +35,16 @@ public class SignatureEntity extends BaseEntity{
 
     public SignatureEntity setPlan(PlanEntity plan) {
         this.plan = plan;
+        return this;
+    }
+
+    @Column(name = "signed_on",nullable = false)
+    public LocalDate getSignedOn() {
+        return signedOn;
+    }
+
+    public SignatureEntity setSignedOn(LocalDate signedOn) {
+        this.signedOn = signedOn;
         return this;
     }
 

@@ -45,6 +45,8 @@ public class GreencomUserDetailsService implements UserDetailsService {
                 userEntity.getUsername(),
                 userEntity.getPassword(),
                 userEntity.getFirstName(),
+                userEntity.getLastName(),
+                userEntity.getEmail(),
                 authorities);
     }
 }

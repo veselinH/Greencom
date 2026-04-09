@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.service;
 
+import bg.greencom.greencomwebapp.model.entity.PlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
@@ -7,6 +8,7 @@ import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import org.springframework.security.core.Authentication;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public interface UserService {
@@ -20,5 +22,9 @@ public interface UserService {
 
     void addVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] imageBytes);
 
+    void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planEntity);
+
     void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails);
+
+    List<VoicePlanViewModel> getAllVoicePlans(String username);
 }

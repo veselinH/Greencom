@@ -26,6 +26,8 @@ public class UserEntity extends BaseEntity {
     private List<DataPlanEntity> userDataPlans;
     private List<TelevisionPlanEntity> userTelevisionPlans;
     private List<FixedVoicePlanEntity> userFixedVoicePlans;
+
+    private List<PlanEntity> userAllPlans;
     private List<SignatureEntity> userSignatures = new ArrayList<>();
 
     public UserEntity() {
@@ -168,5 +170,14 @@ public class UserEntity extends BaseEntity {
 
     public void setUserSignatures(List<SignatureEntity> userSignatures) {
         this.userSignatures = userSignatures;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    public List<PlanEntity> getUserAllPlans() {
+        return userAllPlans;
+    }
+
+    public void setUserAllPlans(List<PlanEntity> userAllPlans) {
+        this.userAllPlans = userAllPlans;
     }
 }

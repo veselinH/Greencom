@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Service
@@ -125,6 +128,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planToDelete) {
+        UserEntity user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
+        user.getUserSignatures().removeIf(signature -> Objects.equals(signature.getUser().getId(), user.getId()) && Objects.equals(signature.getPlan().getId(), planToDelete.getId()));
+        user.setTotalDebtPerMonth(user.getTotalDebtPerMonth().subtract(planToDelete.getPrice()));
+        user.getUserAllPlans().remove(planToDelete);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
     public void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails) {
 //      Add voice plan to the user and increase the debt
 //      Retrieve both user and voicePlan from the database
@@ -138,5 +150,14 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(totalDebt);
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public List<VoicePlanViewModel> getAllVoicePlans(String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> user.getUserVoiceMobilePlans().stream()
+                        .map(voicePlan -> modelMapper.map(voicePlan, VoicePlanViewModel.class))
+                        .toList())
+                .orElse(Collections.emptyList());
     }
 }

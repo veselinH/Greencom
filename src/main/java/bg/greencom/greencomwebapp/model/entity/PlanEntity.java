@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "plans")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class PlanEntity extends BaseEntity {
+public class PlanEntity extends BaseEntity {
 
     private String name;
     private String planDuration;
@@ -81,4 +83,5 @@ public abstract class PlanEntity extends BaseEntity {
     public void setSignature(List<SignatureEntity> signature) {
         this.signature = signature;
     }
+
 }

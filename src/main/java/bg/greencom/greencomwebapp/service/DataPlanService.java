@@ -13,8 +13,6 @@ public interface DataPlanService {
 
     List<DataPlanViewModel> findAllPlansOrderedByPrice();
 
-    void deletePlan(String name);
-
     DataPlanViewModel findById(Long id);
 
     void updatePlan(DataPlanServiceModel dataPlanServiceModel);

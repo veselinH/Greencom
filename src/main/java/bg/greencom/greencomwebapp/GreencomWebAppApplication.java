@@ -9,5 +9,5 @@ public class GreencomWebAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GreencomWebAppApplication.class, args);
 	}
-
+   
 }
