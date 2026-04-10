@@ -6,6 +6,13 @@
 <header th:replace="fragments/commons::navbar"></header>
 
 <div class="container mt-5">
+    <!-- Success Alert -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <!-- This is the 'box' (Bootstrap Card) -->
@@ -38,39 +45,42 @@
     </div>
 </div>
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">My Voice Plans</h2>
+<div class="container-fluid">
+    <div class="container p-5">
+        <h2 class="text-center mb-4">My Voice Plans</h2>
+        <div class="row">
+            <div th:each="v : ${userVoicePlans}" th:object="${v}" class="col-lg-4 col-md-12 mb-4">
+                <div class="card card1 h-100">
+                    <div class="card-body">
 
-    <!-- Row wraps the individual columns -->
-    <div class="row">
+                        <h5 th:text="*{name}" class="card-title"></h5>
+                        <small th:text="|*{planDuration} plan duration|" class='text-muted'></small>
+                        <br><br>
+                        <span th:text="*{price}" class="h2">$8</span>$/month
+                        <br><br>
+                        <form th:action="@{/users/unsign/voice/{id}(id=*{signatureId})}"
+                              th:method="delete">
+                            <input type="submit" class="btn btn-outline-dark btn-block" value="Unsign">
+                        </form>
+                        <ul>
+                            <li th:text="|*{bgMinutes} national minutes|"></li>
+                            <li th:text="|*{bgInternetMegabytes} national MB|"></li>
+                            <li th:text="|*{roamingMinutes} roaming minutes|"></li>
+                            <li th:text="|*{roamingInternetMegabytes} roaming MB|"></li>
+                            <li class="dropdown-divider">Mobile extras</li>
+                            <li th:each="e : ${v.getMobileExtras()}" th:object="${e}"
+                                th:text="${e.getName().getValue()}"></li>
 
-        <!-- This div repeats for every plan in the list -->
-        <div th:each="v : ${userVoicePlans}" th:object="${v}" class="col-lg-4 col-md-6 col-sm-12 mb-4">
-
-            <!-- Inside each column, we put a Card for the "box" look -->
-            <div class="card h-100 shadow-sm border-success">
-                <div class="card-body">
-                    <h5 class="card-title text-success" th:text="*{name}">Plan Name</h5>
-                    <p class="card-text">
-                        <strong>Minutes:</strong> <span th:text="*{bgMinutes}">0</span><br>
-                        <strong>Data:</strong> <span th:text="*{bgInternetMegabytes}">0</span> MB
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent border-top-0">
-                    <button class="btn btn-sm btn-outline-success">View Details</button>
+                        </ul>
+                    </div>
                 </div>
             </div>
-
-        </div> <!-- End th:each -->
-
-    </div> <!-- End Row -->
-
-    <!-- Optional: Show this if no plans are found -->
+        </div>
+    </div>
     <div th:if="${userVoicePlans.isEmpty()}" class="alert alert-warning text-center">
         No voice plans found for your account.
     </div>
 </div>
-
 
 <footer th:replace="fragments/commons::footer"></footer>
 </body>

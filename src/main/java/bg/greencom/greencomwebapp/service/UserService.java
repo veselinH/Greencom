@@ -27,4 +27,6 @@ public interface UserService {
     void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails);
 
     List<VoicePlanViewModel> getAllVoicePlans(String username);
+
+    String unsignVoicePlan(Long planSignatureId, String username);
 }

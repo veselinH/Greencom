@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Service
@@ -153,11 +155,56 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VoicePlanViewModel> getAllVoicePlans(String username) {
-        return userRepository.findByUsername(username)
-                .map(user -> user.getUserVoiceMobilePlans().stream()
-                        .map(voicePlan -> modelMapper.map(voicePlan, VoicePlanViewModel.class))
-                        .toList())
-                .orElse(Collections.emptyList());
+
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return Collections.emptyList();
+
+        // Map from Signatures to ViewModels to preserve the unique Signature ID
+        return user.getUserSignatures().stream()
+                .map(signature -> {
+                    VoicePlanViewModel viewModel = modelMapper.map(signature.getPlan(), VoicePlanViewModel.class);
+                    viewModel.setSignatureId(signature.getId()); // Explicitly set the unique ID
+                    return viewModel;
+                })
+                .toList();
     }
+
+    @Override
+    @Transactional
+    public String unsignVoicePlan(Long planSignatureId, String username) {
+
+        final StringBuilder planName = new StringBuilder();
+
+        userRepository.findByUsername(username).ifPresent(user -> {
+
+            // 1. Find the specific signature
+            SignatureEntity signature = user.getUserSignatures().stream()
+                    .filter(sig -> sig.getId().equals(planSignatureId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (signature != null) {
+                planName.append(signature.getPlan().getName());
+                // 2. Get the specific Plan object linked to THIS signature
+                PlanEntity specificPlan = signature.getPlan();
+                // Map to a VoicePlanEntity because .getPlan() returns PlanEntity
+                VoicePlanEntity voicePlan = modelMapper.map(specificPlan, VoicePlanEntity.class);
+
+                // 3. Remove the signature (deletes from DB)
+                user.getUserSignatures().remove(signature);
+
+                // 4. Remove ONLY this specific plan instance from the other list
+                // .remove(object) only removes the first occurrence/exact match
+                user.getUserVoiceMobilePlans().remove(voicePlan);
+
+                userRepository.save(user);
+            }
+        });
+
+        return planName.toString();
+
+    }
+
 }

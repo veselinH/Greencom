@@ -16,7 +16,7 @@ public class VoicePlanViewModel {
     private String roamingInternetMegabytes;
     private BigDecimal price;
     private List<MobileExtraEntity> mobileExtras = new ArrayList<>();
-
+    private Long signatureId;
 
     public Long getId() {
         return id;
@@ -97,5 +97,13 @@ public class VoicePlanViewModel {
     public VoicePlanViewModel setMobileExtras(List<MobileExtraEntity> mobileExtras) {
         this.mobileExtras = mobileExtras;
         return this;
+    }
+
+    public Long getSignatureId() {
+        return signatureId;
+    }
+
+    public void setSignatureId(Long signatureId) {
+        this.signatureId = signatureId;
     }
 }
