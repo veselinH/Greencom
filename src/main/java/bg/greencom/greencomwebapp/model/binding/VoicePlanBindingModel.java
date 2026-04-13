@@ -38,7 +38,7 @@ public class VoicePlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Plan name is mandatory")
     @UniquePlanName
     @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
     public String getName() {
@@ -50,7 +50,7 @@ public class VoicePlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Plan duration is mandatory")
     @Size(min = 2, max = 9, message = "Size must be between 2 and 9")
     public String getPlanDuration() {
         return planDuration;
@@ -61,7 +61,7 @@ public class VoicePlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Minutes are mandatory")
     @Size(min = 3, max = 9, message = "Size must be between 3 and 9")
     public String getBgMinutes() {
         return bgMinutes;
@@ -72,7 +72,7 @@ public class VoicePlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Roaming minutes are mandatory")
     @Size(min = 1, max = 9, message = "Size must be between 1 and 9")
     public String getRoamingMinutes() {
         return roamingMinutes;
@@ -83,7 +83,7 @@ public class VoicePlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Megabytes are mandatory")
     @Size(min = 1, max = 9, message = "Size must be between 1 and 9")
     public String getBgInternetMegabytes() {
         return bgInternetMegabytes;
@@ -94,7 +94,7 @@ public class VoicePlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Roaming megabytes are mandatory")
     @Size(min = 1, max = 9, message = "Size must be between 1 and 9")
     public String getRoamingInternetMegabytes() {
         return roamingInternetMegabytes;
@@ -105,7 +105,7 @@ public class VoicePlanBindingModel {
         return this;
     }
 
-    @NotNull
+    @NotNull(message = "Price is mandatory")
     @Positive(message = "Price must be positive number")
     public BigDecimal getPrice() {
         return price;

@@ -2,6 +2,7 @@ package bg.greencom.greencomwebapp.model.binding;
 
 import bg.greencom.greencomwebapp.model.entity.enums.InternetExtraEnum;
 import bg.greencom.greencomwebapp.model.entity.enums.InternetTypeEnum;
+import bg.greencom.greencomwebapp.validation.annotation.UniquePlanName;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ public class InternetPlanBindingModel {
         this.id = id;
     }
 
+    @UniquePlanName
     @NotBlank(message = "Plan name is mandatory")
     @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
     public String getName() {

@@ -1,6 +1,7 @@
 package bg.greencom.greencomwebapp.model.binding;
 
 import bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum;
+import bg.greencom.greencomwebapp.validation.annotation.UniquePlanName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -33,7 +34,8 @@ public class DataPlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @UniquePlanName
+    @NotBlank(message = "Plan name is mandatory")
     @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
     public String getName() {
         return name;
@@ -44,7 +46,7 @@ public class DataPlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Plan duration is mandatory")
     @Size(min = 2, max = 9, message = "Size must be between 2 and 9")
     public String getPlanDuration() {
         return planDuration;
@@ -55,7 +57,7 @@ public class DataPlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Megabytes are mandatory")
     @Size(min = 1, max = 9, message = "Size must be between 1 and 9")
     public String getBgInternetMegabytes() {
         return bgInternetMegabytes;
@@ -66,7 +68,7 @@ public class DataPlanBindingModel {
         return this;
     }
 
-    @NotBlank
+    @NotBlank(message = "Roaming megabytes are mandatory")
     @Size(min = 1, max = 9, message = "Size must be between 1 and 9")
     public String getRoamingInternetMegabytes() {
         return roamingInternetMegabytes;
@@ -77,7 +79,7 @@ public class DataPlanBindingModel {
         return this;
     }
 
-    @NotNull
+    @NotNull(message = "Price is mandatory")
     @Positive(message = "Price must be positive number")
     public BigDecimal getPrice() {
         return price;

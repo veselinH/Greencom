@@ -1,75 +1,44 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/commons::head"><title>GreenCom</title></head>
 <body>
 <header th:replace="fragments/commons::navbar"></header>
-<div class="carousel-inner">
-  <img class="d-block w-100" src="https://placehold.it/1200x400?text=IMAGE" alt="First slide">
-</div>
 
 <div class="container-fluid">
   <div class="container p-5">
     <div class="row">
-      <div class="col-lg-4 col-md-12 mb-4">
+      <div th:each="i : ${allInternetPlans}" th:object="${i}" class="col-lg-4 col-md-12 mb-4">
         <div class="card card1 h-100">
           <div class="card-body">
 
-            <h5 class="card-title">Basic</h5>
-            <small class='text-muted'>Individual</small>
+            <h5 th:text="*{name}" class="card-title"></h5>
+            <small th:text="|*{planDuration} plan duration|" class='text-muted'></small>
             <br><br>
-            <span class="h2">$8</span>/month
-            <br><br>
-            <div class="d-grid my-3">
-              <button class="btn btn-outline-dark btn-block">Sign</button>
-            </div>
-            <ul>
-              <li>Cras justo odio</li>
-              <li>Dapibus ac facilisis in</li>
-              <li>Vestibulum at eros</li>
-
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-12 mb-4">
-        <div class="card card1 h-100">
-          <div class="card-body">
-
-            <h5 class="card-title">Basic</h5>
-            <small class='text-muted'>Individual</small>
-            <br><br>
-            <span class="h2">$8</span>/month
+            <span th:text="*{price}" class="h2">$8</span>$/month
             <br><br>
             <div class="d-grid my-3">
-              <button class="btn btn-outline-dark btn-block">Sign</button>
+              <button type="button"
+                      class="btn btn-outline-dark btn-block"
+                      data-toggle="modal"
+                      data-target="#signatureModal"
+                      th:data-id="${id}"
+                      th:data-action="@{/internet/internet-plan/{id}(id=*{id})}">
+                Sign
+              </button>
+            </div>
+            <div class="d-grid my-3" sec:authorize="hasRole('ADMIN')">
+              <a th:href="@{/internet/edit-internet-plan/{id}(id=*{id})}"
+                 class="btn btn-outline-dark btn-block">Edit</a>
             </div>
             <ul>
-              <li>Cras justo odio</li>
-              <li>Dapibus ac facilisis in</li>
-              <li>Vestibulum at eros</li>
-
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-12 mb-4">
-        <div class="card card1 h-100">
-          <div class="card-body">
-
-            <h5 class="card-title">Basic</h5>
-            <small class='text-muted'>Individual</small>
-            <br><br>
-            <span class="h2">$8</span>/month
-            <br><br>
-            <div class="d-grid my-3">
-              <button class="btn btn-outline-dark btn-block">Sign</button>
-            </div>
-            <ul>
-              <li>Cras justo odio</li>
-              <li>Dapibus ac facilisis in</li>
-              <li>Vestibulum at eros</li>
-
+              <li th:text="|*{internetType} type of internet|"></li>
+              <li th:text="|*{downloadMbps} download speed|"></li>
+              <li th:text="|*{uploadMbps} upload speed|"></li>
+              <li class="dropdown-divider">Mobile extras</li>
+              <li th:each="e : ${i.getInternetExtras()}" th:object="${e}"
+                  th:text="${e.getName().getValue()}"></li>
             </ul>
           </div>
         </div>
@@ -77,6 +46,7 @@
     </div>
   </div>
 </div>
+
 <footer th:replace="fragments/commons::footer"></footer>
 </body>
 </html>

@@ -1,9 +1,7 @@
 package bg.greencom.greencomwebapp.web;
 
 import bg.greencom.greencomwebapp.model.binding.DataPlanBindingModel;
-import bg.greencom.greencomwebapp.model.binding.PlanSignBindingModel;
 import bg.greencom.greencomwebapp.model.binding.VoicePlanBindingModel;
-import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.DataPlanServiceModel;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
@@ -260,7 +258,6 @@ public class MobileController {
 
     @PatchMapping("/data-plan/{id}")
     public String signDataPlanConfirm(@PathVariable Long id,
-                                      PlanSignBindingModel planSignBindingModel,
                                       @AuthenticationPrincipal GreencomUserDetails userDetails) {
 
         DataPlanViewModel dataPlan = dataPlanService.findById(id);

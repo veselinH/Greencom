@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,10 @@ public class InternetController {
     }
 
     @GetMapping("/internet-plans")
-    public String internetPlans() {
+    public String internetPlans(Model model) {
+
+        model.addAttribute("allInternetPlans", internetPlanService.findAllPlansOrderedByPrice());
+
         return "internet-plans/internet-plans";
     }
 

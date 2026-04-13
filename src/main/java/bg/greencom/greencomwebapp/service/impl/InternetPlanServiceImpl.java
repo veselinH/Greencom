@@ -3,13 +3,17 @@ package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.model.entity.InternetPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.InternetTypeEntity;
 import bg.greencom.greencomwebapp.model.service.InternetPlanServiceModel;
+import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 import bg.greencom.greencomwebapp.repository.InternetPlanRepository;
 import bg.greencom.greencomwebapp.repository.InternetTypeRepository;
 import bg.greencom.greencomwebapp.service.InternetExtraService;
 import bg.greencom.greencomwebapp.service.InternetPlanService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,11 +22,13 @@ public class InternetPlanServiceImpl implements InternetPlanService {
     private final InternetExtraService internetExtraService;
     private final InternetPlanRepository internetPlanRepository;
     private final InternetTypeRepository internetTypeRepository;
+    private final ModelMapper modelMapper;
 
-    public InternetPlanServiceImpl(InternetExtraService internetExtraService, InternetPlanRepository internetPlanRepository, InternetTypeRepository internetTypeRepository) {
+    public InternetPlanServiceImpl(InternetExtraService internetExtraService, InternetPlanRepository internetPlanRepository, InternetTypeRepository internetTypeRepository, ModelMapper modelMapper) {
         this.internetExtraService = internetExtraService;
         this.internetPlanRepository = internetPlanRepository;
         this.internetTypeRepository = internetTypeRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -53,5 +59,23 @@ public class InternetPlanServiceImpl implements InternetPlanService {
 
         internetPlanRepository.saveAndFlush(internetPlanEntity);
 
+    }
+
+    @Override
+    public List<InternetPlanViewModel> findAllPlansOrderedByPrice() {
+        List<InternetPlanViewModel> allInternetPlans = internetPlanRepository
+                .findAllInternetPlansOrderedByPrice()
+                .stream()
+                .map(internetPlanEntity ->{
+                    InternetPlanViewModel viewModel = modelMapper.map(internetPlanEntity, InternetPlanViewModel.class);
+                    viewModel.setInternetType(internetPlanEntity.getInternetType().getName().getValue());
+                    return viewModel;
+                }
+                ).toList();
+
+        for (InternetPlanViewModel internetPlan : allInternetPlans){
+            Collections.sort(internetPlan.getInternetExtras());
+        }
+        return allInternetPlans;
     }
 }

@@ -32,11 +32,6 @@
                             <a th:href="@{/mobile/edit-voice-plan/{id}(id=*{id})}"
                                class="btn btn-outline-dark btn-block">Edit</a>
                         </div>
-<!--                        <form th:action="@{/mobile/voice-plan/{name}(name=*{name})}"-->
-<!--                              th:method="delete">-->
-<!--                            <input type="submit" class="btn btn-outline-dark btn-block" value="Unsign">-->
-<!--                        </form>-->
-
                         <ul>
                             <li th:text="|*{bgMinutes} national minutes|"></li>
                             <li th:text="|*{bgInternetMegabytes} national MB|"></li>
