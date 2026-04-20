@@ -2,6 +2,7 @@ package bg.greencom.greencomwebapp.model.binding;
 
 import bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum;
 import bg.greencom.greencomwebapp.validation.annotation.UniquePlanName;
+import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -34,7 +35,7 @@ public class DataPlanBindingModel {
         return this;
     }
 
-    @UniquePlanName
+    @UniquePlanName(groups = onCreate.class)
     @NotBlank(message = "Plan name is mandatory")
     @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
     public String getName() {
