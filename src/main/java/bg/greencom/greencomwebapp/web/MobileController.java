@@ -10,6 +10,7 @@ import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.service.DataPlanService;
 import bg.greencom.greencomwebapp.service.UserService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
+import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -64,7 +66,7 @@ public class MobileController {
 
     @PostMapping("/add-voice-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addVoicePlanConfirm(@Valid VoicePlanBindingModel voicePlanBindingModel,
+    public String addVoicePlanConfirm(@Validated(onCreate.class) VoicePlanBindingModel voicePlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
 
@@ -184,7 +186,7 @@ public class MobileController {
 
     @PostMapping("/add-data-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addDataPlanConfirm(@Valid DataPlanBindingModel dataPlanBindingModel,
+    public String addDataPlanConfirm(@Validated(onCreate.class) DataPlanBindingModel dataPlanBindingModel,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes) {
 
