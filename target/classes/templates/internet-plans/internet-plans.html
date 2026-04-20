@@ -24,18 +24,18 @@
                       data-toggle="modal"
                       data-target="#signatureModal"
                       th:data-id="${id}"
-                      th:data-action="@{/mobile/voice-plan/{id}(id=*{id})}">
+                      th:data-action="@{/internet/internet-plan/{id}(id=*{id})}">
                 Sign
               </button>
             </div>
             <div class="d-grid my-3" sec:authorize="hasRole('ADMIN')">
-              <a th:href="@{/mobile/edit-voice-plan/{id}(id=*{id})}"
+              <a th:href="@{/internet/edit-internet-plan/{id}(id=*{id})}"
                  class="btn btn-outline-dark btn-block">Edit</a>
             </div>
             <ul>
+              <li th:text="|*{internetType} type of internet|"></li>
               <li th:text="|*{downloadMbps} download speed|"></li>
               <li th:text="|*{uploadMbps} upload speed|"></li>
-              <li th:text="|*{internetType} type of internet|"></li>
               <li class="dropdown-divider">Mobile extras</li>
               <li th:each="e : ${i.getInternetExtras()}" th:object="${e}"
                   th:text="${e.getName().getValue()}"></li>
