@@ -21,7 +21,7 @@
                                         th:field="*{name}"
                                         th:errorclass="'is-invalid bg-danger'"
                                         type="text" class="form-control form-control-lg" id="name"
-                                        aria-describedby="nameHelper">
+                                        aria-describedby="nameHelper" readonly>
                                 <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
                                        id="nameHelper"
                                        class="invalid-feedback bg-danger text-light rounded">
