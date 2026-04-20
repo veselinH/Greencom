@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::navbar"></header>
+
+<div class="mask d-flex align-items-center h-100">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                <div class="card" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        <h2 class="text-uppercase text-center mb-5">Edit internet plan</h2>
+
+                        <form th:object="${internetPlanFromRepo}"
+                              th:action="@{/internet/edit-internet-plan/{id}(id=*{id})}"
+                              th:method="patch">
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{name}"
+                                        type="text" class="form-control form-control-lg" id="name"
+                                        aria-describedby="nameHelper" readonly>
+                                <label class="form-label" for="name">Plan name</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{planDuration}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="planDuration"
+                                        aria-describedby="planDurationHelper">
+                                <small th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}"
+                                       id="planDurationHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="planDuration">Plan duration</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{downloadMbps}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="downloadMbps"
+                                        aria-describedby="downloadMbpsHelper">
+                                <small th:if="${#fields.hasErrors('downloadMbps')}" th:errors="*{downloadMbps}"
+                                       id="downloadMbpsHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="downloadMbps">Download speed</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{uploadMbps}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="uploadMbps"
+                                        aria-describedby="uploadMbpsHelper">
+                                <small th:if="${#fields.hasErrors('uploadMbps')}" th:errors="*{uploadMbps}"
+                                       id="uploadMbpsHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="uploadMbps">Upload speed</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{price}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="price"
+                                        aria-describedby="priceHelper">
+                                <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
+                                       id="priceHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="price">Price</label>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <button type="submit"
+                                        class="btn btn-success btn-block btn-lg text-body">Edit plan
+                                </button>
+                                <a style="margin-left: 15px" type="button"
+                                   class="btn btn-success btn-block btn-lg text-body"
+                                   th:href="@{/internet/internet-plans}">Cancel
+                                </a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+
+</html>
