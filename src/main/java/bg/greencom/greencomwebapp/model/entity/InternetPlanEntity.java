@@ -46,7 +46,7 @@ public class InternetPlanEntity extends PlanEntity {
         return this;
     }
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     public Set<InternetExtrasEntity> getInternetExtras() {
         return internetExtras;
     }
