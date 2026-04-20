@@ -2,16 +2,16 @@ package bg.greencom.greencomwebapp.web;
 
 import bg.greencom.greencomwebapp.model.binding.InternetPlanBindingModel;
 import bg.greencom.greencomwebapp.model.service.InternetPlanServiceModel;
+import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 import bg.greencom.greencomwebapp.service.InternetPlanService;
+import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -46,7 +46,7 @@ public class InternetController {
 
     @PostMapping("/add-internet-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addVoicePlanConfirm(@Valid InternetPlanBindingModel internetPlanBindingModel,
+    public String addVoicePlanConfirm(@Validated(onCreate.class) InternetPlanBindingModel internetPlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()){
@@ -58,6 +58,42 @@ public class InternetController {
         }
 
         internetPlanService.addPlan(modelMapper.map(internetPlanBindingModel, InternetPlanServiceModel.class));
+
+        return "redirect:/internet/internet-plans";
+    }
+
+    @GetMapping("/edit-internet-plan/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editInternetPlan(@PathVariable Long id, Model model) {
+        InternetPlanViewModel internetPlanFromRepo = modelMapper.map(internetPlanService.findById(id), InternetPlanViewModel.class);
+
+        model.addAttribute("internetPlanFromRepo", internetPlanFromRepo);
+
+        return "internet-plans/edit-internet-plan";
+    }
+
+    @GetMapping("/edit-internet-plan/{id}/errors")
+    public String editInternetPlanError(@PathVariable Long id){
+
+        return "internet-plans/edit-internet-plan";
+    }
+
+    @PatchMapping("/edit-internet-plan/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editInternetPlanConfirm(@PathVariable Long id,
+                                          @Valid InternetPlanBindingModel internetPlanBindingModel,
+                                          BindingResult bindingResult,
+                                          RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()){
+
+            redirectAttributes
+                    .addFlashAttribute("internetPlanFromRepo", internetPlanBindingModel)
+                    .addFlashAttribute("org.springframework.validation.BindingResult.internetPlanFromRepo", bindingResult);
+
+            return "redirect:/internet/edit-internet-plan/" + id + "/errors";
+        }
+
+        internetPlanService.updateInternetPlan(modelMapper.map(internetPlanBindingModel, InternetPlanServiceModel.class));
 
         return "redirect:/internet/internet-plans";
     }

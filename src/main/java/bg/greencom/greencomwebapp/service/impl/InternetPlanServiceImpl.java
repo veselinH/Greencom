@@ -2,6 +2,7 @@ package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.InternetPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.InternetTypeEntity;
+import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.service.InternetPlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 import bg.greencom.greencomwebapp.repository.InternetPlanRepository;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class InternetPlanServiceImpl implements InternetPlanService {
+
+    private static final String OBJECT_TYPE = "internet plan";
 
     private final InternetExtraService internetExtraService;
     private final InternetPlanRepository internetPlanRepository;
@@ -77,5 +80,36 @@ public class InternetPlanServiceImpl implements InternetPlanService {
             Collections.sort(internetPlan.getInternetExtras());
         }
         return allInternetPlans;
+    }
+
+    @Override
+    public InternetPlanViewModel findById(Long id) {
+        InternetPlanEntity internetPlanEntity = internetPlanRepository
+                .findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
+
+        InternetPlanViewModel internetPlanViewModel = modelMapper.map(internetPlanEntity, InternetPlanViewModel.class);
+        internetPlanViewModel.setInternetType(internetPlanEntity.getInternetType().getName().getValue());
+
+        return internetPlanViewModel;
+    }
+
+    @Override
+    public void updateInternetPlan(InternetPlanServiceModel internetPlanServiceModel) {
+
+        InternetPlanEntity internetPlanEntity =
+                internetPlanRepository
+                        .findById(internetPlanServiceModel.getId())
+                        .orElseThrow(() -> new ObjectNotFoundException(internetPlanServiceModel.getId(), OBJECT_TYPE));
+
+        internetPlanEntity
+                .setDownloadMbps(internetPlanServiceModel.getDownloadMbps())
+                .setUploadMbps(internetPlanServiceModel.getUploadMbps())
+                .setPlanDuration(internetPlanServiceModel.getPlanDuration())
+                .setPrice(internetPlanServiceModel.getPrice())
+                .setName(internetPlanServiceModel.getName());
+
+        internetPlanRepository.saveAndFlush(internetPlanEntity);
+
     }
 }

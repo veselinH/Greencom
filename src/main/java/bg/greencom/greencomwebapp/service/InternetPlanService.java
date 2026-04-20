@@ -9,4 +9,8 @@ public interface InternetPlanService {
     void addPlan(InternetPlanServiceModel internetPlanServiceModel);
 
     List<InternetPlanViewModel> findAllPlansOrderedByPrice();
+
+    InternetPlanViewModel findById(Long id);
+
+    void updateInternetPlan(InternetPlanServiceModel internetPlanServiceModel);
 }

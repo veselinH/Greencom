@@ -37,11 +37,11 @@
                             <a th:href="@{/mobile/edit-data-plan/{id}(id=*{id})}"
                                class="btn btn-outline-dark btn-block">Edit</a>
                         </div>
-                        <form th:action="@{/mobile/data-plan/{name}(name=*{name})}"
-                              th:method="delete"
-                              sec:authorize="hasRole('ADMIN')">
-                            <input type="submit" class="btn btn-outline-dark btn-block" value="Remove">
-                        </form>
+<!--                        <form th:action="@{/mobile/data-plan/{name}(name=*{name})}"-->
+<!--                              th:method="delete"-->
+<!--                              sec:authorize="hasRole('ADMIN')">-->
+<!--                            <input type="submit" class="btn btn-outline-dark btn-block" value="Remove">-->
+<!--                        </form>-->
 
                         <ul>
                             <li th:text="|*{bgInternetMegabytes} national MB|"></li>
