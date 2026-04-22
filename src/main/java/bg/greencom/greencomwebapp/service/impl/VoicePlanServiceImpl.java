@@ -1,23 +1,14 @@
 package bg.greencom.greencomwebapp.service.impl;
-import bg.greencom.greencomwebapp.model.entity.PlanEntity;
-import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
-import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
-import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.repository.VoicePlanRepository;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
-import bg.greencom.greencomwebapp.service.PlanService;
-import bg.greencom.greencomwebapp.service.UserService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.security.Signature;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
