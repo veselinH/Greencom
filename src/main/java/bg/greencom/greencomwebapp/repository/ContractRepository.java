@@ -1,9 +1,9 @@
 package bg.greencom.greencomwebapp.repository;
 
-import bg.greencom.greencomwebapp.model.entity.SignatureEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SignatureRepository extends JpaRepository<SignatureEntity, Long> {
+public interface ContractRepository extends JpaRepository<bg.greencom.greencomwebapp.model.entity.ContractEntity, Long> {
+    Long id(Long id);
 }
