@@ -118,7 +118,9 @@ public class UserController {
     @GetMapping("/profile")
     public String viewProfile(@AuthenticationPrincipal GreencomUserDetails user, Model model) {
 
-        model.addAttribute("userVoicePlans", userService.getAllVoicePlans(user.getUsername()));
+        model
+                .addAttribute("userVoicePlans", userService.getAllVoicePlans(user.getUsername()))
+                .addAttribute("userDataPlans", userService.getAllDataPlans(user.getUsername()));
 
         return "profile";
     }
@@ -132,12 +134,13 @@ public class UserController {
 //        Decoding the signature image
         String base64Data = signature.split(",")[1];
         byte[] unsignSignature = Base64.getDecoder().decode(base64Data);
-        String unsignedContractPlanName = userService.unsignVoicePlan(id, user.getUsername(), unsignSignature);
+        String unsignedContractPlanName = userService.unsignPlan(id, user.getUsername(), unsignSignature);
 
         if (!unsignedContractPlanName.isEmpty()){
-            redirectAttributes.addFlashAttribute("successMessage", "Plan '" + unsignedContractPlanName + "' successfully removed.");
+            redirectAttributes.addFlashAttribute("successMessage", "Plan '" + unsignedContractPlanName + "' successfully unsigned.");
         }
 
         return "redirect:/users/profile";
     }
+
 }
