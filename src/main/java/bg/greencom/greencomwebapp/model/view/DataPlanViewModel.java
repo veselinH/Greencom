@@ -14,6 +14,7 @@ public class DataPlanViewModel {
     private String roamingInternetMegabytes;
     private BigDecimal price;
     private List<MobileExtraEntity> mobileExtras = new ArrayList<>();
+    private Long contractId;
 
     public Long getId() {
         return id;
@@ -76,5 +77,13 @@ public class DataPlanViewModel {
     public DataPlanViewModel setMobileExtras(List<MobileExtraEntity> mobileExtras) {
         this.mobileExtras = mobileExtras;
         return this;
+    }
+
+    public Long getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(Long contractId) {
+        this.contractId = contractId;
     }
 }
