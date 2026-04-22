@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Base64;
 
 @Controller
 @RequestMapping("/users")
@@ -122,15 +123,19 @@ public class UserController {
         return "profile";
     }
 
-    @DeleteMapping("/unsign/voice/{id}")
+    @PatchMapping("/unsign/voice/{id}")
     public String unsignVoicePlan (@PathVariable Long id,
                                    @AuthenticationPrincipal GreencomUserDetails user,
+                                   @RequestParam String signature,
                                    RedirectAttributes redirectAttributes) {
 
-        String planNameToRemove = userService.unsignVoicePlan(id, user.getUsername());
+//        Decoding the signature image
+        String base64Data = signature.split(",")[1];
+        byte[] unsignSignature = Base64.getDecoder().decode(base64Data);
+        String unsignedContractPlanName = userService.unsignVoicePlan(id, user.getUsername(), unsignSignature);
 
-        if (!planNameToRemove.isEmpty()){
-            redirectAttributes.addFlashAttribute("successMessage", "Plan '" + planNameToRemove + "' successfully removed.");
+        if (!unsignedContractPlanName.isEmpty()){
+            redirectAttributes.addFlashAttribute("successMessage", "Plan '" + unsignedContractPlanName + "' successfully removed.");
         }
 
         return "redirect:/users/profile";

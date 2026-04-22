@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity
@@ -20,7 +18,7 @@ public class PlanEntity extends BaseEntity {
     private LocalDateTime createdOn;
     private LocalDateTime modifiedOn;
 
-    private List<SignatureEntity> signature;
+//    private List<ContractEntity> contract;
 
     public PlanEntity() {
     }
@@ -75,13 +73,13 @@ public class PlanEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
-    public List<SignatureEntity> getSignature() {
-        return signature;
-    }
-
-    public void setSignature(List<SignatureEntity> signature) {
-        this.signature = signature;
-    }
+//    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+//    public List<ContractEntity> getContract() {
+//        return contract;
+//    }
+//
+//    public void setSignature(List<ContractEntity> signature) {
+//        this.contract = contract;
+//    }
 
 }

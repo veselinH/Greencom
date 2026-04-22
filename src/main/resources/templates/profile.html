@@ -58,10 +58,16 @@
                         <br><br>
                         <span th:text="*{price}" class="h2">$8</span>$/month
                         <br><br>
-                        <form th:action="@{/users/unsign/voice/{id}(id=*{signatureId})}"
-                              th:method="delete">
-                            <input type="submit" class="btn btn-outline-dark btn-block" value="Unsign">
-                        </form>
+                        <div class="d-grid my-3">
+                            <button type="button"
+                                    class="btn btn-outline-dark btn-block"
+                                    data-toggle="modal"
+                                    data-target="#signatureModal"
+                                    th:data-id="${id}"
+                                    th:data-action="@{/users/unsign/voice/{id}(id=*{contractId})}">
+                                Unsign
+                            </button>
+                        </div>
                         <ul>
                             <li th:text="|*{bgMinutes} national minutes|"></li>
                             <li th:text="|*{bgInternetMegabytes} national MB|"></li>

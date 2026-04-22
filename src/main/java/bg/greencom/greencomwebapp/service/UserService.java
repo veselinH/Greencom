@@ -20,13 +20,13 @@ public interface UserService {
 
     UserEntity findUserByUsername(String username);
 
-    void addVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] imageBytes);
+    void signVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] signSignature);
 
-    void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planEntity);
+//    void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planEntity);
 
     void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails);
 
     List<VoicePlanViewModel> getAllVoicePlans(String username);
 
-    String unsignVoicePlan(Long planSignatureId, String username);
+    String unsignVoicePlan(Long planContractId, String username, byte[] unsignSignature);
 }

@@ -1,6 +1,5 @@
 package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.model.entity.PlanEntity;
-import bg.greencom.greencomwebapp.model.entity.SignatureEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;

@@ -4,7 +4,9 @@ import bg.greencom.greencomwebapp.model.entity.*;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
+import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
+import bg.greencom.greencomwebapp.model.view.PlanViewModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.service.*;
@@ -36,9 +38,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final VoicePlanService voicePlanService;
     private final DataPlanService dataPlanService;
-    private final SignatureService signatureService;
+    private final PlanService planService;
+    private final ContractService contractService;
 
-    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, SignatureService signatureService) {
+    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService) {
         this.userRoleService = userRoleService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
@@ -46,7 +49,8 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
         this.voicePlanService = voicePlanService;
         this.dataPlanService = dataPlanService;
-        this.signatureService = signatureService;
+        this.planService = planService;
+        this.contractService = contractService;
     }
 
     @Override
@@ -111,7 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] imageBytes) {
+    public void signVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] signSignature) {
 //    Add voice plan to the user and increase the debt
 //      Retrieve both user and voicePlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
@@ -125,18 +129,18 @@ public class UserServiceImpl implements UserService {
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
 //      Save the signature
-        signatureService.addSignature(voicePlanFromDB, user, imageBytes);
+        contractService.addContract(voicePlanFromDB, user, signSignature);
 
     }
 
-    @Override
-    public void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planToDelete) {
-        UserEntity user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
-        user.getUserSignatures().removeIf(signature -> Objects.equals(signature.getUser().getId(), user.getId()) && Objects.equals(signature.getPlan().getId(), planToDelete.getId()));
-        user.setTotalDebtPerMonth(user.getTotalDebtPerMonth().subtract(planToDelete.getPrice()));
-        user.getUserAllPlans().remove(planToDelete);
-        userRepository.saveAndFlush(user);
-    }
+//    @Override
+//    public void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planToDelete) {
+//        UserEntity user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
+//        user.getUserSignatures().removeIf(signature -> Objects.equals(signature.getUser().getId(), user.getId()) && Objects.equals(signature.getPlan().getId(), planToDelete.getId()));
+//        user.setTotalDebtPerMonth(user.getTotalDebtPerMonth().subtract(planToDelete.getPrice()));
+//        user.getUserAllPlans().remove(planToDelete);
+//        userRepository.saveAndFlush(user);
+//    }
 
     @Override
     public void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails) {
@@ -161,11 +165,12 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByUsername(username).orElse(null);
         if (user == null) return Collections.emptyList();
 
-        // Map from Signatures to ViewModels to preserve the unique Signature ID
-        return user.getUserSignatures().stream()
-                .map(signature -> {
-                    VoicePlanViewModel viewModel = modelMapper.map(signature.getPlan(), VoicePlanViewModel.class);
-                    viewModel.setSignatureId(signature.getId()); // Explicitly set the unique ID
+        // Map from Contract to ViewModels to preserve the unique Contract ID
+        return user.getUserContracts().stream()
+                .filter(ContractEntity::isActive)
+                .map(contract -> {
+                    VoicePlanViewModel viewModel = modelMapper.map(contract.getPlan(), VoicePlanViewModel.class);
+                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
                     return viewModel;
                 })
                 .toList();
@@ -173,35 +178,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String unsignVoicePlan(Long planSignatureId, String username) {
+    public String unsignVoicePlan(Long contractId, String username, byte[] unsignSignature) {
 
         final StringBuilder planName = new StringBuilder();
 
-        userRepository.findByUsername(username).ifPresent(user -> {
+        UserEntity user = findUserByUsername(username);
+        ContractViewModel userContract = contractService.findById(contractId);
+        PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
+        planName.append(userPlan.getName());
+//        Lower the dept of the user
+        BigDecimal totalDebt = user.getTotalDebtPerMonth();
+        totalDebt = totalDebt.subtract(userPlan.getPrice());
+        user.setTotalDebtPerMonth(totalDebt);
 
-            // 1. Find the specific signature
-            SignatureEntity signature = user.getUserSignatures().stream()
-                    .filter(sig -> sig.getId().equals(planSignatureId))
-                    .findFirst()
-                    .orElse(null);
+        userRepository.saveAndFlush(user);
 
-            if (signature != null) {
-                planName.append(signature.getPlan().getName());
-                // 2. Get the specific Plan object linked to THIS signature
-                PlanEntity specificPlan = signature.getPlan();
-                // Map to a VoicePlanEntity because .getPlan() returns PlanEntity
-                VoicePlanEntity voicePlan = modelMapper.map(specificPlan, VoicePlanEntity.class);
-
-                // 3. Remove the signature (deletes from DB)
-                user.getUserSignatures().remove(signature);
-
-                // 4. Remove ONLY this specific plan instance from the other list
-                // .remove(object) only removes the first occurrence/exact match
-                user.getUserVoiceMobilePlans().remove(voicePlan);
-
-                userRepository.save(user);
-            }
-        });
+        contractService.deactivateContract(contractId, unsignSignature);
 
         return planName.toString();
 

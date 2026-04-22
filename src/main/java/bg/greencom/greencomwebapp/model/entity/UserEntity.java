@@ -26,9 +26,7 @@ public class UserEntity extends BaseEntity {
     private List<DataPlanEntity> userDataPlans;
     private List<TelevisionPlanEntity> userTelevisionPlans;
     private List<FixedVoicePlanEntity> userFixedVoicePlans;
-
-    private List<PlanEntity> userAllPlans;
-    private List<SignatureEntity> userSignatures = new ArrayList<>();
+    private List<ContractEntity> userContracts = new ArrayList<>();
 
     public UserEntity() {
     }
@@ -163,21 +161,13 @@ public class UserEntity extends BaseEntity {
         return this;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<SignatureEntity> getUserSignatures() {
-        return userSignatures;
+    @OneToMany(mappedBy = "user")
+    public List<ContractEntity> getUserContracts() {
+        return userContracts;
     }
 
-    public void setUserSignatures(List<SignatureEntity> userSignatures) {
-        this.userSignatures = userSignatures;
+    public void setUserContracts(List<ContractEntity> userContracts) {
+        this.userContracts = userContracts;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    public List<PlanEntity> getUserAllPlans() {
-        return userAllPlans;
-    }
-
-    public void setUserAllPlans(List<PlanEntity> userAllPlans) {
-        this.userAllPlans = userAllPlans;
-    }
 }

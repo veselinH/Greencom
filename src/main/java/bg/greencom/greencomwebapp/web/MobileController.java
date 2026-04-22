@@ -150,11 +150,11 @@ public class MobileController {
 
 //        Decode the signature image
         String base64Data = signature.split(",")[1];
-        byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+        byte[] signSignature = Base64.getDecoder().decode(base64Data);
 //        Retrieve the voice plan
         VoicePlanViewModel voicePlan = voicePlanService.findById(id);
 
-        userService.addVoicePlan(voicePlan, userDetails, imageBytes);
+        userService.signVoicePlan(voicePlan, userDetails, signSignature);
 
         return "redirect:/mobile/voice-plans";
     }
