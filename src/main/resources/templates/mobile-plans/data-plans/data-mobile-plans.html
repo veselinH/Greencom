@@ -18,11 +18,6 @@
                         <br><br>
                         <span th:text="*{price}" class="h2">$8</span>$/month
                         <br><br>
-<!--                        <form th:action="@{/mobile/data-plan/{id}(id=*{id})}"-->
-<!--                              th:method="patch"-->
-<!--                              class="d-grid my-3">-->
-<!--                            <input type="submit" class="btn btn-outline-dark btn-block" value="Sign">-->
-<!--                        </form>-->
                         <div class="d-grid my-3">
                             <button type="button"
                                     class="btn btn-outline-dark btn-block"
@@ -37,12 +32,6 @@
                             <a th:href="@{/mobile/edit-data-plan/{id}(id=*{id})}"
                                class="btn btn-outline-dark btn-block">Edit</a>
                         </div>
-<!--                        <form th:action="@{/mobile/data-plan/{name}(name=*{name})}"-->
-<!--                              th:method="delete"-->
-<!--                              sec:authorize="hasRole('ADMIN')">-->
-<!--                            <input type="submit" class="btn btn-outline-dark btn-block" value="Remove">-->
-<!--                        </form>-->
-
                         <ul>
                             <li th:text="|*{bgInternetMegabytes} national MB|"></li>
                             <li th:text="|*{roamingInternetMegabytes} roaming MB|"></li>
