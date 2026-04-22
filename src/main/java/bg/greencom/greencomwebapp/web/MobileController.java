@@ -203,15 +203,6 @@ public class MobileController {
 
         return "redirect:/mobile/data-plans";
     }
-//
-//    @DeleteMapping("/data-plan/{name}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public String removeDataPlan(@PathVariable String name) {
-//
-//        dataPlanService.deletePlan(name);
-//
-//        return "redirect:/mobile/data-plans";
-//    }
 
     @GetMapping("/edit-data-plan/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -260,11 +251,15 @@ public class MobileController {
 
     @PatchMapping("/data-plan/{id}")
     public String signDataPlanConfirm(@PathVariable Long id,
-                                      @AuthenticationPrincipal GreencomUserDetails userDetails) {
+                                      @AuthenticationPrincipal GreencomUserDetails userDetails,
+                                      @RequestParam String signature) {
 
+//        Decode the signature image
+        String base64Data = signature.split(",")[1];
+        byte[] signSignature = Base64.getDecoder().decode(base64Data);
         DataPlanViewModel dataPlan = dataPlanService.findById(id);
 
-        userService.addDataPlan(dataPlan, userDetails);
+        userService.signDataPlan(dataPlan, userDetails, signSignature);
 
         return "redirect:/mobile/data-plans";
     }
