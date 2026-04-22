@@ -22,11 +22,11 @@ public interface UserService {
 
     void signVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] signSignature);
 
-//    void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planEntity);
+    void signDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails, byte[] signSignature);
 
-    void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails);
+    String unsignPlan(Long contractId, String username, byte[] unsignSignature);
 
     List<VoicePlanViewModel> getAllVoicePlans(String username);
 
-    String unsignVoicePlan(Long planContractId, String username, byte[] unsignSignature);
+    List<DataPlanViewModel> getAllDataPlans(String username);
 }

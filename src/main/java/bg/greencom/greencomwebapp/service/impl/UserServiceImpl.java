@@ -128,22 +128,13 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(totalDebt);
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
-//      Save the signature
+//      Save the contract
         contractService.addContract(voicePlanFromDB, user, signSignature);
 
     }
 
-//    @Override
-//    public void removePlan(String name, GreencomUserDetails userDetails, PlanEntity planToDelete) {
-//        UserEntity user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
-//        user.getUserSignatures().removeIf(signature -> Objects.equals(signature.getUser().getId(), user.getId()) && Objects.equals(signature.getPlan().getId(), planToDelete.getId()));
-//        user.setTotalDebtPerMonth(user.getTotalDebtPerMonth().subtract(planToDelete.getPrice()));
-//        user.getUserAllPlans().remove(planToDelete);
-//        userRepository.saveAndFlush(user);
-//    }
-
     @Override
-    public void addDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails) {
+    public void signDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails, byte[] signSignature) {
 //      Add voice plan to the user and increase the debt
 //      Retrieve both user and voicePlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
@@ -156,29 +147,13 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(totalDebt);
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<VoicePlanViewModel> getAllVoicePlans(String username) {
-
-        UserEntity user = userRepository.findByUsername(username).orElse(null);
-        if (user == null) return Collections.emptyList();
-
-        // Map from Contract to ViewModels to preserve the unique Contract ID
-        return user.getUserContracts().stream()
-                .filter(ContractEntity::isActive)
-                .map(contract -> {
-                    VoicePlanViewModel viewModel = modelMapper.map(contract.getPlan(), VoicePlanViewModel.class);
-                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
-                    return viewModel;
-                })
-                .toList();
+//      Save the contract
+        contractService.addContract(dataPlanFromDB, user, signSignature);
     }
 
     @Override
     @Transactional
-    public String unsignVoicePlan(Long contractId, String username, byte[] unsignSignature) {
+    public String unsignPlan(Long contractId, String username, byte[] unsignSignature) {
 
         final StringBuilder planName = new StringBuilder();
 
@@ -197,6 +172,43 @@ public class UserServiceImpl implements UserService {
 
         return planName.toString();
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoicePlanViewModel> getAllVoicePlans(String username) {
+
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return Collections.emptyList();
+
+        // Map from Contract to ViewModels to preserve the unique Contract ID
+        return user.getUserContracts().stream()
+                .filter(ContractEntity::isActive)
+                .filter(contract -> contract.getPlan() instanceof VoicePlanEntity)
+                .map(contract -> {
+                    VoicePlanViewModel viewModel = modelMapper.map(contract.getPlan(), VoicePlanViewModel.class);
+                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+                    return viewModel;
+                })
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DataPlanViewModel> getAllDataPlans(String username) {
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return Collections.emptyList();
+
+        // Map from Contract to ViewModels to preserve the unique Contract ID
+        return user.getUserContracts().stream()
+                .filter(ContractEntity::isActive)
+                .filter(contract -> contract.getPlan() instanceof DataPlanEntity)
+                .map(contract -> {
+                    DataPlanViewModel viewModel = modelMapper.map(contract.getPlan(), DataPlanViewModel.class);
+                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+                    return viewModel;
+                })
+                .toList();
     }
 
 }
