@@ -7,7 +7,6 @@ public enum InternetExtraEnum {
 
     private final String value;
 
-
     InternetExtraEnum(String value) {
         this.value = value;
     }
