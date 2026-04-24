@@ -117,13 +117,14 @@ public class UserController {
 
         model
                 .addAttribute("userVoicePlans", userService.getAllVoicePlans(user.getUsername()))
-                .addAttribute("userDataPlans", userService.getAllDataPlans(user.getUsername()));
+                .addAttribute("userDataPlans", userService.getAllDataPlans(user.getUsername()))
+                .addAttribute("userInternetPlans", userService.getAllInternetPlans(user.getUsername()));
 
         return "profile";
     }
 
-    @PatchMapping("/unsign/voice/{id}")
-    public String unsignVoicePlan (@PathVariable Long id,
+    @PatchMapping("/unsign/plan/{id}")
+    public String unsignPlan (@PathVariable Long id,
                                    @AuthenticationPrincipal GreencomUserDetails user,
                                    @RequestParam String signature,
                                    RedirectAttributes redirectAttributes) {
