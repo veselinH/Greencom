@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Plan was not found.")
 public class PlanNotFoundException extends RuntimeException{
 
-    private final Long planId;
+    private final String planName;
 
-    public PlanNotFoundException(Long planId) {
-        super("Plan with ID " + planId + " not found!");
-        this.planId = planId;
+    public PlanNotFoundException(String planName) {
+        super("Plan with ID " + planName + " not found!");
+        this.planName = planName;
     }
 
-    public Long getPlanId() {
-        return planId;
+    public String getPlanId() {
+        return planName;
     }
 }
