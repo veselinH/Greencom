@@ -64,7 +64,7 @@
                                     data-toggle="modal"
                                     data-target="#signatureModal"
                                     th:data-id="${id}"
-                                    th:data-action="@{/users/unsign/voice/{id}(id=*{contractId})}">
+                                    th:data-action="@{/users/unsign/plan/{id}(id=*{contractId})}">
                                 Unsign
                             </button>
                         </div>
@@ -107,7 +107,7 @@
                                     data-toggle="modal"
                                     data-target="#signatureModal"
                                     th:data-id="${id}"
-                                    th:data-action="@{/users/unsign/voice/{id}(id=*{contractId})}">
+                                    th:data-action="@{/users/unsign/plan/{id}(id=*{contractId})}">
                                 Unsign
                             </button>
                         </div>
@@ -123,8 +123,51 @@
             </div>
         </div>
     </div>
+    <div th:if="${userDataPlans.isEmpty()}" class="alert alert-warning text-center">
+        No data plans found for your account.
+    </div>
 </div>
 
+<div class="container-fluid">
+    <div class="container p-5">
+        <h2 class="text-center mb-4">My Internet Plans</h2>
+        <div class="row">
+            <div th:each="i : ${userInternetPlans}" th:object="${i}" class="col-lg-4 col-md-12 mb-4">
+                <div class="card card1 h-100">
+                    <div class="card-body">
+
+                        <h5 th:text="*{name}" class="card-title"></h5>
+                        <small th:text="|*{planDuration} plan duration|" class='text-muted'></small>
+                        <br><br>
+                        <span th:text="*{price}" class="h2">$8</span>$/month
+                        <br><br>
+                        <div class="d-grid my-3">
+                            <button type="button"
+                                    class="btn btn-outline-dark btn-block"
+                                    data-toggle="modal"
+                                    data-target="#signatureModal"
+                                    th:data-id="${id}"
+                                    th:data-action="@{/users/unsign/plan/{id}(id=*{contractId})}">
+                                Unsign
+                            </button>
+                        </div>
+                        <ul>
+                            <li th:text="|*{internetType} type of internet|"></li>
+                            <li th:text="|*{downloadMbps} download speed|"></li>
+                            <li th:text="|*{uploadMbps} upload speed|"></li>
+                            <li class="dropdown-divider">Mobile extras</li>
+                            <li th:each="e : ${i.getInternetExtras()}" th:object="${e}"
+                                th:text="${e.getName().getValue()}"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${userInternetPlans.isEmpty()}" class="alert alert-warning text-center">
+        No internet plans found for your account.
+    </div>
+</div>
 <footer th:replace="fragments/commons::footer"></footer>
 </body>
 </html>
