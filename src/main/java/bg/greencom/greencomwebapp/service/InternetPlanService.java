@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.service;
 
+import bg.greencom.greencomwebapp.model.entity.InternetPlanEntity;
 import bg.greencom.greencomwebapp.model.service.InternetPlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 
@@ -13,4 +14,6 @@ public interface InternetPlanService {
     InternetPlanViewModel findById(Long id);
 
     void updateInternetPlan(InternetPlanServiceModel internetPlanServiceModel);
+
+    InternetPlanEntity findByName(String name);
 }
