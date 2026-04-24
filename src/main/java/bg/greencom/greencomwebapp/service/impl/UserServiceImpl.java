@@ -4,10 +4,7 @@ import bg.greencom.greencomwebapp.model.entity.*;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
-import bg.greencom.greencomwebapp.model.view.ContractViewModel;
-import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
-import bg.greencom.greencomwebapp.model.view.PlanViewModel;
-import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
+import bg.greencom.greencomwebapp.model.view.*;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.service.*;
 import org.modelmapper.ModelMapper;
@@ -37,8 +34,9 @@ public class UserServiceImpl implements UserService {
     private final DataPlanService dataPlanService;
     private final PlanService planService;
     private final ContractService contractService;
+    private final InternetPlanService internetPlanService;
 
-    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService) {
+    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService, InternetPlanService internetPlanService) {
         this.userRoleService = userRoleService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
@@ -48,6 +46,7 @@ public class UserServiceImpl implements UserService {
         this.dataPlanService = dataPlanService;
         this.planService = planService;
         this.contractService = contractService;
+        this.internetPlanService = internetPlanService;
     }
 
     @Override
@@ -132,8 +131,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails, byte[] signSignature) {
-//      Add voice plan to the user and increase the debt
-//      Retrieve both user and voicePlan from the database
+//      Add data plan to the user and increase the debt
+//      Retrieve both user and dataPlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
         DataPlanEntity dataPlanFromDB = dataPlanService.findByName(dataPlan.getName());
 //      Add the new plan to the user entity
@@ -202,6 +201,43 @@ public class UserServiceImpl implements UserService {
                 .filter(contract -> contract.getPlan() instanceof DataPlanEntity)
                 .map(contract -> {
                     DataPlanViewModel viewModel = modelMapper.map(contract.getPlan(), DataPlanViewModel.class);
+                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+                    return viewModel;
+                })
+                .toList();
+    }
+
+    @Override
+    public void signInternetPlan(InternetPlanViewModel internetPlan, GreencomUserDetails userDetails, byte[] signSignature) {
+//      Add data plan to the user and increase the debt
+//      Retrieve both user and dataPlan from the database
+        UserEntity user = this.findUserByUsername(userDetails.getUsername());
+        InternetPlanEntity internetPlanFromDB = internetPlanService.findByName(internetPlan.getName());
+//      Add the new plan to the user entity
+        user.getUserInternetPlans().add(internetPlanFromDB);
+//      Increase the total debt
+        BigDecimal totalDebt = user.getTotalDebtPerMonth();
+        totalDebt = totalDebt.add(internetPlanFromDB.getPrice());
+        user.setTotalDebtPerMonth(totalDebt);
+//      Save to database by updating the user
+        userRepository.saveAndFlush(user);
+//      Save the contract
+        contractService.addContract(internetPlanFromDB, user, signSignature);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<InternetPlanViewModel> getAllInternetPlans(String username) {
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return Collections.emptyList();
+
+        // Map from Contract to ViewModels to preserve the unique Contract ID
+        return user.getUserContracts().stream()
+                .filter(ContractEntity::isActive)
+                .filter(contract -> contract.getPlan() instanceof InternetPlanEntity)
+                .map(contract -> {
+                    InternetPlanViewModel viewModel = modelMapper.map(contract.getPlan(), InternetPlanViewModel.class);
+                    viewModel.setInternetType(((InternetPlanEntity) contract.getPlan()).getInternetType().getName().getValue());
                     viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
                     return viewModel;
                 })
