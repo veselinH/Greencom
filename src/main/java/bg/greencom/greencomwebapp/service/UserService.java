@@ -4,6 +4,7 @@ import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.DataPlanViewModel;
+import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import org.springframework.security.core.Authentication;
 
@@ -28,4 +29,8 @@ public interface UserService {
     List<VoicePlanViewModel> getAllVoicePlans(String username);
 
     List<DataPlanViewModel> getAllDataPlans(String username);
+
+    void signInternetPlan(InternetPlanViewModel internetPlan, GreencomUserDetails userDetails, byte[] signSignature);
+
+    List<InternetPlanViewModel> getAllInternetPlans(String username);
 }
