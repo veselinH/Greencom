@@ -16,7 +16,8 @@ public class InternetPlanViewModel {
     private String internetType;
     private BigDecimal price;
     private List<InternetExtrasEntity> internetExtras = new ArrayList<>();
-    private Long signatureId;
+
+    private Long contractId;
 
     public Long getId() {
         return id;
@@ -82,11 +83,11 @@ public class InternetPlanViewModel {
         this.internetExtras = internetExtras;
     }
 
-    public Long getSignatureId() {
-        return signatureId;
+    public Long getContractId() {
+        return contractId;
     }
 
-    public void setSignatureId(Long signatureId) {
-        this.signatureId = signatureId;
+    public void setContractId(Long contractId) {
+        this.contractId = contractId;
     }
 }
