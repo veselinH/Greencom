@@ -12,7 +12,6 @@ public interface TelevisionPlanRepository extends JpaRepository<TelevisionPlanEn
 
     @Query("SELECT t FROM TelevisionPlanEntity t " +
             "JOIN FETCH t.televisionType " +
-            "LEFT JOIN FETCH t.additionalPackages " +
             "ORDER BY t.price")
     Set<TelevisionPlanEntity> findAllTelevisionPlansOrderedByPrice();
 }
