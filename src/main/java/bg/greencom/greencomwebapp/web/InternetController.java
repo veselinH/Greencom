@@ -50,11 +50,11 @@ public class InternetController {
 
     @GetMapping("/add-internet-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addVoicePlan() {return "internet-plans/add-internet-plan";}
+    public String addInternetPlan() {return "internet-plans/add-internet-plan";}
 
     @PostMapping("/add-internet-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addVoicePlanConfirm(@Validated(onCreate.class) InternetPlanBindingModel internetPlanBindingModel,
+    public String addInternetPlanConfirm(@Validated(onCreate.class) InternetPlanBindingModel internetPlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()){
