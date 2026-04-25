@@ -24,7 +24,7 @@
                       data-toggle="modal"
                       data-target="#signatureModal"
                       th:data-id="${id}"
-                      th:data-action="@{/internet/television-plan/{id}(id=*{id})}">
+                      th:data-action="@{/television/television-plan/{id}(id=*{id})}">
                 Sign
               </button>
             </div>
@@ -32,14 +32,24 @@
               <a th:href="@{/internet/edit-internet-plan/{id}(id=*{id})}"
                  class="btn btn-outline-dark btn-block">Edit</a>
             </div>
-            <ul>
-              <li th:text="|*{internetType} type of internet|"></li>
-              <li th:text="|*{downloadMbps} download speed|"></li>
-              <li th:text="|*{uploadMbps} upload speed|"></li>
-              <li class="dropdown-divider">Mobile extras</li>
-              <li th:each="e : ${t.getTelevisionExtras()}" th:object="${e}"
-                  th:text="${e.getName().getValue()}"></li>
-            </ul>
+              <ul>
+                  <li th:text="|*{channelCount} channels |"></li>
+                  <li th:text="|*{channelCountHD} HD channels|"></li>
+                  <li th:each="extra : ${additionalPackages}" class="list-unstyled">
+                      <div class="form-check">
+                          <input class="form-check-input"
+                                 type="checkbox"
+                                 th:value="${extra.id}"
+                                 th:id="${'extra-' + t.id + '-' + extra.id}"
+                                 name="selectedExtras">
+                          <label class="form-check-label"
+                                 th:for="${'extra-' + t.id + '-' + extra.id}"
+                                 th:text="|${extra.name} - ${extra.price}$/month|">
+                              Extra Name
+                          </label>
+                      </div>
+                  </li>
+              </ul>
           </div>
         </div>
       </div>
