@@ -1,10 +1,13 @@
 package bg.greencom.greencomwebapp.model.binding;
 
+import bg.greencom.greencomwebapp.model.entity.enums.AdditionalPackageEnum;
 import bg.greencom.greencomwebapp.validation.annotation.UniquePlanName;
 import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TelevisionPlanBindingModel {
 
