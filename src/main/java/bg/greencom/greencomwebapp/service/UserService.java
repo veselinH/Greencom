@@ -9,6 +9,7 @@ import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public interface UserService {
@@ -33,4 +34,6 @@ public interface UserService {
     void signInternetPlan(InternetPlanViewModel internetPlan, GreencomUserDetails userDetails, byte[] signSignature);
 
     List<InternetPlanViewModel> getAllInternetPlans(String username);
+
+    void signTelevisionPlan(Long planId,Set<Long> additionalPackageIds, GreencomUserDetails userDetails, byte[] signSignature);
 }
