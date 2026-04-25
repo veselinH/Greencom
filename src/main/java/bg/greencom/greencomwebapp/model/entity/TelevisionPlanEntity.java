@@ -11,7 +11,6 @@ public class TelevisionPlanEntity extends PlanEntity {
 
     private Integer channelCount;
     private Integer channelCountInHD;
-    private Set<AdditionalPackageEntity> additionalPackages;
     private TelevisionTypeEntity televisionType;
 
     public TelevisionPlanEntity() {
@@ -34,16 +33,6 @@ public class TelevisionPlanEntity extends PlanEntity {
 
     public TelevisionPlanEntity setChannelCountInHD(Integer channelCountInHD) {
         this.channelCountInHD = channelCountInHD;
-        return this;
-    }
-
-    @OneToMany
-    public Set<AdditionalPackageEntity> getAdditionalPackages() {
-        return additionalPackages;
-    }
-
-    public TelevisionPlanEntity setAdditionalPackages(Set<AdditionalPackageEntity> additionalPackages) {
-        this.additionalPackages = additionalPackages;
         return this;
     }
 
