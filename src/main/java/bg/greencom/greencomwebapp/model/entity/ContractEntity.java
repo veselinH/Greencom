@@ -3,6 +3,8 @@ package bg.greencom.greencomwebapp.model.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "contracts")
@@ -10,6 +12,7 @@ public class ContractEntity extends BaseEntity{
 
     private UserEntity user;
     private PlanEntity plan;
+    private Set<AdditionalPackageEntity> additionalPackageEntities = new HashSet<>();
     private LocalDate signedOn;
     private LocalDate unsignedOn;
     private byte[] signSignature;
@@ -39,6 +42,15 @@ public class ContractEntity extends BaseEntity{
     public ContractEntity setPlan(PlanEntity plan) {
         this.plan = plan;
         return this;
+    }
+
+    @OneToMany
+    public Set<AdditionalPackageEntity> getAdditionalPackageEntities() {
+        return additionalPackageEntities;
+    }
+
+    public void setAdditionalPackageEntities(Set<AdditionalPackageEntity> additionalPackageEntities) {
+        this.additionalPackageEntities = additionalPackageEntities;
     }
 
     @Column(name = "signed_on",nullable = false)
