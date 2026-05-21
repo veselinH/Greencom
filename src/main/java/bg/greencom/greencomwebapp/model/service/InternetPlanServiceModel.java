@@ -16,6 +16,7 @@ public class InternetPlanServiceModel {
     private BigDecimal price;
     private InternetTypeEnum internetType;
     private List<InternetExtraEnum> internetExtras = new ArrayList<>();
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -79,5 +80,13 @@ public class InternetPlanServiceModel {
 
     public void setInternetExtras(List<InternetExtraEnum> internetExtras) {
         this.internetExtras = internetExtras;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

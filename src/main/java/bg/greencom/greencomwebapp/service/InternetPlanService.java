@@ -15,5 +15,6 @@ public interface InternetPlanService {
 
     void updateInternetPlan(InternetPlanServiceModel internetPlanServiceModel);
 
-    InternetPlanEntity findByName(String name);
+    InternetPlanEntity findEntityById(Long id);
+
 }

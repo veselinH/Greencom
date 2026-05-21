@@ -18,6 +18,7 @@ public class VoicePlanServiceModel {
     private String roamingInternetMegabytes;
     private BigDecimal price;
     private List<MobileExtraEnum> mobileExtras = new ArrayList<>();
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -98,5 +99,13 @@ public class VoicePlanServiceModel {
     public VoicePlanServiceModel setMobileExtras(List<MobileExtraEnum> mobileExtras) {
         this.mobileExtras = mobileExtras;
         return this;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

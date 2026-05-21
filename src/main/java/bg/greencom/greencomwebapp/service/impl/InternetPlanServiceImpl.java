@@ -50,7 +50,8 @@ public class InternetPlanServiceImpl implements InternetPlanService {
                 .setInternetType(internetType)
                 .setPrice(internetPlanServiceModel.getPrice())
                 .setName(internetPlanServiceModel.getName())
-                .setPlanDuration(internetPlanServiceModel.getPlanDuration());
+                .setPlanDuration(internetPlanServiceModel.getPlanDuration())
+                .setActive(true);
 
         if (internetPlanServiceModel.getInternetExtras() != null) {
             internetPlanEntity
@@ -107,18 +108,16 @@ public class InternetPlanServiceImpl implements InternetPlanService {
                 .setDownloadMbps(internetPlanServiceModel.getDownloadMbps())
                 .setUploadMbps(internetPlanServiceModel.getUploadMbps())
                 .setPlanDuration(internetPlanServiceModel.getPlanDuration())
-                .setPrice(internetPlanServiceModel.getPrice())
-                .setName(internetPlanServiceModel.getName());
+                .setModifiedOn(LocalDateTime.now())
+                .setActive(internetPlanServiceModel.isActive());
 
         internetPlanRepository.saveAndFlush(internetPlanEntity);
 
     }
 
     @Override
-    public InternetPlanEntity findByName(String name) {
-        return internetPlanRepository
-                .findByName(name)
-                .orElseThrow(
-                        () -> new PlanNotFoundException(name));
+    public InternetPlanEntity findEntityById(Long id) {
+        return internetPlanRepository.findById(id).orElse(null);
     }
+
 }

@@ -49,7 +49,8 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
 
         voicePlanEntity
-                .setCreatedOn(LocalDateTime.now());
+                .setCreatedOn(LocalDateTime.now())
+                .setActive(true);
 
 
         if (voicePlanServiceModel.getMobileExtras() != null) {
@@ -67,12 +68,12 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         return voicePlanServiceModel;
     }
 
-    @Override
-    public VoicePlanEntity findByName(String name) {
-        return voicePlanRepository
-                .findByName(name)
-                .orElse(null);
-    }
+//    @Override
+//    public VoicePlanEntity findByName(String name) {
+//        return voicePlanRepository
+//                .findByName(name)
+//                .orElse(null);
+//    }
 
     @Override
     public void updatePlan(VoicePlanServiceModel voicePlanServiceModel) {
@@ -98,7 +99,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                         .stream()
                         .map(mobileExtraService::findByName)
                         .collect(Collectors.toList()))
-                .setPrice(voicePlanServiceModel.getPrice());
+                .setActive(voicePlanServiceModel.isActive());
 
         voicePlanRepository.saveAndFlush(voicePlan);
     }
@@ -110,5 +111,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                 .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
 
         return modelMapper.map(voicePlanEntity, VoicePlanViewModel.class);
+    }
+
+    @Override
+    public VoicePlanEntity findEntityById(Long id) {
+
+        return voicePlanRepository
+                .findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
     }
 }

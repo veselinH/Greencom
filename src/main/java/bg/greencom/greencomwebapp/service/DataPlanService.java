@@ -9,11 +9,11 @@ import java.util.List;
 public interface DataPlanService {
     void addPlan(DataPlanServiceModel dataPlanServiceModel);
 
-    DataPlanEntity findByName(String name);
-
     List<DataPlanViewModel> findAllPlansOrderedByPrice();
 
     DataPlanViewModel findById(Long id);
 
     void updatePlan(DataPlanServiceModel dataPlanServiceModel);
+
+    DataPlanEntity findEntityById(Long id);
 }

@@ -10,7 +10,6 @@ import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.service.DataPlanService;
 import bg.greencom.greencomwebapp.service.UserService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
-import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,7 +65,7 @@ public class MobileController {
 
     @PostMapping("/add-voice-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addVoicePlanConfirm(@Validated(onCreate.class) VoicePlanBindingModel voicePlanBindingModel,
+    public String addVoicePlanConfirm(@Valid VoicePlanBindingModel voicePlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
 
@@ -120,12 +119,13 @@ public class MobileController {
                                        RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
+            if (!bindingResult.hasFieldErrors("name") || voicePlanFromRepo.isActive()){
+                redirectAttributes
+                        .addFlashAttribute("voicePlanFromRepo", voicePlanFromRepo)
+                        .addFlashAttribute("org.springframework.validation.BindingResult.voicePlanFromRepo", bindingResult);
 
-            redirectAttributes
-                    .addFlashAttribute("voicePlanFromRepo", voicePlanFromRepo)
-                    .addFlashAttribute("org.springframework.validation.BindingResult.voicePlanFromRepo", bindingResult);
-
-            return "redirect:/mobile/edit-voice-plan/" + id + "/errors";
+                return "redirect:/mobile/edit-voice-plan/" + id + "/errors";
+            }
         }
 
         voicePlanService.updatePlan(modelMapper.map(voicePlanFromRepo, VoicePlanServiceModel.class));
@@ -186,7 +186,7 @@ public class MobileController {
 
     @PostMapping("/add-data-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addDataPlanConfirm(@Validated(onCreate.class) DataPlanBindingModel dataPlanBindingModel,
+    public String addDataPlanConfirm(@Valid DataPlanBindingModel dataPlanBindingModel,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes) {
 
@@ -195,7 +195,7 @@ public class MobileController {
                     .addFlashAttribute("dataPlanBindingModel", dataPlanBindingModel)
                     .addFlashAttribute("org.springframework.validation.BindingResult.dataPlanBindingModel", bindingResult);
 
-            return "redirect:/mobile/data-voice-plan";
+            return "redirect:/mobile/add-data-plan";
         }
 
         DataPlanServiceModel dataPlanServiceModel = modelMapper.map(dataPlanBindingModel, DataPlanServiceModel.class);
@@ -227,12 +227,13 @@ public class MobileController {
                                       RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
+            if (!bindingResult.hasFieldErrors("name") || dataPlanFromRepo.isActive()){
+                redirectAttributes
+                        .addFlashAttribute("dataPlanFromRepo", dataPlanFromRepo)
+                        .addFlashAttribute("org.springframework.validation.BindingResult.dataPlanFromRepo", bindingResult);
 
-            redirectAttributes
-                    .addFlashAttribute("dataPlanFromRepo", dataPlanFromRepo)
-                    .addFlashAttribute("org.springframework.validation.BindingResult.dataPlanFromRepo", bindingResult);
-
-            return "redirect:/mobile/edit-data-plan/" + id + "/errors";
+                return "redirect:/mobile/edit-data-plan/" + id + "/errors";
+            }
         }
 
         dataPlanService.updatePlan(modelMapper.map(dataPlanFromRepo, DataPlanServiceModel.class));

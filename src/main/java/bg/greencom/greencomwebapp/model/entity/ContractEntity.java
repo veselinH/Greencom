@@ -44,7 +44,7 @@ public class ContractEntity extends BaseEntity{
         return this;
     }
 
-    @OneToMany
+    @ManyToMany
     public Set<AdditionalPackageEntity> getAdditionalPackageEntities() {
         return additionalPackageEntities;
     }

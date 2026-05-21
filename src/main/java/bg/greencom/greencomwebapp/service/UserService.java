@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.service;
 
+import bg.greencom.greencomwebapp.model.entity.TelevisionPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
@@ -8,6 +9,7 @@ import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import org.springframework.security.core.Authentication;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;

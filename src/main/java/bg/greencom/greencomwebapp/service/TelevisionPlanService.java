@@ -14,4 +14,6 @@ public interface TelevisionPlanService {
     TelevisionPlanViewModel findById(Long id);
 
     TelevisionPlanEntity findEntityById(Long planId);
+
+    void updateTelevisionPlan(TelevisionPlanServiceModel televisionPlanServiceModel);
 }

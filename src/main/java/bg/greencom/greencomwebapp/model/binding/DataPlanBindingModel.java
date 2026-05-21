@@ -2,7 +2,6 @@ package bg.greencom.greencomwebapp.model.binding;
 
 import bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum;
 import bg.greencom.greencomwebapp.validation.annotation.UniquePlanName;
-import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -12,39 +11,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataPlanBindingModel {
+@UniquePlanName
+public class DataPlanBindingModel extends PlanBindingModel{
 
-    private Long id;
-    private String name;
     private String planDuration;
     private String bgInternetMegabytes;
     private String roamingInternetMegabytes;
     private BigDecimal price;
     private List<MobileExtraEnum> mobileExtras = new ArrayList<>();
 
-
     public DataPlanBindingModel() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public DataPlanBindingModel setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    @UniquePlanName(groups = onCreate.class)
-    @NotBlank(message = "Plan name is mandatory")
-    @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
-    public String getName() {
-        return name;
-    }
-
-    public DataPlanBindingModel setName(String name) {
-        this.name = name;
-        return this;
     }
 
     @NotBlank(message = "Plan duration is mandatory")

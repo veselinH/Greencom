@@ -7,7 +7,6 @@ import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.service.InternetPlanService;
 import bg.greencom.greencomwebapp.service.UserService;
-import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,7 +53,7 @@ public class InternetController {
 
     @PostMapping("/add-internet-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addInternetPlanConfirm(@Validated(onCreate.class) InternetPlanBindingModel internetPlanBindingModel,
+    public String addInternetPlanConfirm(@Valid InternetPlanBindingModel internetPlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()){
@@ -93,12 +92,13 @@ public class InternetController {
                                           BindingResult bindingResult,
                                           RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()){
+            if (!bindingResult.hasFieldErrors("name") || internetPlanBindingModel.isActive()){
+                redirectAttributes
+                        .addFlashAttribute("internetPlanFromRepo", internetPlanBindingModel)
+                        .addFlashAttribute("org.springframework.validation.BindingResult.internetPlanFromRepo", bindingResult);
 
-            redirectAttributes
-                    .addFlashAttribute("internetPlanFromRepo", internetPlanBindingModel)
-                    .addFlashAttribute("org.springframework.validation.BindingResult.internetPlanFromRepo", bindingResult);
-
-            return "redirect:/internet/edit-internet-plan/" + id + "/errors";
+                return "redirect:/internet/edit-internet-plan/" + id + "/errors";
+            }
         }
 
         internetPlanService.updateInternetPlan(modelMapper.map(internetPlanBindingModel, InternetPlanServiceModel.class));

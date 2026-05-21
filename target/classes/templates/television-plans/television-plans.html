@@ -9,27 +9,36 @@
 <div class="container-fluid">
   <div class="container p-5">
     <div class="row">
-      <div th:each="t : ${allTelevisionPlans}" th:object="${t}" class="col-lg-4 col-md-12 mb-4">
-        <div class="card card1 h-100">
+      <div th:each="t : ${allTelevisionPlans}"
+           th:object="${t}"
+           th:if="${t.active} or ${#authorization.expression('hasRole(''ADMIN'')')}"
+           class="col-lg-4 col-md-12 mb-4">
+          <div class="card card1 h-100 position-relative">
+              <div class="position-absolute top-0 end-0 right-0 m-2" style="right: 10px; top: 10px;">
+                  <span th:text="|ID: *{id}|" class="badge badge-dark bg-dark">ID: 1</span>
+                  <span th:if="*{active}" class="badge badge-success bg-success">Active</span>
+                  <span th:unless="*{active}" class="badge badge-danger bg-danger">Inactive</span>
+              </div>
           <div class="card-body">
-
             <h5 th:text="*{name}" class="card-title"></h5>
             <small th:text="|*{planDuration} plan duration|" class='text-muted'></small>
             <br><br>
             <span th:text="*{price}" class="h2">$8</span>$/month
             <br><br>
-            <div class="d-grid my-3">
-              <button type="button"
-                      class="btn btn-outline-dark btn-block"
-                      data-toggle="modal"
-                      data-target="#signatureModal"
-                      th:data-id="${id}"
-                      th:data-action="@{/television/television-plan/{id}(id=*{id})}">
-                Sign
-              </button>
-            </div>
+              <div class="d-grid my-3">
+                  <button type="button"
+                          class="btn btn-outline-dark btn-block"
+                          th:classappend="!*{active} ? 'disabled' : ''"
+                          th:disabled="!*{active}"
+                          data-toggle="modal"
+                          data-target="#signatureModal"
+                          th:data-id="*{id}"
+                          th:data-action="@{/television/television-plan/{id}(id=*{id})}">
+                      Sign
+                  </button>
+              </div>
             <div class="d-grid my-3" sec:authorize="hasRole('ADMIN')">
-              <a th:href="@{/internet/edit-internet-plan/{id}(id=*{id})}"
+              <a th:href="@{/television/edit-television-plan/{id}(id=*{id})}"
                  class="btn btn-outline-dark btn-block">Edit</a>
             </div>
               <ul>

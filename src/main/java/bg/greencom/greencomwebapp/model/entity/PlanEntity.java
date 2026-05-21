@@ -16,13 +16,12 @@ public class PlanEntity extends BaseEntity {
     private BigDecimal price;
     private LocalDateTime createdOn;
     private LocalDateTime modifiedOn;
-
-//    private List<ContractEntity> contract;
+    private boolean isActive;
 
     public PlanEntity() {
     }
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     public String getName() {
         return name;
     }
@@ -72,13 +71,12 @@ public class PlanEntity extends BaseEntity {
         return this;
     }
 
-//    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
-//    public List<ContractEntity> getContract() {
-//        return contract;
-//    }
-//
-//    public void setSignature(List<ContractEntity> signature) {
-//        this.contract = contract;
-//    }
+    @Column(name = "is_active")
+    public boolean isActive() {
+        return isActive;
+    }
 
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }

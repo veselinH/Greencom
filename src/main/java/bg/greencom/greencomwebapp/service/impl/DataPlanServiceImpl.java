@@ -44,7 +44,8 @@ public class DataPlanServiceImpl implements DataPlanService {
         DataPlanEntity dataPlanEntity = modelMapper.map(dataPlanServiceModel, DataPlanEntity.class);
 
         dataPlanEntity
-                .setCreatedOn(LocalDateTime.now());
+                .setCreatedOn(LocalDateTime.now())
+                .setActive(true);
 
         if (dataPlanServiceModel.getMobileExtras() != null) {
             dataPlanEntity
@@ -56,13 +57,6 @@ public class DataPlanServiceImpl implements DataPlanService {
         }
 
         dataPlanRepository.saveAndFlush(dataPlanEntity);
-    }
-
-    @Override
-    public DataPlanEntity findByName(String name) {
-        return dataPlanRepository
-                .findByName(name)
-                .orElse(null);
     }
 
     @Override
@@ -122,9 +116,16 @@ public class DataPlanServiceImpl implements DataPlanService {
                         .stream()
                         .map(mobileExtraService::findByName)
                         .collect(Collectors.toList()))
-                .setPrice(dataPlanServiceModel.getPrice());
+                .setActive(dataPlanServiceModel.isActive());
 
         dataPlanRepository.saveAndFlush(dataPlan);
+    }
+
+    @Override
+    public DataPlanEntity findEntityById(Long id) {
+        return dataPlanRepository
+                .findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
     }
 
 

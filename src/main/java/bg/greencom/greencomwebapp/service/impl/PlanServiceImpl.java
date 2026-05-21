@@ -22,8 +22,8 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public PlanEntity findPlanByName(String name) {
-        return planRepository.findByName(name).orElse(null);
+    public PlanEntity findActivePlanByName(String name) {
+        return planRepository.findByNameAndActiveTrue(name).orElse(null);
     }
 
     @Override

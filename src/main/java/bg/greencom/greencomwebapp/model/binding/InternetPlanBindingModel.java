@@ -3,17 +3,15 @@ package bg.greencom.greencomwebapp.model.binding;
 import bg.greencom.greencomwebapp.model.entity.enums.InternetExtraEnum;
 import bg.greencom.greencomwebapp.model.entity.enums.InternetTypeEnum;
 import bg.greencom.greencomwebapp.validation.annotation.UniquePlanName;
-import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InternetPlanBindingModel {
+@UniquePlanName
+public class InternetPlanBindingModel extends PlanBindingModel {
 
-    private Long id;
-    private String name;
     private String planDuration;
     private Integer downloadMbps;
     private Integer uploadMbps;
@@ -22,25 +20,6 @@ public class InternetPlanBindingModel {
     private List<InternetExtraEnum> internetExtras = new ArrayList<>();
 
     public InternetPlanBindingModel() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @UniquePlanName(groups = onCreate.class)
-    @NotBlank(message = "Plan name is mandatory")
-    @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @NotBlank(message = "Plan duration is mandatory")

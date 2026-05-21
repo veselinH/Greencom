@@ -14,9 +14,9 @@ public interface VoicePlanService {
 
     VoicePlanServiceModel addPlan(VoicePlanServiceModel voicePlanServiceModel);
 
-    VoicePlanEntity findByName(String name);
-
     void updatePlan(VoicePlanServiceModel voicePlanServiceModel);
 
     VoicePlanViewModel findById(Long id);
+
+    VoicePlanEntity findEntityById(Long id);
 }

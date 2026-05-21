@@ -7,7 +7,7 @@ import bg.greencom.greencomwebapp.model.view.TelevisionPlanViewModel;
 import bg.greencom.greencomwebapp.service.AdditionalPackageService;
 import bg.greencom.greencomwebapp.service.TelevisionPlanService;
 import bg.greencom.greencomwebapp.service.UserService;
-import bg.greencom.greencomwebapp.validation.group.onCreate;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -58,7 +58,7 @@ public class TelevisionController {
 
     @PostMapping("/add-television-plan")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addTelevisionPlanConfirm(@Validated(onCreate.class) TelevisionPlanBindingModel televisionPlanBindingModel,
+    public String addTelevisionPlanConfirm(@Valid TelevisionPlanBindingModel televisionPlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()){
@@ -99,5 +99,42 @@ public class TelevisionController {
         return "redirect:/television/television-plans";
     }
 
+    @GetMapping("/edit-television-plan/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editTelevisionPlan(@PathVariable Long id, Model model) {
+        TelevisionPlanViewModel televisionPlanFromRepo = modelMapper.map(televisionPlanService.findById(id), TelevisionPlanViewModel.class);
+
+        model.addAttribute("televisionPlanFromRepo", televisionPlanFromRepo);
+
+        return "television-plans/edit-television-plan";
+    }
+
+    @GetMapping("/edit-television-plan/{id}/errors")
+    public String editTelevisionPlanError(@PathVariable Long id){
+
+        return "television-plans/edit-television-plan";
+    }
+
+    @PatchMapping("/edit-television-plan/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editTelevisionPlanConfirm(@PathVariable Long id,
+                                          @Valid TelevisionPlanBindingModel televisionPlanBindingModel,
+                                          BindingResult bindingResult,
+                                          RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()){
+
+            if (!bindingResult.hasFieldErrors("global") || televisionPlanBindingModel.isActive()) {
+                redirectAttributes
+                        .addFlashAttribute("televisionPlanFromRepo", televisionPlanBindingModel)
+                        .addFlashAttribute("org.springframework.validation.BindingResult.televisionPlanFromRepo", bindingResult);
+
+                return "redirect:/television/edit-television-plan/" + id + "/errors";
+            }
+        }
+
+        televisionPlanService.updateTelevisionPlan(modelMapper.map(televisionPlanBindingModel, TelevisionPlanServiceModel.class));
+
+        return "redirect:/television/television-plans";
+    }
 
 }

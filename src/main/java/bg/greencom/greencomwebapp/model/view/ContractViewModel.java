@@ -1,10 +1,13 @@
 package bg.greencom.greencomwebapp.model.view;
 
+import java.util.Set;
+
 public class ContractViewModel {
 
     private Long id;
     private Long planId;
     private Long userId;
+    private Set<AdditionalPackageViewModel> additionalPackageViewModels;
 
     public Long getId() {
         return id;
@@ -28,5 +31,14 @@ public class ContractViewModel {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+
+    public Set<AdditionalPackageViewModel> getAdditionalPackageViewModels() {
+        return additionalPackageViewModels;
+    }
+
+    public void setAdditionalPackageViewModels(Set<AdditionalPackageViewModel> additionalPackageViewModels) {
+        this.additionalPackageViewModels = additionalPackageViewModels;
     }
 }

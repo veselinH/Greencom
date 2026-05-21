@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.service.impl;
 
+import bg.greencom.greencomwebapp.model.entity.AdditionalPackageEntity;
 import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.entity.PlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
@@ -11,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -26,7 +28,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void addContract(PlanEntity planEntity, UserEntity userEntity, byte[] signature) {
+    public void addContract(PlanEntity planEntity, UserEntity userEntity, Set<AdditionalPackageEntity> additionalPackageEntities, byte[] signature) {
         ContractEntity newContract = new ContractEntity();
         newContract
                 .setUser(userEntity)
@@ -34,6 +36,7 @@ public class ContractServiceImpl implements ContractService {
                 .setSignedOn(LocalDate.now())
                 .setSignSignature(signature);
         newContract.setActive(true);
+        newContract.setAdditionalPackageEntities(additionalPackageEntities);
 
         contractRepository.saveAndFlush(newContract);
     }

@@ -1,18 +1,13 @@
 package bg.greencom.greencomwebapp.model.binding;
 
-import bg.greencom.greencomwebapp.model.entity.enums.AdditionalPackageEnum;
 import bg.greencom.greencomwebapp.validation.annotation.UniquePlanName;
-import bg.greencom.greencomwebapp.validation.group.onCreate;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
-public class TelevisionPlanBindingModel {
+@UniquePlanName
+public class TelevisionPlanBindingModel extends PlanBindingModel{
 
-    private Long id;
-    private String name;
     private String planDuration;
     private BigDecimal price;
     private String televisionType;
@@ -20,25 +15,6 @@ public class TelevisionPlanBindingModel {
     private Integer channelCountHD;
 
     public TelevisionPlanBindingModel() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @UniquePlanName(groups = onCreate.class)
-    @NotBlank(message = "Plan name is mandatory")
-    @Size(min = 5, max = 9, message = "Size must be between 5 and 9")
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @NotBlank(message = "Plan duration is mandatory")

@@ -69,7 +69,8 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
                 .setName(televisionPlanServiceModel.getName())
                 .setPlanDuration(televisionPlanServiceModel.getPlanDuration())
                 .setPrice(televisionPlanServiceModel.getPrice())
-                .setCreatedOn(LocalDateTime.now());
+                .setCreatedOn(LocalDateTime.now())
+                .setActive(true);
 
         televisionPlanRepository.saveAndFlush(televisionPlan);
 
@@ -85,5 +86,22 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
         return televisionPlanRepository
                 .findById(planId)
                 .orElseThrow(() -> new ObjectNotFoundException(planId, OBJECT_TYPE));
+    }
+
+    @Override
+    public void updateTelevisionPlan(TelevisionPlanServiceModel televisionPlanServiceModel) {
+        TelevisionPlanEntity televisionPlanEntity =
+                televisionPlanRepository
+                        .findById(televisionPlanServiceModel.getId())
+                        .orElseThrow(() -> new ObjectNotFoundException(televisionPlanServiceModel.getId(), OBJECT_TYPE));
+
+        televisionPlanEntity
+                .setChannelCount(televisionPlanServiceModel.getChannelCount())
+                .setChannelCountInHD(televisionPlanEntity.getChannelCountInHD())
+                .setModifiedOn(LocalDateTime.now())
+                .setPlanDuration(televisionPlanServiceModel.getPlanDuration())
+                .setActive(televisionPlanServiceModel.isActive());
+
+        televisionPlanRepository.saveAndFlush(televisionPlanEntity);
     }
 }

@@ -16,6 +16,7 @@ public class TelevisionPlanViewModel {
     private String televisionType;
     private Integer channelCount;
     private Integer channelCountHD;
+    private boolean isActive;
     private Set<AdditionalPackageEntity> additionalPackageEntities = new HashSet<>();
 
     public Long getId() {
@@ -72,6 +73,14 @@ public class TelevisionPlanViewModel {
 
     public void setChannelCountHD(Integer channelCountHD) {
         this.channelCountHD = channelCountHD;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public Set<AdditionalPackageEntity> getAdditionalPackageEntities() {

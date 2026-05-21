@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface VoicePlanRepository extends JpaRepository<VoicePlanEntity, Long> {
 
-    @Query("SELECT v FROM VoicePlanEntity v ORDER BY v.price")
+    @Query("SELECT v FROM VoicePlanEntity v ORDER BY v.active DESC, v.price ASC, v.name ASC")
     List<VoicePlanEntity> findAllVoicePlansOrderedByPrice();
 
     Optional<VoicePlanEntity> findByName(String name);

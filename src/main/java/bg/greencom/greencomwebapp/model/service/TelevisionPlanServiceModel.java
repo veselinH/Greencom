@@ -16,6 +16,7 @@ public class TelevisionPlanServiceModel {
     private TelevisionTypeEnum televisionType;
     private Integer channelCount;
     private Integer channelCountHD;
+    private boolean isActive;
     private Set<AdditionalPackageEnum> additionalPackages = new HashSet<>();
 
     public TelevisionPlanServiceModel() {
@@ -75,6 +76,14 @@ public class TelevisionPlanServiceModel {
 
     public void setChannelCountHD(Integer channelCountHD) {
         this.channelCountHD = channelCountHD;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public Set<AdditionalPackageEnum> getAdditionalPackages() {

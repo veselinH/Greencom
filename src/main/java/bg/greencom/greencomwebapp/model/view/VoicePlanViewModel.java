@@ -17,6 +17,7 @@ public class VoicePlanViewModel {
     private BigDecimal price;
     private List<MobileExtraEntity> mobileExtras = new ArrayList<>();
     private Long contractId;
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -105,5 +106,13 @@ public class VoicePlanViewModel {
 
     public void setContractId(Long contractId) {
         this.contractId = contractId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

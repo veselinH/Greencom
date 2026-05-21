@@ -14,8 +14,8 @@ public interface InternetPlanRepository extends JpaRepository<InternetPlanEntity
       @Query("SELECT i FROM InternetPlanEntity i " +
              "JOIN FETCH i.internetType " +
              "LEFT JOIN FETCH i.internetExtras " +
-              "ORDER BY i.price")
+              "ORDER BY i.active DESC, i.price ASC, i.name ASC")
       List<InternetPlanEntity> findAllInternetPlansOrderedByPrice();
 
-      Optional<InternetPlanEntity> findByName(String name);
+//      Optional<InternetPlanEntity> findByName(String name);
 }

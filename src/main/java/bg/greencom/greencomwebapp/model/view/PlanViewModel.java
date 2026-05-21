@@ -6,6 +6,7 @@ public class PlanViewModel {
     private String name;
     private String planDuration;
     private BigDecimal price;
+    private boolean isActive;
 
     public String getName() {
         return name;
@@ -29,5 +30,13 @@ public class PlanViewModel {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

@@ -8,10 +8,10 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = UniquePlanNameValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniquePlanName {
-    String message() default "Plan name already exists";
+    String message() default "Active plan with the same name already exists";
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};

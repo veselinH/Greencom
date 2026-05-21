@@ -2,8 +2,6 @@ package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.*;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
-import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
-import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.*;
@@ -41,10 +39,9 @@ public class UserServiceImpl implements UserService {
     private final ContractService contractService;
     private final InternetPlanService internetPlanService;
     private final TelevisionPlanService televisionPlanService;
-    private final TelevisionPlanRepository televisionPlanRepository;
     private final AdditionalPackageService additionalPackageService;
 
-    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService, InternetPlanService internetPlanService, TelevisionPlanService televisionPlanService, TelevisionPlanRepository televisionPlanRepository, AdditionalPackageService additionalPackageService) {
+    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService, InternetPlanService internetPlanService, TelevisionPlanService televisionPlanService, AdditionalPackageService additionalPackageService) {
         this.userRoleService = userRoleService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
@@ -56,7 +53,6 @@ public class UserServiceImpl implements UserService {
         this.contractService = contractService;
         this.internetPlanService = internetPlanService;
         this.televisionPlanService = televisionPlanService;
-        this.televisionPlanRepository = televisionPlanRepository;
         this.additionalPackageService = additionalPackageService;
     }
 
@@ -126,7 +122,7 @@ public class UserServiceImpl implements UserService {
 //    Add voice plan to the user and increase the debt
 //      Retrieve both user and voicePlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
-        VoicePlanEntity voicePlanFromDB = voicePlanService.findByName(voicePlan.getName());
+        VoicePlanEntity voicePlanFromDB = voicePlanService.findEntityById(voicePlan.getId());
 //      Add the new plan to the user entity
         user.getUserVoiceMobilePlans().add(voicePlanFromDB);
 //      Increase the total debt
@@ -136,7 +132,7 @@ public class UserServiceImpl implements UserService {
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
 //      Save the contract
-        contractService.addContract(voicePlanFromDB, user, signSignature);
+        contractService.addContract(voicePlanFromDB, user,null,  signSignature);
 
     }
 
@@ -145,7 +141,7 @@ public class UserServiceImpl implements UserService {
 //      Add data plan to the user and increase the debt
 //      Retrieve both user and dataPlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
-        DataPlanEntity dataPlanFromDB = dataPlanService.findByName(dataPlan.getName());
+        DataPlanEntity dataPlanFromDB = dataPlanService.findEntityById(dataPlan.getId());
 //      Add the new plan to the user entity
         user.getUserDataPlans().add(dataPlanFromDB);
 //      Increase the total debt
@@ -155,7 +151,7 @@ public class UserServiceImpl implements UserService {
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
 //      Save the contract
-        contractService.addContract(dataPlanFromDB, user, signSignature);
+        contractService.addContract(dataPlanFromDB, user, null, signSignature);
     }
 
     @Override
@@ -171,6 +167,12 @@ public class UserServiceImpl implements UserService {
 //        Lower the dept of the user
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.subtract(userPlan.getPrice());
+        if (userContract.getAdditionalPackageViewModels() != null) {
+            for (AdditionalPackageViewModel additionalPackage : userContract.getAdditionalPackageViewModels()){
+                totalDebt = totalDebt.subtract(additionalPackage.getPrice());
+            }
+        }
+
         user.setTotalDebtPerMonth(totalDebt);
 
         userRepository.saveAndFlush(user);
@@ -223,7 +225,7 @@ public class UserServiceImpl implements UserService {
 //      Add internet plan to the user and increase the debt
 //      Retrieve both user and internetPlan from the database
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
-        InternetPlanEntity internetPlanFromDB = internetPlanService.findByName(internetPlan.getName());
+        InternetPlanEntity internetPlanFromDB = internetPlanService.findEntityById(internetPlan.getId());
 //      Add the new plan to the user entity
         user.getUserInternetPlans().add(internetPlanFromDB);
 //      Increase the total debt
@@ -233,7 +235,7 @@ public class UserServiceImpl implements UserService {
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
 //      Save the contract
-        contractService.addContract(internetPlanFromDB, user, signSignature);
+        contractService.addContract(internetPlanFromDB, user, null, signSignature);
     }
 
     @Override
@@ -265,15 +267,16 @@ public class UserServiceImpl implements UserService {
 //      Add the new plan to the user entity
         user.getUserTelevisionPlans().add(televisionPlanFromDB);
 //      Increase the total debt
-//        TODO: increase the debt also for every additional package
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(televisionPlanFromDB.getPrice());
+        for (AdditionalPackageEntity packageEntity : additionalPackagesFromDB) {
+            totalDebt = totalDebt.add(packageEntity.getPrice());
+        }
         user.setTotalDebtPerMonth(totalDebt);
 //      Save to database by updating the user
         userRepository.saveAndFlush(user);
 //      Save the contract
-//        TODO: add additionalpackages to addContract() and check if the other plans can have it as null
-        contractService.addContract(televisionPlanFromDB, user, signSignature);
+        contractService.addContract(televisionPlanFromDB, user, additionalPackagesFromDB, signSignature);
     }
 
 }

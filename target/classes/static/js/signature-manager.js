@@ -14,16 +14,16 @@ $(document).ready(function() {
     $modal.on('shown.bs.modal', function (event) {
         const button = $(event.relatedTarget);
 
-        // 1. Find the card that contains the button
+        // Find the card that contains the button
         const $card = button.closest('.card-body');
 
-        // 2. Find all checked 'selectedExtras' inside THIS card
+        // Find all checked 'selectedExtras' inside THIS card
         const selectedIds = $card.find('input[name="selectedExtras"]:checked')
             .map(function() { return this.value; })
             .get()
             .join(','); // Creates "1,2,3"
 
-        // 3. Store the list of IDs in your hidden field
+        // Store the list of IDs in your hidden field
         $('#hiddenSelectedExtras').val(selectedIds);
 
         // Pull configuration from the button that clicked it

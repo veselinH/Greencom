@@ -16,6 +16,7 @@ public class InternetPlanViewModel {
     private String internetType;
     private BigDecimal price;
     private List<InternetExtrasEntity> internetExtras = new ArrayList<>();
+    private boolean isActive;
 
     private Long contractId;
 
@@ -89,5 +90,13 @@ public class InternetPlanViewModel {
 
     public void setContractId(Long contractId) {
         this.contractId = contractId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

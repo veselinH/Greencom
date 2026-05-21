@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head"><title>Edit internet plan</title></head>
+<head th:replace="fragments/commons::head"><title>Edit television plan</title></head>
 <body>
 <header th:replace="fragments/commons::navbar"></header>
 
@@ -11,10 +11,10 @@
             <div class="col-12 col-md-9 col-lg-7 col-xl-6">
                 <div class="card" style="border-radius: 15px;">
                     <div class="card-body p-5">
-                        <h2 class="text-uppercase text-center mb-5">Edit internet plan</h2>
+                        <h2 class="text-uppercase text-center mb-5">Edit television plan</h2>
 
-                        <form th:object="${internetPlanFromRepo}"
-                              th:action="@{/internet/edit-internet-plan/{id}(id=*{id})}"
+                        <form th:object="${televisionPlanFromRepo}"
+                              th:action="@{/television/edit-television-plan/{id}(id=*{id})}"
                               th:method="patch">
 
                             <div class="form-outline mb-4">
@@ -45,32 +45,6 @@
 
                             <div class="form-outline mb-4">
                                 <input
-                                        th:field="*{downloadMbps}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="downloadMbps"
-                                        aria-describedby="downloadMbpsHelper">
-                                <small th:if="${#fields.hasErrors('downloadMbps')}" th:errors="*{downloadMbps}"
-                                       id="downloadMbpsHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="downloadMbps">Download speed</label>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{uploadMbps}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="uploadMbps"
-                                        aria-describedby="uploadMbpsHelper">
-                                <small th:if="${#fields.hasErrors('uploadMbps')}" th:errors="*{uploadMbps}"
-                                       id="uploadMbpsHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="uploadMbps">Upload speed</label>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <input
                                         th:field="*{price}"
                                         th:errorclass="'is-invalid bg-danger'"
                                         type="text" class="form-control form-control-lg" id="price"
@@ -80,6 +54,32 @@
                                        class="invalid-feedback bg-danger text-light rounded">
                                 </small>
                                 <label class="form-label" for="price">Price</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{channelCount}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="channelCount"
+                                        aria-describedby="channelCountHelper">
+                                <small th:if="${#fields.hasErrors('channelCount')}" th:errors="*{channelCount}"
+                                       id="channelCountHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="channelCount">Channel count</label>
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <input
+                                        th:field="*{channelCountHD}"
+                                        th:errorclass="'is-invalid bg-danger'"
+                                        type="text" class="form-control form-control-lg" id="channelCountHD"
+                                        aria-describedby="channelCountHDHelper">
+                                <small th:if="${#fields.hasErrors('channelCountHD')}" th:errors="*{channelCountHD}"
+                                       id="channelCountHDHelper"
+                                       class="invalid-feedback bg-danger text-light rounded">
+                                </small>
+                                <label class="form-label" for="channelCountHD">Channel count HD</label>
                             </div>
 
                             <div class="form-check form-switch mb-4">
@@ -97,7 +97,7 @@
                                 </button>
                                 <a style="margin-left: 15px" type="button"
                                    class="btn btn-success btn-block btn-lg text-body"
-                                   th:href="@{/internet/internet-plans}">Cancel
+                                   th:href="@{/television/television-plans}">Cancel
                                 </a>
                             </div>
 
