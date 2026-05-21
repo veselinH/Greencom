@@ -14,7 +14,7 @@
            th:if="${t.active} or ${#authorization.expression('hasRole(''ADMIN'')')}"
            class="col-lg-4 col-md-12 mb-4">
           <div class="card card1 h-100 position-relative">
-              <div class="position-absolute top-0 end-0 right-0 m-2" style="right: 10px; top: 10px;">
+              <div class="position-absolute top-0 end-0 right-0 m-2" style="right: 10px; top: 10px;" sec:authorize="hasRole('ADMIN')">
                   <span th:text="|ID: *{id}|" class="badge badge-dark bg-dark">ID: 1</span>
                   <span th:if="*{active}" class="badge badge-success bg-success">Active</span>
                   <span th:unless="*{active}" class="badge badge-danger bg-danger">Inactive</span>
