@@ -5,6 +5,7 @@ import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.entity.PlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
+import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.repository.ContractRepository;
 import bg.greencom.greencomwebapp.service.ContractService;
@@ -43,7 +44,17 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ContractViewModel findById(Long contractId) {
-        return modelMapper.map(contractRepository.findById(contractId).orElse(null), ContractViewModel.class);
+        ContractEntity contractEntity = contractRepository.findById(contractId).orElse(null);
+        ContractViewModel contractView = modelMapper.map(contractEntity, ContractViewModel.class);
+
+        if (contractEntity != null) {
+            for (AdditionalPackageEntity additionalPackageEntity : contractEntity.getAdditionalPackageEntities()) {
+                AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackageEntity, AdditionalPackageViewModel.class);
+                contractView.getAdditionalPackageViewModels().add(additionalPackageViewModel);
+            }
+        }
+
+        return contractView;
     }
 
     @Override
