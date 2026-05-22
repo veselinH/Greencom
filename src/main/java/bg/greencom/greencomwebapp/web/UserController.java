@@ -118,7 +118,9 @@ public class UserController {
         model
                 .addAttribute("userVoicePlans", userService.getAllVoicePlans(user.getUsername()))
                 .addAttribute("userDataPlans", userService.getAllDataPlans(user.getUsername()))
-                .addAttribute("userInternetPlans", userService.getAllInternetPlans(user.getUsername()));
+                .addAttribute("userInternetPlans", userService.getAllInternetPlans(user.getUsername()))
+                .addAttribute("userTelevisionPlans", userService.getAllTelevisionPlans(user.getUsername()))
+                .addAttribute("currentUser", userService.getUserInfo(user.getUsername()));
 
         return "profile";
     }
