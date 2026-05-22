@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.model.view;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class ContractViewModel {
@@ -7,7 +8,7 @@ public class ContractViewModel {
     private Long id;
     private Long planId;
     private Long userId;
-    private Set<AdditionalPackageViewModel> additionalPackageViewModels;
+    private Set<AdditionalPackageViewModel> additionalPackageViewModels = new HashSet<>();
 
     public Long getId() {
         return id;
