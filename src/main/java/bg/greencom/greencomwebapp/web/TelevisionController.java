@@ -74,18 +74,9 @@ public class TelevisionController {
         return "redirect:/television/television-plans";
     }
 
-//    @GetMapping("/television-plan/{id}")
-//    public String signtelevisionPlan(@PathVariable Long id, Model model){
-//        TelevisionPlanViewModel televisionPlanViewModel = televisionPlanService.findById(id);
-//
-//        model.addAttribute("televisionPlanFromRepo", televisionPlanViewModel);
-//
-//        return "television-plans/television-plans";
-//    }
-
     //    Sign a contract to the user
     @PatchMapping("/television-plan/{id}")
-    public String signtelevisionPlanConfirm(@PathVariable Long id,
+    public String signTelevisionPlanConfirm(@PathVariable Long id,
                                           @RequestParam(name = "selectedExtras", required = false) Set<Long> additionalPackageIds,
                                           @AuthenticationPrincipal GreencomUserDetails userDetails,
                                           @RequestParam String signature) {
