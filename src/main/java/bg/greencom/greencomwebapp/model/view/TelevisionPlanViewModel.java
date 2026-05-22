@@ -17,7 +17,8 @@ public class TelevisionPlanViewModel {
     private Integer channelCount;
     private Integer channelCountHD;
     private boolean isActive;
-    private Set<AdditionalPackageEntity> additionalPackageEntities = new HashSet<>();
+    private Set<AdditionalPackageViewModel> additionalPackages = new HashSet<>();
+    private Long contractId;
 
     public Long getId() {
         return id;
@@ -83,11 +84,19 @@ public class TelevisionPlanViewModel {
         isActive = active;
     }
 
-    public Set<AdditionalPackageEntity> getAdditionalPackageEntities() {
-        return additionalPackageEntities;
+    public Set<AdditionalPackageViewModel> getAdditionalPackages() {
+        return additionalPackages;
     }
 
-    public void setAdditionalPackageEntities(Set<AdditionalPackageEntity> additionalPackageEntities) {
-        this.additionalPackageEntities = additionalPackageEntities;
+    public void setAdditionalPackages(Set<AdditionalPackageViewModel> additionalPackages) {
+        this.additionalPackages = additionalPackages;
+    }
+
+    public Long getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(Long contractId) {
+        this.contractId = contractId;
     }
 }
