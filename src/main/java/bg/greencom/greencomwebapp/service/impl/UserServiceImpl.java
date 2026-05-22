@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Service
@@ -277,6 +274,50 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
 //      Save the contract
         contractService.addContract(televisionPlanFromDB, user, additionalPackagesFromDB, signSignature);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TelevisionPlanViewModel> getAllTelevisionPlans(String username) {
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return Collections.emptyList();
+
+        // Map from Contract to ViewModels to preserve the unique Contract ID
+        return user.getUserContracts().stream()
+                .filter(ContractEntity::isActive)
+                .filter(contract -> contract.getPlan() instanceof TelevisionPlanEntity)
+                .map(contract -> {
+                    TelevisionPlanViewModel viewModel = modelMapper.map(contract.getPlan(), TelevisionPlanViewModel.class);
+                    viewModel.setTelevisionType(((TelevisionPlanEntity) contract.getPlan()).getTelevisionType().getName().getValue());
+                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+                    if (contract.getAdditionalPackageEntities() != null) {
+                        for (AdditionalPackageEntity additionalPackage : contract.getAdditionalPackageEntities()) {
+                            AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackage, AdditionalPackageViewModel.class);
+                            additionalPackageViewModel.setName(additionalPackage.getName().getValue());
+                            viewModel.getAdditionalPackages().add(additionalPackageViewModel);
+                            viewModel.setPrice(viewModel.getPrice().add(additionalPackage.getPrice()));
+                        }
+                    }
+                    return viewModel;
+                })
+                .toList();
+    }
+
+    @Override
+    public UserViewModel getUserInfo(String username) {
+
+        UserEntity userFromRepo = userRepository.findByUsername(username).orElse(null);
+        UserViewModel userViewModel = new UserViewModel();
+        if (userFromRepo != null){
+            userViewModel
+                    .setUsername(userFromRepo.getUsername())
+                    .setFirstName(userFromRepo.getFirstName())
+                    .setLastName(userFromRepo.getLastName())
+                    .setEmail(userFromRepo.getEmail())
+                    .setTotalDebtPerMonth(userFromRepo.getTotalDebtPerMonth());
+        }
+
+        return userViewModel;
     }
 
 }
