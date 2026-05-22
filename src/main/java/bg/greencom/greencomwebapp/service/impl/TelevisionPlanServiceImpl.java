@@ -6,6 +6,7 @@ import bg.greencom.greencomwebapp.model.entity.TelevisionPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.TelevisionTypeEntity;
 import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.service.TelevisionPlanServiceModel;
+import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.TelevisionPlanViewModel;
 import bg.greencom.greencomwebapp.repository.TelevisionPlanRepository;
 import bg.greencom.greencomwebapp.repository.TelevisionTypeRepository;
@@ -44,12 +45,12 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
                     viewModel.setTelevisionType(televisionPlanEntity.getTelevisionType().getName().getValue());
 
 //                  Sort the additional package extras
-                    Set<AdditionalPackageEntity> sortedExtras = viewModel.getAdditionalPackageEntities()
+                    Set<AdditionalPackageViewModel> sortedExtras = viewModel.getAdditionalPackages()
                             .stream()
                             .sorted() // Uses TelevisionExtras.compareTo()
                             .collect(Collectors.toCollection(LinkedHashSet::new));
 
-                    viewModel.setAdditionalPackageEntities(sortedExtras);
+                    viewModel.setAdditionalPackages(sortedExtras);
 
                     return viewModel;
                 })
