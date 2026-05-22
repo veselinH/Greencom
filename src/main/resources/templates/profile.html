@@ -15,7 +15,6 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <!-- This is the 'box' (Bootstrap Card) -->
             <div class="card shadow">
                 <div class="card-header bg-success text-white text-center">
                     <h3>User Profile</h3>
@@ -24,19 +23,23 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <strong>Username:</strong>
-                            <span th:text="${#authentication.name}">Username</span>
+                            <span th:text="${currentUser.username}">Username</span>
                         </li>
                         <li class="list-group-item">
                             <strong>First Name:</strong>
-                            <span th:text="${#authentication.principal.firstName}">First Name</span>
+                            <span th:text="${currentUser.firstName}">First Name</span>
                         </li>
                         <li class="list-group-item">
                             <strong>Last Name:</strong>
-                            <span th:text="${#authentication.principal.lastName}">Last Name</span>
+                            <span th:text="${currentUser.lastName}">Last Name</span>
                         </li>
                         <li class="list-group-item">
                             <strong>Email:</strong>
-                            <span th:text="${#authentication.principal.email}">Email</span>
+                            <span th:text="${currentUser.email}">Email</span>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Total debt per month:</strong>
+                            <span th:text="${currentUser.totalDebtPerMonth}">$0.00</span>
                         </li>
                     </ul>
                 </div>
@@ -155,7 +158,7 @@
                             <li th:text="|*{internetType} type of internet|"></li>
                             <li th:text="|*{downloadMbps} download speed|"></li>
                             <li th:text="|*{uploadMbps} upload speed|"></li>
-                            <li class="dropdown-divider">Mobile extras</li>
+                            <li class="dropdown-divider">Internet extras</li>
                             <li th:each="e : ${i.getInternetExtras()}" th:object="${e}"
                                 th:text="${e.getName().getValue()}"></li>
                         </ul>
@@ -166,6 +169,45 @@
     </div>
     <div th:if="${userInternetPlans.isEmpty()}" class="alert alert-warning text-center">
         No internet plans found for your account.
+    </div>
+</div>
+    <div class="container-fluid">
+        <div class="container p-5">
+            <h2 class="text-center mb-4">My Television Plans</h2>
+            <div class="row">
+                <div th:each="t : ${userTelevisionPlans}" th:object="${t}" class="col-lg-4 col-md-12 mb-4">
+                    <div class="card card1 h-100">
+                        <div class="card-body">
+
+                            <h5 th:text="*{name}" class="card-title"></h5>
+                            <small th:text="|*{planDuration} plan duration|" class='text-muted'></small>
+                            <br><br>
+                            <span th:text="*{price}" class="h2">$8</span>$/month
+                            <br><br>
+                            <div class="d-grid my-3">
+                                <button type="button"
+                                        class="btn btn-outline-dark btn-block"
+                                        data-toggle="modal"
+                                        data-target="#signatureModal"
+                                        th:data-id="${id}"
+                                        th:data-action="@{/users/unsign/plan/{id}(id=*{contractId})}">
+                                    Unsign
+                                </button>
+                            </div>
+                            <ul>
+                                <li th:text="|*{channelCount} channels |"></li>
+                                <li th:text="|*{channelCountHD} HD channels|"></li>
+                                <li class="dropdown-divider">Mobile extras</li>
+                                <li th:each="e : ${t.getAdditionalPackages()}" th:object="${e}"
+                                    th:text="${e.getName()}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div th:if="${userInternetPlans.isEmpty()}" class="alert alert-warning text-center">
+        No television plans found for your account.
     </div>
 </div>
 <footer th:replace="fragments/commons::footer"></footer>
