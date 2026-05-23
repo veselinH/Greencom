@@ -6,6 +6,7 @@ import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.*;
 import org.springframework.security.core.Authentication;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -38,4 +39,8 @@ public interface UserService {
     List<TelevisionPlanViewModel> getAllTelevisionPlans(String username);
 
     UserViewModel getUserInfo(String username);
+
+    boolean isPenaltyRequired(Long id);
+
+    BigDecimal calculatePenalty(Long id);
 }

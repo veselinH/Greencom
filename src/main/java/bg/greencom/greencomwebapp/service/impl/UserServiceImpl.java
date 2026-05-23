@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -155,12 +157,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String unsignPlan(Long contractId, String username, byte[] unsignSignature) {
 
-        final StringBuilder planName = new StringBuilder();
+        StringBuilder planName = new StringBuilder();
 
         UserEntity user = findUserByUsername(username);
         ContractViewModel userContract = contractService.findById(contractId);
         PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
-        planName.append(userPlan.getName());
+
 //        Lower the dept of the user
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.subtract(userPlan.getPrice());
@@ -176,6 +178,7 @@ public class UserServiceImpl implements UserService {
 
         contractService.deactivateContract(contractId, unsignSignature);
 
+        planName.append(userPlan.getName());
         return planName.toString();
 
     }
@@ -318,6 +321,41 @@ public class UserServiceImpl implements UserService {
         }
 
         return userViewModel;
+    }
+
+    @Override
+    @Transactional
+    public boolean isPenaltyRequired(Long id) {
+
+        ContractViewModel userContract = contractService.findById(id);
+        PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
+
+//        Check if contract has expired
+        long monthsBetween = ChronoUnit.MONTHS.between(userContract.getSignedOn(), LocalDate.now());
+//        Contract has not expired
+        return monthsBetween <= Integer.parseInt(userPlan.getPlanDuration());
+    }
+
+    @Override
+    @Transactional
+    public BigDecimal calculatePenalty(Long id) {
+
+        BigDecimal penaltyAmount = BigDecimal.ZERO;
+        BigDecimal penaltyMonths = BigDecimal.ZERO;
+
+        ContractViewModel userContract = contractService.findById(id);
+        PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
+
+        long monthsBetween = ChronoUnit.MONTHS.between(userContract.getSignedOn(), LocalDate.now());
+
+        if (monthsBetween <= Long.parseLong(userPlan.getPlanDuration()) - 3){
+            penaltyMonths = BigDecimal.valueOf(3);
+        } else {
+            penaltyMonths = BigDecimal.valueOf(Long.parseLong(userPlan.getPlanDuration()) - monthsBetween);
+        }
+        penaltyAmount = userPlan.getPrice().multiply(penaltyMonths);
+
+        return penaltyAmount;
     }
 
 }
