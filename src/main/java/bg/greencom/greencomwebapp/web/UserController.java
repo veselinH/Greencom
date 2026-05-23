@@ -21,6 +21,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.Base64;
 
 @Controller
@@ -131,16 +132,51 @@ public class UserController {
                                    @RequestParam String signature,
                                    RedirectAttributes redirectAttributes) {
 
-//        Decoding the signature image
-        String base64Data = signature.split(",")[1];
-        byte[] unsignSignature = Base64.getDecoder().decode(base64Data);
-        String unsignedContractPlanName = userService.unsignPlan(id, user.getUsername(), unsignSignature);
+        if (userService.isPenaltyRequired(id)){
+            BigDecimal penaltyAmount = userService.calculatePenalty(id);
 
-        if (!unsignedContractPlanName.isEmpty()){
-            redirectAttributes.addFlashAttribute("successMessage", "Plan '" + unsignedContractPlanName + "' successfully unsigned.");
+            redirectAttributes
+                    .addFlashAttribute("showPenalty", true)
+                    .addFlashAttribute("penaltyAmount", penaltyAmount)
+                    .addFlashAttribute("penaltyContractId", id)
+                    .addFlashAttribute("tempSignature", signature);
+
+            return "redirect:/users/profile";
         }
 
+        executeUnsign(id, user.getUsername(), signature, redirectAttributes);
         return "redirect:/users/profile";
+    }
+
+    @PatchMapping("/confirm-unsign")
+    public String confirmUnsign(@RequestParam Long contractId,
+                                @RequestParam String signature,
+                                @RequestParam(required = false) String cardNumber,
+                                @AuthenticationPrincipal GreencomUserDetails user,
+                                RedirectAttributes redirectAttributes) {
+
+        if (cardNumber != null && cardNumber.length() < 16) {
+            return "redirect:/users/profile";
+        }
+
+        executeUnsign(contractId, user.getUsername(), signature, redirectAttributes);
+        return "redirect:/users/profile";
+    }
+
+    private void executeUnsign(Long id, String username, String signature, RedirectAttributes redirectAttributes) {
+        //        Decoding the signature image
+        String base64Data = signature.split(",")[1];
+        byte[] unsignSignature = Base64.getDecoder().decode(base64Data);
+
+//        Unsign contract
+        String planName = userService.unsignPlan(id, username, unsignSignature);
+
+//        Return successful message on the page
+        if (!planName.isEmpty()){
+            redirectAttributes.addFlashAttribute("successMessage", "Plan '" + planName + "' successfully unsigned.");
+        }
+
+
     }
 
 }
