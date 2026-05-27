@@ -1,121 +1,225 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head"><title>Add television plan</title></head>
-<body>
-<header th:replace="fragments/commons::navbar"></header>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/commons::head}"><title>Add Television Plan | Admin</title></head>
+<body class="bg-light">
+<header th:replace="~{fragments/commons::navbar}"></header>
 
-<div class="mask d-flex align-items-center h-100">
-    <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
-                <div class="card" style="border-radius: 15px;">
-                    <div class="card-body p-5">
-                        <h2 class="text-uppercase text-center mb-5">Create an television plan</h2>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+            <div class="card border-0 shadow-lg" style="border-radius: 1rem;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-tv text-success display-4"></i>
+                        <h2 class="fw-bold mt-2">Create Television Plan</h2>
+                        <p class="text-muted small">Fill in the details to launch a new service package</p>
+                    </div>
 
-                        <form
-                                th:object="${televisionPlanBindingModel}"
-                                th:action="@{/television/add-television-plan}"
-                                th:method="POST">
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{name}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="name"
-                                        aria-describedby="nameHelper">
-                                <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
-                                       id="nameHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="name">Plan name</label>
+                    <form th:object="${televisionPlanBindingModel}" th:action="@{/television/add-television-plan}" th:method="POST">
+
+                        <!-- Plan Name -->
+                        <div class="form-floating mb-3">
+                            <input th:field="*{name}" th:errorclass="is-invalid" type="text" class="form-control" id="name" placeholder="Super TV Max">
+                            <label for="name">Plan name</label>
+                            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="row g-3">
+                            <!-- Duration -->
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input th:field="*{planDuration}" th:errorclass="is-invalid" type="number" class="form-control" id="planDuration" placeholder="24">
+                                    <label for="planDuration">Duration (months)</label>
+                                    <div th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}" class="invalid-feedback"></div>
+                                </div>
                             </div>
-
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{planDuration}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="planDuration"
-                                        aria-describedby="planDurationHelper">
-                                <small th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}"
-                                       id="planDurationHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="planDuration">Plan duration</label>
+                            <!-- Price -->
+                            <div class="col-md-6">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-white">$</span>
+                                    <div class="form-floating flex-grow-1">
+                                        <input th:field="*{price}" th:errorclass="is-invalid" type="text" class="form-control" id="price" placeholder="19.99">
+                                        <label for="price">Monthly Price</label>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="invalid-feedback d-block"></div>
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{price}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="price"
-                                        aria-describedby="priceHelper">
-                                <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
-                                       id="priceHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="price">Price</label>
+                        <!-- Television Type -->
+                        <div class="form-floating mb-3">
+                            <select th:field="*{televisionType}" th:errorclass="is-invalid" class="form-select" id="televisionType">
+                                <option th:each="type : ${T(bg.greencom.greencomwebapp.model.entity.enums.TelevisionTypeEnum).values()}"
+                                        th:value="${type.name()}"
+                                        th:text="${type.getValue()}">
+                                </option>
+                            </select>
+                            <label for="televisionType">Television type</label>
+                            <div th:if="${#fields.hasErrors('televisionType')}" th:errors="*{televisionType}" class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="row g-3">
+                            <!-- Channels -->
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input th:field="*{channelCount}" th:errorclass="is-invalid" type="number" class="form-control" id="channelCount" placeholder="150">
+                                    <label for="channelCount">Total Channels</label>
+                                    <div th:if="${#fields.hasErrors('channelCount')}" th:errors="*{channelCount}" class="invalid-feedback"></div>
+                                </div>
                             </div>
-
-                            <div class="form-outline mb-4">
-                                <select th:field="*{televisionType}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        class="form-control form-control-lg" id="televisionType">
-                                    <option th:each="type : ${T(bg.greencom.greencomwebapp.model.entity.enums.TelevisionTypeEnum).values()}"
-                                            th:value="${type.name()}"
-                                            th:text="${type.getValue()}">
-                                    </option>
-                                </select>
-
-                                <small th:if="${#fields.hasErrors('televisionType')}" th:errors="*{televisionType}"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="televisionType">Television type</label>
+                            <!-- HD Channels -->
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input th:field="*{channelCountHD}" th:errorclass="is-invalid" type="number" class="form-control" id="channelCountHD" placeholder="40">
+                                    <label for="channelCountHD">HD Channels</label>
+                                    <div th:if="${#fields.hasErrors('channelCountHD')}" th:errors="*{channelCountHD}" class="invalid-feedback"></div>
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{channelCount}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="channelCount"
-                                        aria-describedby="channelCountHelper">
-                                <small th:if="${#fields.hasErrors('channelCount')}" th:errors="*{channelCount}"
-                                       id="channelCountHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="channelCount">Channel count</label>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{channelCountHD}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="channelCountHD"
-                                        aria-describedby="channelCountHDHelper">
-                                <small th:if="${#fields.hasErrors('channelCountHD')}" th:errors="*{channelCountHD}"
-                                       id="channelCountHDHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="channelCountHD">Channel count HD</label>
-                            </div>
-
-                            <div class="d-flex justify-content-center">
-                                <button type="submit"
-                                        class="btn btn-success btn-block btn-lg text-body">Add plan
+                        <!-- Buttons -->
+                        <div class="row g-2 pt-2">
+                            <div class="col-sm-8">
+                                <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">
+                                    <i class="bi bi-plus-circle me-2"></i>Create Plan
                                 </button>
-                                <a style="margin-left: 15px" type="button"
-                                   class="btn btn-success btn-block btn-lg text-body"
-                                   th:href="@{/television/television-plans}">Cancel
+                            </div>
+                            <div class="col-sm-4">
+                                <a th:href="@{/television/television-plans}" class="btn btn-outline-secondary btn-lg w-100">
+                                    Cancel
                                 </a>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
-<footer th:replace="fragments/commons::footer"></footer>
+<footer th:replace="~{fragments/commons::footer}"></footer>
 </body>
-
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="~{fragments/commons::head}"><title>Add television plan</title></head>-->
+<!--<body>-->
+<!--<header th:replace="~{fragments/commons::navbar}"></header>-->
+
+<!--<div class="mask d-flex align-items-center h-100">-->
+<!--    <div class="container h-100">-->
+<!--        <div class="row d-flex justify-content-center align-items-center h-100">-->
+<!--            <div class="col-12 col-md-9 col-lg-7 col-xl-6">-->
+<!--                <div class="card" style="border-radius: 15px;">-->
+<!--                    <div class="card-body p-5">-->
+<!--                        <h2 class="text-uppercase text-center mb-5">Create an television plan</h2>-->
+
+<!--                        <form-->
+<!--                                th:object="${televisionPlanBindingModel}"-->
+<!--                                th:action="@{/television/add-television-plan}"-->
+<!--                                th:method="POST">-->
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{name}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="name"-->
+<!--                                        aria-describedby="nameHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
+<!--                                       id="nameHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="name">Plan name</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{planDuration}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="planDuration"-->
+<!--                                        aria-describedby="planDurationHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}"-->
+<!--                                       id="planDurationHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="planDuration">Plan duration</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{price}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="price"-->
+<!--                                        aria-describedby="priceHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"-->
+<!--                                       id="priceHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="price">Price</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <select th:field="*{televisionType}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        class="form-control form-control-lg" id="televisionType">-->
+<!--                                    <option th:each="type : ${T(bg.greencom.greencomwebapp.model.entity.enums.TelevisionTypeEnum).values()}"-->
+<!--                                            th:value="${type.name()}"-->
+<!--                                            th:text="${type.getValue()}">-->
+<!--                                    </option>-->
+<!--                                </select>-->
+
+<!--                                <small th:if="${#fields.hasErrors('televisionType')}" th:errors="*{televisionType}"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="televisionType">Television type</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{channelCount}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="channelCount"-->
+<!--                                        aria-describedby="channelCountHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('channelCount')}" th:errors="*{channelCount}"-->
+<!--                                       id="channelCountHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="channelCount">Channel count</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{channelCountHD}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="channelCountHD"-->
+<!--                                        aria-describedby="channelCountHDHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('channelCountHD')}" th:errors="*{channelCountHD}"-->
+<!--                                       id="channelCountHDHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="channelCountHD">Channel count HD</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="d-flex justify-content-center">-->
+<!--                                <button type="submit"-->
+<!--                                        class="btn btn-success btn-block btn-lg text-body">Add plan-->
+<!--                                </button>-->
+<!--                                <a style="margin-left: 15px" type="button"-->
+<!--                                   class="btn btn-success btn-block btn-lg text-body"-->
+<!--                                   th:href="@{/television/television-plans}">Cancel-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<footer th:replace="~{fragments/commons::footer}"></footer>-->
+<!--</body>-->
+
+<!--</html>-->

@@ -1,60 +1,171 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head"><title>Greencom</title></head>
-<body>
-<header th:replace="fragments/commons::navbar"></header>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/commons::head}"><title>Greencom | Home</title></head>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
+<header th:replace="~{fragments/commons::navbar}"></header>
 
-<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
-    <!--    TODO-->
+<!-- Carousel Section -->
+<!-- Updated data attributes for BS5 (data-bs-ride) -->
+<div id="homeCarousel" class="carousel slide shadow-sm mb-5" data-bs-ride="carousel">
     <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img class="d-block w-100" src="/images/5g_network.png" alt="First slide">
+        <div class="carousel-item active" data-bs-interval="5000">
+            <img th:src="@{/images/5g_network.png}" class="d-block w-100" alt="5G Network">
         </div>
-        <div class="carousel-item">
-            <img class="d-block w-100" src="/images/TV_fiber.png" alt="Second slide">
+        <div class="carousel-item" data-bs-interval="5000">
+            <img th:src="@{/images/internet_banner.png}" class="d-block w-100" alt="Internet">
         </div>
-        <div class="carousel-item">
-            <img class="d-block w-100" src="/images/Landline_banner.png" alt="Third slide">
-        </div>
-    </div>
-</div>
-
-<div class="container text-center">
-    <h3>Choose a service</h3><br>
-    <div class="row">
-        <div class="col-sm-4">
-            <a th:href="@{/mobile/voice-plans}">
-                <img src="/images/Voice_button.png" class="img-responsive" style="width:100%" alt="Image">
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a th:href="@{/mobile/data-plans}">
-                <img src="/images/Data_button.png" class="img-responsive" style="width:100%" alt="Image">
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a th:href="@{/internet/internet-plans}">
-                <img src="/images/Fiber_button.png" class="img-responsive" style="width:100%" alt="Image">
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a th:href="@{/television/television-plans}">
-                <img src="/images/TV_button.png" class="img-responsive" style="width:100%" alt="Image">
-            </a>
-        </div>
-        <div class="col-sm-4">
-            <a th:href="@{/landline-plans}">
-                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-            </a>
-            <p>Landline plans</p>
+        <div class="carousel-item" data-bs-interval="5000">
+            <img th:src="@{/images/tv_banner.png}" class="d-block w-100" alt="TV">
         </div>
     </div>
+    <!-- Added Controls (optional but recommended for UX) -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
-<br>
 
-<footer th:replace="fragments/commons::footer"></footer>
+<!-- Services Grid -->
+<main class="container mb-5">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold text-dark">Our Services</h2>
+        <p class="lead text-muted">Choose the plan that fits your lifestyle</p>
+        <hr class="w-25 mx-auto text-success" style="height: 3px;">
+    </div>
+
+    <!-- g-4 adds a standard gap between columns in BS5 -->
+    <div class="row g-4 justify-content-center">
+        <!-- Service Card: Mobile Voice -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                <a th:href="@{/mobile/voice-plans}" class="text-decoration-none">
+                    <img th:src="@{/images/Voice_button.png}" class="card-img-top img-fluid" alt="Voice Plans">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-success fw-bold">Voice Plans</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Service Card: Data -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                <a th:href="@{/mobile/data-plans}" class="text-decoration-none">
+                    <img th:src="@{/images/Data_button.png}" class="card-img-top img-fluid" alt="Data Plans">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-success fw-bold">Mobile Data</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Service Card: Internet -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                <a th:href="@{/internet/internet-plans}" class="text-decoration-none">
+                    <img th:src="@{/images/Fiber_button.png}" class="card-img-top img-fluid" alt="Fiber Internet">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-success fw-bold">Home Internet</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Service Card: TV -->
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                <a th:href="@{/television/television-plans}" class="text-decoration-none">
+                    <img th:src="@{/images/TV_button.png}" class="card-img-top img-fluid" alt="Television">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-success fw-bold">Television</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
+
+<!-- Optional CSS for smooth hover effect -->
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
+    .transition {
+        transition: all 0.3s ease;
+    }
+</style>
 
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="~{fragments/commons::head}"><title>Greencom</title></head>-->
+<!--<body>-->
+<!--<header th:replace="~{fragments/commons::navbar}"></header>-->
+
+
+<!--<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">-->
+<!--    &lt;!&ndash;    TODO&ndash;&gt;-->
+<!--    <div class="carousel-inner">-->
+<!--        <div class="carousel-item active">-->
+<!--            <img class="d-block w-100" src="/images/5g_network.png" alt="First slide">-->
+<!--        </div>-->
+<!--        <div class="carousel-item">-->
+<!--            <img class="d-block w-100" src="/images/TV_fiber.png" alt="Second slide">-->
+<!--        </div>-->
+<!--        <div class="carousel-item">-->
+<!--            <img class="d-block w-100" src="/images/Landline_banner.png" alt="Third slide">-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="container text-center">-->
+<!--    <h3>Choose a service</h3><br>-->
+<!--    <div class="row">-->
+<!--        <div class="col-sm-4">-->
+<!--            <a th:href="@{/mobile/voice-plans}">-->
+<!--                <img src="/images/Voice_button.png" class="img-responsive" style="width:100%" alt="Image">-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="col-sm-4">-->
+<!--            <a th:href="@{/mobile/data-plans}">-->
+<!--                <img src="/images/Data_button.png" class="img-responsive" style="width:100%" alt="Image">-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="col-sm-4">-->
+<!--            <a th:href="@{/internet/internet-plans}">-->
+<!--                <img src="/images/Fiber_button.png" class="img-responsive" style="width:100%" alt="Image">-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="col-sm-4">-->
+<!--            <a th:href="@{/television/television-plans}">-->
+<!--                <img src="/images/TV_button.png" class="img-responsive" style="width:100%" alt="Image">-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="col-sm-4">-->
+<!--            <a th:href="@{/landline-plans}">-->
+<!--                <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">-->
+<!--            </a>-->
+<!--            <p>Landline plans</p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<br>-->
+
+<!--<footer th:replace="~{fragments/commons::footer}"></footer>-->
+
+<!--</body>-->
+<!--</html>-->
+

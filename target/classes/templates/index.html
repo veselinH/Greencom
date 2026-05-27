@@ -1,31 +1,128 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head"></head>
-<body>
-<header th:replace="fragments/commons::navbar"></header>
-<blockquote class="blockquote text-center">
-    <h1 class="mb-0">Welcome to GREENCOM</h1>
-    <footer class="blockquote-footer">Making connections that count</footer>
-</blockquote>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/commons::head}"><title>Welcome | Greencom</title></head>
+<body class="bg-light">
+<header th:replace="~{fragments/commons::navbar}"></header>
 
-<p class="text-center">
-    <b>
-        Here you can choose a service plan for mobile phone, home network, television and landline phone.
-    </b>
-</p>
-<p class="text-center">
-    <b>
-        Our cell coverage is 99% in all the country!
-    </b>
-</p>
-<p class="text-center">
+<main>
+    <!-- Modern Hero Section -->
+    <section class="py-5 text-center container-fluid bg-white shadow-sm mb-5">
+        <div class="row py-lg-5 justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <h1 class="display-3 fw-bold text-success mb-3">Welcome to GREENCOM</h1>
+                <p class="lead text-muted fs-4 mb-4">Making connections that count with Bulgaria's most reliable network.</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a th:href="@{/users/register}" class="btn btn-success btn-lg px-5 gap-3 shadow">Get Started</a>
+                    <a th:href="@{/mobile/voice-plans}" class="btn btn-outline-secondary btn-lg px-5">View Plans</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <b> So don't wait, register an account and choose your plan!
-    </b>
-</p>
+    <!-- Why Choose Us Section -->
+    <section class="container mb-5">
+        <div class="row g-4 text-center">
+            <!-- Coverage Feature -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 hover-shadow transition border-bottom border-success border-3">
+                    <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-success fs-1 mb-3">
+                        <i class="bi bi-broadcast"></i>
+                    </div>
+                    <h4 class="fw-bold">99% Coverage</h4>
+                    <p class="text-muted">Stay connected anywhere in the country with our high-speed 5G and 4G LTE network.</p>
+                </div>
+            </div>
 
+            <!-- Services Feature -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 hover-shadow transition border-bottom border-success border-3">
+                    <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-success fs-1 mb-3">
+                        <i class="bi bi-device-hdd"></i>
+                    </div>
+                    <h4 class="fw-bold">All-in-One</h4>
+                    <p class="text-muted">Mobile, Fiber Internet, TV, and Landline. Manage everything under one single account.</p>
+                </div>
+            </div>
 
-<footer th:replace="fragments/commons::footer"></footer>
+            <!-- Support Feature -->
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100 hover-shadow transition border-bottom border-success border-3">
+                    <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-success fs-1 mb-3">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h4 class="fw-bold">Secure & Fast</h4>
+                    <p class="text-muted">Register today and choose a plan that fits your lifestyle. Setup takes only a few minutes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="~{fragments/commons::head}"><title>Greencom</title></head>-->
+<!--<body>-->
+<!--<header th:replace="~{fragments/commons::navbar}"></header>-->
+<!--<blockquote class="blockquote text-center">-->
+<!--    <h1 class="mb-0">Welcome to GREENCOM</h1>-->
+<!--    <footer class="blockquote-footer">Making connections that count</footer>-->
+<!--</blockquote>-->
+
+<!--<p class="text-center">-->
+<!--    <b>-->
+<!--        Here you can choose a service plan for mobile phone, home network, television and landline phone.-->
+<!--    </b>-->
+<!--</p>-->
+<!--<p class="text-center">-->
+<!--    <b>-->
+<!--        Our cell coverage is 99% in all the country!-->
+<!--    </b>-->
+<!--</p>-->
+<!--<p class="text-center">-->
+
+<!--    <b> So don't wait, register an account and choose your plan!-->
+<!--    </b>-->
+<!--</p>-->
+
+
+<!--<footer th:replace="~{fragments/commons::footer}"></footer>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html lang="en"&ndash;&gt;-->
+<!--&lt;!&ndash;      xmlns:th="http://www.thymeleaf.org">&ndash;&gt;-->
+<!--&lt;!&ndash;<head th:replace="~{fragments/commons::head}"><title>Greencom</title></head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+<!--&lt;!&ndash;<header th:replace="~{fragments/commons::navbar}"></header>&ndash;&gt;-->
+<!--&lt;!&ndash;<blockquote class="blockquote text-center">&ndash;&gt;-->
+<!--&lt;!&ndash;    <h1 class="mb-0">Welcome to GREENCOM</h1>&ndash;&gt;-->
+<!--&lt;!&ndash;    <footer class="blockquote-footer">Making connections that count</footer>&ndash;&gt;-->
+<!--&lt;!&ndash;</blockquote>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<p class="text-center">&ndash;&gt;-->
+<!--&lt;!&ndash;    <b>&ndash;&gt;-->
+<!--&lt;!&ndash;        Here you can choose a service plan for mobile phone, home network, television and landline phone.&ndash;&gt;-->
+<!--&lt;!&ndash;    </b>&ndash;&gt;-->
+<!--&lt;!&ndash;</p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p class="text-center">&ndash;&gt;-->
+<!--&lt;!&ndash;    <b>&ndash;&gt;-->
+<!--&lt;!&ndash;        Our cell coverage is 99% in all the country!&ndash;&gt;-->
+<!--&lt;!&ndash;    </b>&ndash;&gt;-->
+<!--&lt;!&ndash;</p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p class="text-center">&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <b> So don't wait, register an account and choose your plan!&ndash;&gt;-->
+<!--&lt;!&ndash;    </b>&ndash;&gt;-->
+<!--&lt;!&ndash;</p>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;<footer th:replace="~{fragments/commons::footer}"></footer>&ndash;&gt;-->
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->

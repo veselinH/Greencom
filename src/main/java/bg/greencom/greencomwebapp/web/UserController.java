@@ -152,10 +152,14 @@ public class UserController {
     public String confirmUnsign(@RequestParam Long contractId,
                                 @RequestParam String signature,
                                 @RequestParam(required = false) String cardNumber,
+                                @RequestParam(required = false) String cardExpiry,
+                                @RequestParam(required = false) String cardCVC,
                                 @AuthenticationPrincipal GreencomUserDetails user,
                                 RedirectAttributes redirectAttributes) {
 
-        if (cardNumber != null && cardNumber.length() < 16) {
+        String cleanCard = cardNumber.replaceAll("\\s+", "");
+        if (cleanCard.length() != 16 || cardCVC.length() != 3) {
+            redirectAttributes.addFlashAttribute("error", "Invalid payment details.");
             return "redirect:/users/profile";
         }
 

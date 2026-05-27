@@ -1,142 +1,282 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/commons::head"><title>Edit data plan</title></head>
-<body>
-<header th:replace="fragments/commons::navbar"></header>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/commons::head}"><title>Edit Data Plan | Admin</title></head>
+<body class="bg-light">
+<header th:replace="~{fragments/commons::navbar}"></header>
 
-<div class="mask d-flex align-items-center h-100">
-    <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
-                <div class="card" style="border-radius: 15px;">
-                    <div class="card-body p-5">
-                        <h2 class="text-uppercase text-center mb-5">Edit voice mobile plan</h2>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 1rem;">
+                <div class="card-body p-4 p-md-5">
 
-                        <form th:object="${dataPlanFromRepo}"
-                              th:action="@{/mobile/edit-data-plan/{id}(id=*{id})}"
-                              th:method="patch">
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{name}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="name"
-                                        aria-describedby="nameHelper" readonly>
-                                <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
-                                       id="nameHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="name">Plan name</label>
-                            </div>
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="bg-success bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
+                            <i class="bi bi-pencil-square text-success fs-2"></i>
+                        </div>
+                        <h2 class="fw-bold">Edit Data Mobile Plan</h2>
+                        <p class="text-muted small">Updating: <span class="fw-bold text-dark" th:text="${dataPlanFromRepo.name}">Plan Name</span></p>
+                    </div>
 
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{planDuration}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="planDuration"
-                                        aria-describedby="planDurationHelper">
-                                <small th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}"
-                                       id="planDurationHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="planDuration">Plan duration</label>
-                            </div>
+                    <form th:object="${dataPlanFromRepo}"
+                          th:action="@{/mobile/edit-data-plan/{id}(id=*{id})}"
+                          th:method="patch">
 
-                            <div class="form-outline mb-4">
-                                <input
-                                        type="text" class="form-control form-control-lg" disabled>
-                                <label class="form-label">National minutes</label>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <input
-                                        type="text" class="form-control form-control-lg" disabled>
-                                <label class="form-label">Roaming minutes</label>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{bgInternetMegabytes}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="bgInternetMegabytes"
-                                        aria-describedby="bgInternetMegabytesHelper">
-                                <small th:if="${#fields.hasErrors('bgInternetMegabytes')}"
-                                       th:errors="*{bgInternetMegabytes}"
-                                       id="bgInternetMegabytesHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="bgInternetMegabytes">National megabytes</label>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{roamingInternetMegabytes}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="roamingInternetMegabytes"
-                                        aria-describedby="roamingInternetMegabytesHelper">
-                                <small th:if="${#fields.hasErrors('roamingInternetMegabytes')}"
-                                       th:errors="*{roamingInternetMegabytes}"
-                                       id="roamingInternetMegabytesHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="roamingInternetMegabytes">Roaming megabytes</label>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <input
-                                        th:field="*{price}"
-                                        th:errorclass="'is-invalid bg-danger'"
-                                        type="text" class="form-control form-control-lg" id="price"
-                                        aria-describedby="priceHelper" readonly>
-                                <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
-                                       id="priceHelper"
-                                       class="invalid-feedback bg-danger text-light rounded">
-                                </small>
-                                <label class="form-label" for="price">Price</label>
-                            </div>
-
-
-                            <div>
-                                <div class="form-group p-3">
-                                    <label class="p-2" for="extras">Extras:</label>
-                                    <input
-                                            th:each="e : ${T(bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum).values()}"
-                                            th:object="${e}" th:text="${e.getValue()}" th:value="${e}"
-                                            class="m-3" type="checkbox" name="mobileExtras" id="extras"
-                                            value="1" text="Category">
-                                    <br>
+                        <!-- Locked Fields Section -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input th:field="*{name}" class="form-control bg-light" id="name" readonly>
+                                    <label for="name">Plan Name (Locked)</label>
                                 </div>
                             </div>
-
-                            <div class="form-check form-switch mb-4">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       role="switch"
-                                       id="isActive"
-                                       th:field="*{active}">
-                                <label class="form-label ms-2" for="isActive">Activate/Deactivate</label>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input th:field="*{price}" class="form-control bg-light" id="price" readonly>
+                                    <label for="price">Price ($)</label>
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="d-flex justify-content-center">
-                                <button type="submit"
-                                        class="btn btn-success btn-block btn-lg text-body">Edit plan
-                                </button>
-                                <a style="margin-left: 15px" type="button"
-                                   class="btn btn-success btn-block btn-lg text-body"
-                                   th:href="@{/mobile/data-plans}">Cancel
-                                </a>
+                        <!-- Duration Field -->
+                        <div class="form-floating mb-4">
+                            <input th:field="*{planDuration}" th:errorclass="is-invalid" type="text" class="form-control" id="planDuration" placeholder="Duration">
+                            <label for="planDuration">Plan Duration</label>
+                            <div th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}" class="invalid-feedback"></div>
+                        </div>
+
+                        <!-- Disabled Voice Fields (Clear visual for Data Plans) -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating opacity-50">
+                                    <input type="text" class="form-control bg-light border-0" value="Not Applicable" disabled>
+                                    <label>National Minutes</label>
+                                </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-floating opacity-50">
+                                    <input type="text" class="form-control bg-light border-0" value="Not Applicable" disabled>
+                                    <label>Roaming Minutes</label>
+                                </div>
+                            </div>
+                        </div>
 
-                        </form>
+                        <!-- Internet Allocation (Editable as Text for "Unlimited") -->
+                        <h5 class="mb-3 text-secondary border-bottom pb-2">
+                            <i class="bi bi-wifi me-2"></i>Data Allocation
+                        </h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input th:field="*{bgInternetMegabytes}" th:errorclass="is-invalid" type="text" class="form-control" id="bgInternetMegabytes" placeholder="National MB">
+                                    <label for="bgInternetMegabytes">National MB</label>
+                                    <div th:if="${#fields.hasErrors('bgInternetMegabytes')}" th:errors="*{bgInternetMegabytes}" class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input th:field="*{roamingInternetMegabytes}" th:errorclass="is-invalid" type="text" class="form-control" id="roamingInternetMegabytes" placeholder="Roaming MB">
+                                    <label for="roamingInternetMegabytes">Roaming MB</label>
+                                    <div th:if="${#fields.hasErrors('roamingInternetMegabytes')}" th:errors="*{roamingInternetMegabytes}" class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
 
-                    </div>
+                        <!-- Status Switch -->
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body py-2 d-flex align-items-center justify-content-between">
+                                <label class="form-check-label fw-bold text-secondary" for="isActive">Plan Active Status</label>
+                                <div class="form-check form-switch p-0 m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="isActive" th:field="*{active}" style="width: 2.5em; height: 1.25em;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-light p-3 rounded mb-4 border shadow-sm">
+                            <label class="fw-bold text-dark mb-3">
+                                <i class="bi bi-plus-circle me-2 text-success"></i>Available Extras
+                            </label>
+                            <div class="row g-3">
+                                <div th:each="e : ${T(bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum).values()}">
+
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               role="switch"
+                                               name="mobileExtras"
+                                               th:value="${e}"
+                                               th:id="${'extra-' + e}">
+
+                                        <label class="form-check-label ms-2 fw-medium"
+                                               th:for="${'extra-' + e}"
+                                               th:text="${e.getValue()}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="row g-2">
+                            <div class="col-sm-8">
+                                <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm fw-bold">Save changes</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <a th:href="@{/mobile/data-plans}" class="btn btn-outline-secondary btn-lg w-100">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
-<footer th:replace="fragments/commons::footer"></footer>
+<footer th:replace="~{fragments/commons::footer}"></footer>
 </body>
-
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="~{fragments/commons::head}"><title>Edit data plan</title></head>-->
+<!--<body>-->
+<!--<header th:replace="~{fragments/commons::navbar}"></header>-->
+
+<!--<div class="mask d-flex align-items-center h-100">-->
+<!--    <div class="container h-100">-->
+<!--        <div class="row d-flex justify-content-center align-items-center h-100">-->
+<!--            <div class="col-12 col-md-9 col-lg-7 col-xl-6">-->
+<!--                <div class="card" style="border-radius: 15px;">-->
+<!--                    <div class="card-body p-5">-->
+<!--                        <h2 class="text-uppercase text-center mb-5">Edit voice mobile plan</h2>-->
+
+<!--                        <form th:object="${dataPlanFromRepo}"-->
+<!--                              th:action="@{/mobile/edit-data-plan/{id}(id=*{id})}"-->
+<!--                              th:method="patch">-->
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{name}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="name"-->
+<!--                                        aria-describedby="nameHelper" readonly>-->
+<!--                                <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}"-->
+<!--                                       id="nameHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="name">Plan name</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{planDuration}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="planDuration"-->
+<!--                                        aria-describedby="planDurationHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('planDuration')}" th:errors="*{planDuration}"-->
+<!--                                       id="planDurationHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="planDuration">Plan duration</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        type="text" class="form-control form-control-lg" disabled>-->
+<!--                                <label class="form-label">National minutes</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        type="text" class="form-control form-control-lg" disabled>-->
+<!--                                <label class="form-label">Roaming minutes</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{bgInternetMegabytes}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="bgInternetMegabytes"-->
+<!--                                        aria-describedby="bgInternetMegabytesHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('bgInternetMegabytes')}"-->
+<!--                                       th:errors="*{bgInternetMegabytes}"-->
+<!--                                       id="bgInternetMegabytesHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="bgInternetMegabytes">National megabytes</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{roamingInternetMegabytes}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="roamingInternetMegabytes"-->
+<!--                                        aria-describedby="roamingInternetMegabytesHelper">-->
+<!--                                <small th:if="${#fields.hasErrors('roamingInternetMegabytes')}"-->
+<!--                                       th:errors="*{roamingInternetMegabytes}"-->
+<!--                                       id="roamingInternetMegabytesHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="roamingInternetMegabytes">Roaming megabytes</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-outline mb-4">-->
+<!--                                <input-->
+<!--                                        th:field="*{price}"-->
+<!--                                        th:errorclass="'is-invalid bg-danger'"-->
+<!--                                        type="text" class="form-control form-control-lg" id="price"-->
+<!--                                        aria-describedby="priceHelper" readonly>-->
+<!--                                <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}"-->
+<!--                                       id="priceHelper"-->
+<!--                                       class="invalid-feedback bg-danger text-light rounded">-->
+<!--                                </small>-->
+<!--                                <label class="form-label" for="price">Price</label>-->
+<!--                            </div>-->
+
+
+<!--                            <div>-->
+<!--                                <div class="form-group p-3">-->
+<!--                                    <label class="p-2" for="extras">Extras:</label>-->
+<!--                                    <input-->
+<!--                                            th:each="e : ${T(bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum).values()}"-->
+<!--                                            th:object="${e}" th:text="${e.getValue()}" th:value="${e}"-->
+<!--                                            class="m-3" type="checkbox" name="mobileExtras" id="extras"-->
+<!--                                            value="1" text="Category">-->
+<!--                                    <br>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <div class="form-check form-switch mb-4">-->
+<!--                                <input class="form-check-input"-->
+<!--                                       type="checkbox"-->
+<!--                                       role="switch"-->
+<!--                                       id="isActive"-->
+<!--                                       th:field="*{active}">-->
+<!--                                <label class="form-label ms-2" for="isActive">Activate/Deactivate</label>-->
+<!--                            </div>-->
+
+<!--                            <div class="d-flex justify-content-center">-->
+<!--                                <button type="submit"-->
+<!--                                        class="btn btn-success btn-block btn-lg text-body">Edit plan-->
+<!--                                </button>-->
+<!--                                <a style="margin-left: 15px" type="button"-->
+<!--                                   class="btn btn-success btn-block btn-lg text-body"-->
+<!--                                   th:href="@{/mobile/data-plans}">Cancel-->
+<!--                                </a>-->
+<!--                            </div>-->
+
+<!--                        </form>-->
+
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<footer th:replace="~{fragments/commons::footer}"></footer>-->
+<!--</body>-->
+
+<!--</html>-->

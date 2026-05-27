@@ -1,71 +1,170 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/commons::head"><title>Television plans</title></head>
-<body>
-<header th:replace="fragments/commons::navbar"></header>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/commons::head}"><title>Television Plans | Greencom</title></head>
+<body class="bg-light">
+<header th:replace="~{fragments/commons::navbar}"></header>
 
-<div class="container-fluid">
-  <div class="container p-5">
-    <div class="row">
-      <div th:each="t : ${allTelevisionPlans}"
-           th:object="${t}"
-           th:if="${t.active} or ${#authorization.expression('hasRole(''ADMIN'')')}"
-           class="col-lg-4 col-md-12 mb-4">
-          <div class="card card1 h-100 position-relative">
-              <div class="position-absolute top-0 end-0 right-0 m-2" style="right: 10px; top: 10px;" sec:authorize="hasRole('ADMIN')">
-                  <span th:text="|ID: *{id}|" class="badge badge-dark bg-dark">ID: 1</span>
-                  <span th:if="*{active}" class="badge badge-success bg-success">Active</span>
-                  <span th:unless="*{active}" class="badge badge-danger bg-danger">Inactive</span>
-              </div>
-          <div class="card-body">
-            <h5 th:text="*{name}" class="card-title"></h5>
-            <small th:text="|*{planDuration} plan duration|" class='text-muted'></small>
-            <br><br>
-            <span th:text="*{price}" class="h2">$8</span>$/month
-            <br><br>
-              <div class="d-grid my-3">
-                  <button type="button"
-                          class="btn btn-outline-dark btn-block"
-                          th:classappend="!*{active} ? 'disabled' : ''"
-                          th:disabled="!*{active}"
-                          data-toggle="modal"
-                          data-target="#signatureModal"
-                          th:data-id="*{id}"
-                          th:data-action="@{/television/television-plan/{id}(id=*{id})}">
-                      Sign
-                  </button>
-              </div>
-            <div class="d-grid my-3" sec:authorize="hasRole('ADMIN')">
-              <a th:href="@{/television/edit-television-plan/{id}(id=*{id})}"
-                 class="btn btn-outline-dark btn-block">Edit</a>
-            </div>
-              <ul>
-                  <li th:text="|*{channelCount} channels |"></li>
-                  <li th:text="|*{channelCountHD} HD channels|"></li>
-                  <li th:each="extra : ${additionalPackages}" class="list-unstyled">
-                      <div class="form-check">
-                          <input class="form-check-input"
-                                 type="checkbox"
-                                 th:value="${extra.id}"
-                                 th:id="${'extra-' + t.id + '-' + extra.id}"
-                                 name="selectedExtras">
-                          <label class="form-check-label"
-                                 th:for="${'extra-' + t.id + '-' + extra.id}"
-                                 th:text="|${extra.name} - ${extra.price}$/month|">
-                              Extra Name
-                          </label>
-                      </div>
-                  </li>
-              </ul>
-          </div>
-        </div>
-      </div>
+<main class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-success">Television Plans</h1>
+        <p class="text-muted">Choose the perfect entertainment package for your home</p>
     </div>
-  </div>
-</div>
 
-<footer th:replace="fragments/commons::footer"></footer>
+    <div class="row g-4">
+        <div th:each="t : ${allTelevisionPlans}"
+             th:object="${t}"
+             th:if="${t.active} or ${#authorization.expression('hasRole(''ADMIN'')')}"
+             class="col-lg-4 col-md-6">
+
+            <!-- Added custom 'plan-card' class for the hover effect -->
+            <div class="card h-100 shadow-sm border-0 plan-card transition">
+
+                <!-- Admin Badges -->
+                <div class="position-absolute top-0 end-0 p-2 d-flex flex-column align-items-end" sec:authorize="hasRole('ADMIN')">
+                    <span class="badge bg-dark mb-1" th:text="|ID: *{id}|">ID: 1</span>
+                    <span th:if="*{active}" class="badge bg-success">Active</span>
+                    <span th:unless="*{active}" class="badge bg-danger">Inactive</span>
+                </div>
+
+                <div class="card-body p-4">
+                    <h4 th:text="*{name}" class="fw-bold mb-1"></h4>
+                    <p class="text-muted small mb-4">
+                        <i class="bi bi-clock me-1"></i>
+                        <span th:text="|*{planDuration} month duration|"></span>
+                    </p>
+
+                    <div class="mb-4">
+                        <span class="display-5 fw-bold text-dark" th:text="*{price}">8</span>
+                        <span class="text-muted">$/month</span>
+                    </div>
+
+                    <!-- Details List -->
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong th:text="*{channelCount}"></strong> Channels
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-hd-fill text-success me-2"></i>
+                            <strong th:text="*{channelCountHD}"></strong> HD Channels
+                        </li>
+
+                        <!-- Additional Packages -->
+                        <li th:each="extra : ${additionalPackages}" class="mt-2">
+                            <div class="form-check form-switch">
+                                <label>
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           th:value="${extra.id}"
+                                           th:id="${'extra-' + t.id + '-' + extra.id}"
+                                           name="selectedExtras">
+                                </label>
+                                <label class="form-check-label small"
+                                       th:for="${'extra-' + t.id + '-' + extra.id}"
+                                       th:text="|${extra.name} (+$${extra.price}/mo)|">
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <button type="button"
+                                class="btn btn-success btn-lg shadow-sm"
+                                th:classappend="!*{active} ? 'disabled' : ''"
+                                th:disabled="!*{active}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#signatureModal"
+                                th:data-id="*{id}"
+                                th:data-action="@{/television/television-plan/{id}(id=*{id})}">
+                            Sign Contract
+                        </button>
+
+                        <a th:href="@{/television/edit-television-plan/{id}(id=*{id})}"
+                           class="btn btn-outline-dark"
+                           sec:authorize="hasRole('ADMIN')">
+                            <i class="bi bi-pencil me-1"></i> Edit Plan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head th:replace="~{fragments/commons::head}"><title>Television plans</title></head>-->
+<!--<body>-->
+<!--<header th:replace="~{fragments/commons::navbar}"></header>-->
+
+<!--<div class="container-fluid">-->
+<!--  <div class="container p-5">-->
+<!--    <div class="row">-->
+<!--      <div th:each="t : ${allTelevisionPlans}"-->
+<!--           th:object="${t}"-->
+<!--           th:if="${t.active} or ${#authorization.expression('hasRole(''ADMIN'')')}"-->
+<!--           class="col-lg-4 col-md-12 mb-4">-->
+<!--          <div class="card card1 h-100 position-relative">-->
+<!--              <div class="position-absolute top-0 end-0 right-0 m-2" style="right: 10px; top: 10px;" sec:authorize="hasRole('ADMIN')">-->
+<!--                  <span th:text="|ID: *{id}|" class="badge badge-dark bg-dark">ID: 1</span>-->
+<!--                  <span th:if="*{active}" class="badge badge-success bg-success">Active</span>-->
+<!--                  <span th:unless="*{active}" class="badge badge-danger bg-danger">Inactive</span>-->
+<!--              </div>-->
+<!--          <div class="card-body">-->
+<!--            <h5 th:text="*{name}" class="card-title"></h5>-->
+<!--            <small th:text="|*{planDuration} plan duration|" class='text-muted'></small>-->
+<!--            <br><br>-->
+<!--            <span th:text="*{price}" class="h2">$8</span>$/month-->
+<!--            <br><br>-->
+<!--              <div class="d-grid my-3">-->
+<!--                  <button type="button"-->
+<!--                          class="btn btn-outline-dark btn-block"-->
+<!--                          th:classappend="!*{active} ? 'disabled' : ''"-->
+<!--                          th:disabled="!*{active}"-->
+<!--                          data-toggle="modal"-->
+<!--                          data-target="#signatureModal"-->
+<!--                          th:data-id="*{id}"-->
+<!--                          th:data-action="@{/television/television-plan/{id}(id=*{id})}">-->
+<!--                      Sign-->
+<!--                  </button>-->
+<!--              </div>-->
+<!--            <div class="d-grid my-3" sec:authorize="hasRole('ADMIN')">-->
+<!--              <a th:href="@{/television/edit-television-plan/{id}(id=*{id})}"-->
+<!--                 class="btn btn-outline-dark btn-block">Edit</a>-->
+<!--            </div>-->
+<!--              <ul>-->
+<!--                  <li th:text="|*{channelCount} channels |"></li>-->
+<!--                  <li th:text="|*{channelCountHD} HD channels|"></li>-->
+<!--                  <li th:each="extra : ${additionalPackages}" class="list-unstyled">-->
+<!--                      <div class="form-check">-->
+<!--                          <input class="form-check-input"-->
+<!--                                 type="checkbox"-->
+<!--                                 th:value="${extra.id}"-->
+<!--                                 th:id="${'extra-' + t.id + '-' + extra.id}"-->
+<!--                                 name="selectedExtras">-->
+<!--                          <label class="form-check-label"-->
+<!--                                 th:for="${'extra-' + t.id + '-' + extra.id}"-->
+<!--                                 th:text="|${extra.name} - ${extra.price}$/month|">-->
+<!--                              Extra Name-->
+<!--                          </label>-->
+<!--                      </div>-->
+<!--                  </li>-->
+<!--              </ul>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<footer th:replace="~{fragments/commons::footer}"></footer>-->
+<!--</body>-->
+<!--</html>-->
