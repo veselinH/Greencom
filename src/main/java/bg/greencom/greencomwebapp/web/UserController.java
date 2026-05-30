@@ -152,7 +152,6 @@ public class UserController {
     public String confirmUnsign(@RequestParam Long contractId,
                                 @RequestParam String signature,
                                 @RequestParam(required = false) String cardNumber,
-                                @RequestParam(required = false) String cardExpiry,
                                 @RequestParam(required = false) String cardCVC,
                                 @AuthenticationPrincipal GreencomUserDetails user,
                                 RedirectAttributes redirectAttributes) {
