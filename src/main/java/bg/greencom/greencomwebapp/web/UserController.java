@@ -1,13 +1,20 @@
 package bg.greencom.greencomwebapp.web;
 
 import bg.greencom.greencomwebapp.model.binding.UserRegisterBindingModel;
+import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
+import bg.greencom.greencomwebapp.model.view.ContractViewModel;
+import bg.greencom.greencomwebapp.service.ContractService;
 import bg.greencom.greencomwebapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,11 +38,13 @@ public class UserController {
     private final UserService userService;
     private final ModelMapper modelMapper;
     private final SecurityContextRepository securityContextRepository;
+    private final ContractService contractService;
 
-    public UserController(UserService userService, ModelMapper modelMapper, SecurityContextRepository securityContextRepository) {
+    public UserController(UserService userService, ModelMapper modelMapper, SecurityContextRepository securityContextRepository, ContractService contractService) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.securityContextRepository = securityContextRepository;
+        this.contractService = contractService;
     }
 
     @ModelAttribute
@@ -164,6 +173,18 @@ public class UserController {
 
         executeUnsign(contractId, user.getUsername(), signature, redirectAttributes);
         return "redirect:/users/profile";
+    }
+
+    @GetMapping("/contract/{id}/download")
+    public ResponseEntity<byte[]> downloadContract(@PathVariable Long id) throws Exception {
+//        ContractViewModel contract = contractService.findById(id);
+        byte[] pdfContents = contractService.generateContractPdf(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "contract_" + id + ".pdf");
+
+        return new ResponseEntity<>(pdfContents, headers, HttpStatus.OK);
     }
 
     private void executeUnsign(Long id, String username, String signature, RedirectAttributes redirectAttributes) {

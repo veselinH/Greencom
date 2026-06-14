@@ -9,9 +9,15 @@ import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.repository.ContractRepository;
 import bg.greencom.greencomwebapp.service.ContractService;
+import org.hibernate.sql.Template;
 import org.modelmapper.ModelMapper;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -22,10 +28,12 @@ public class ContractServiceImpl implements ContractService {
 
     private final ContractRepository contractRepository;
     private final ModelMapper modelMapper;
+    private final TemplateEngine templateEngine;
 
-    public ContractServiceImpl(ContractRepository contractRepository, ModelMapper modelMapper) {
+    public ContractServiceImpl(ContractRepository contractRepository, ModelMapper modelMapper, TemplateEngine templateEngine) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
+        this.templateEngine = templateEngine;
     }
 
     @Override
@@ -70,5 +78,31 @@ public class ContractServiceImpl implements ContractService {
                 .setActive(false);
 
         contractRepository.saveAndFlush(contract);
+    }
+
+    @Override
+    public byte[] generateContractPdf(Long contractId) {
+
+        ContractEntity contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
+
+        Context context = new Context();
+        context.setVariable("contract", contract);
+        context.setVariable("downloadDate", LocalDate.now());
+
+        String htmlContent = templateEngine.process("documents/contract", context);
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            ITextRenderer renderer = new ITextRenderer();
+
+            renderer.getFontResolver().addFont(new ClassPathResource("fonts/Helvetica.ttf").getURL().toString(), true);
+            renderer.setDocumentFromString(htmlContent);
+            renderer.layout();
+            renderer.createPDF(outputStream);
+
+            return outputStream.toByteArray();
+        } catch (Exception e){
+            throw new RuntimeException(("Contract generation error: " + e));
+        }
     }
 }

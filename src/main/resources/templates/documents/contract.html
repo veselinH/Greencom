@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif; /* Use the registered font name */
+            font-size: 12px;
+            margin: 40px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #28a745;
+            margin-bottom: 30px;
+        }
+        .company-name {
+            color: #28a745;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .section-title {
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            font-weight: bold;
+            margin-top: 20px;
+            border-left: 4px solid #28a745;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .label {
+            font-weight: bold;
+            width: 30%;
+        }
+        .signature-section {
+            margin-top: 50px;
+            width: 100%;
+        }
+        .signature-box {
+            width: 45%;
+            float: left;
+            text-align: center;
+        }
+        .sig-line {
+            border-top: 1px solid #000;
+            margin-top: 60px;
+            padding-top: 5px;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<div class="header">
+    <h1 style="color: #28a745;">GREENCOM</h1>
+    <h2>Service Agreement #<span th:text="${contract.id}"></span></h2>
+</div>
+
+<div>
+    <p><strong>Customer:</strong> <span th:text="${contract.getUser().getLastName()}"></span></p>
+    <p><strong>Plan:</strong> <span th:text="${contract.getPlan().getName()}"></span></p>
+    <p><strong>Price:</strong> $<span th:text="${contract.getPlan().getPrice()}"></span>/mo</p>
+    <p><strong>Signed On:</strong> <span th:text="${contract.signedOn}"></span></p>
+</div>
+
+<div style="margin-top: 50px;">
+    <p>This document serves as an official confirmation of your subscription to GreenCom services.</p>
+</div>
+</body>
+
+</html>
