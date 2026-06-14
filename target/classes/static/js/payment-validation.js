@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (val.length >= 2) e.target.value = val.substring(0, 2) + '/' + val.substring(2, 4);
     });
 
-    // 3. VALIDATION & SUBMISSION
+// 3. VALIDATION & SUBMISSION
     form?.addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -35,28 +35,46 @@ document.addEventListener('DOMContentLoaded', function () {
         const expiry = expiryInput.value;
         const cvc = document.getElementById('cardCVC').value;
 
-        // Basic Regex Checks
-        if (!/^\d{16}$/.test(cardNum) || !/^\d{2}\/\d{2}$/.test(expiry) || !/^\d{3}$/.test(cvc)) {
-            alert("Invalid card details. Check Number, Expiry (MM/YY), and CVC.");
+        // Validate Card Number
+        if (!/^\d{16}$/.test(cardNum)) {
+            alert("Please enter a valid 16-digit card number.");
             return;
         }
 
-        // Date Check
+        // Validate Expiry Format
+        if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+            alert("Expiry must be in MM/YY format.");
+            return;
+        }
+
+        // Validate CVC
+        if (!/^\d{3}$/.test(cvc)) {
+            alert("CVC must be 3 digits.");
+            return;
+        }
+
+        // Validate Date Logic (The "13" month check)
         const [m, y] = expiry.split('/').map(Number);
-        const expDate = new Date(2000 + y, m - 1);
-        if (expDate < new Date().setDate(1) || m < 1 || m > 12) {
-            alert("Card is expired or month is invalid.");
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear() % 100;
+
+        if (m < 1 || m > 12) {
+            alert("Month must be between 01 and 12.");
             return;
         }
 
-        // UI Transition
+        if (y < currentYear || (y === currentYear && m < currentMonth)) {
+            alert("This card has expired.");
+            return;
+        }
+
+        // If all pass, proceed...
         document.getElementById('paymentFormSection').style.display = 'none';
         document.getElementById('loadingOverlay').style.display = 'block';
-
-        setTimeout(() => {
-            form.submit();
-        }, 1500);
+        setTimeout(() => form.submit(), 1500);
     });
+
 });
 
 

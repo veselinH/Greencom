@@ -13,7 +13,6 @@
 </head>
 <body>
 <header th:fragment="navbar">
-    <!-- Added shadow-sm for a modern look -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container-fluid">
             <!-- Brand Logo -->
@@ -27,9 +26,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navContent">
-                <!-- Left Side Menu (me-auto pushes everything else to the right) -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <!-- Guest Links -->
                     <li class="nav-item" sec:authorize="!isAuthenticated()">
                         <a class="btn btn-outline-success me-2" th:href="@{/users/login}">Login</a>
                     </li>
@@ -37,7 +34,7 @@
                         <a class="btn btn-success me-2" th:href="@{/users/register}">Register</a>
                     </li>
 
-                    <!-- Admin Dropdown (Updated for BS5) -->
+                    <!-- Admin Dropdown -->
                     <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                         <a class="btn btn-success dropdown-toggle me-2" href="#" id="adminDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
@@ -60,20 +57,15 @@
                     </li>
                 </ul>
 
-                <div class="navbar-text mx-auto text-muted small d-none d-md-block">
-                    <i class="bi bi-clock me-1"></i>
-                    <span id="nav-date"></span> | <span id="nav-time"></span>
-                </div>
-
                 <!-- Combined Right Side: Date, and User Profile -->
                 <ul class="navbar-nav ms-auto align-items-center">
 
-<!--                    &lt;!&ndash; 1. Date & Time &ndash;&gt;-->
-<!--                    <li class="nav-item me-3 text-muted small">-->
-<!--                        <span id="nav-date"></span> | <span id="nav-time"></span>-->
-<!--                    </li>-->
+                    <!-- Date & Time -->
+                    <li class="nav-item me-3 text-muted small">
+                        <span id="nav-date"></span> | <span id="nav-time"></span>
+                    </li>
 
-                    <!-- 3. User Profile Dropdown (Only shows if logged in) -->
+                    <!-- User Profile Dropdown (Only shows if logged in) -->
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="btn btn-success dropdown-toggle shadow-sm" href="#" id="userDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
@@ -90,38 +82,6 @@
                         </ul>
                     </li>
                 </ul>
-
-
-                <!--                &lt;!&ndash; Inside your <nav> ... <div class="collapse navbar-collapse"> &ndash;&gt;-->
-<!--                <ul class="navbar-nav ms-auto align-items-center">-->
-<!--                    <li class="nav-item me-3 text-muted small d-none d-lg-block">-->
-<!--                        <span id="nav-date"></span> | <span id="nav-time"></span>-->
-<!--                    </li>-->
-<!--                    <li class="nav-item me-3 text-success d-none d-md-block">-->
-<!--                        <span id="nav-weather"><i class="bi bi-cloud-sun"></i> &#45;&#45;°C</span>-->
-<!--                    </li>-->
-<!--                    &lt;!&ndash; Your existing Login/Logout links here &ndash;&gt;-->
-<!--                </ul>-->
-
-
-<!--                &lt;!&ndash; Right Side (User Profile) &ndash;&gt;-->
-<!--                <ul class="navbar-nav ms-auto" sec:authorize="isAuthenticated()">-->
-<!--                    <li class="nav-item dropdown">-->
-<!--                        <a class="btn btn-success dropdown-toggle" href="#" id="userDropdown" role="button"-->
-<!--                           data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--                            Welcome, <th:block sec:authentication="principal.firstName"></th:block>!-->
-<!--                        </a>-->
-<!--                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">-->
-<!--                            <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>-->
-<!--                            <li><hr class="dropdown-divider"></li>-->
-<!--                            <li>-->
-<!--                                <form th:action="@{/users/logout}" th:method="post" class="px-3 py-1">-->
-<!--                                    <button class="btn btn-sm btn-outline-danger w-100" type="submit">Logout</button>-->
-<!--                                </form>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </li>-->
-<!--                </ul>-->
             </div>
         </div>
     </nav>
@@ -129,8 +89,6 @@
 </header>
 
 <footer th:fragment="footer" class="text-center text-lg-start bg-light text-muted mt-auto border-top">
-
-    <!-- Main Footer Content -->
     <section class="py-5">
         <div class="container text-center text-md-start">
             <div class="row">
@@ -171,7 +129,7 @@
         <a class="text-white fw-bold text-decoration-none" href="#">Greencom Inc.</a>
     </div>
 
-    <!-- Modal for Signature Pad (Updated for BS5) -->
+    <!-- Modal for Signature Pad -->
     <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form id="final-sign-form" th:method="patch">
@@ -179,9 +137,7 @@
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 </div>
                 <input type="hidden" name="id" id="modal-target-id">
-<!--                <input type="hidden" name="selectedExtras" id="hiddenSelectedExtras">-->
                 <input type="hidden" name="signature" id="modal-signature-data">
-
                 <div class="modal-content shadow-lg">
                     <div class="modal-header bg-success text-white">
                         <h5 class="modal-title" id="signatureModalLabel">Sign Contract</h5>
@@ -202,6 +158,5 @@
         </div>
     </div>
 </footer>
-
 </body>
 </html>
