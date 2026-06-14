@@ -13,4 +13,6 @@ public interface ContractService {
     ContractViewModel findById(Long contractId);
 
     void deactivateContract(Long contractId, byte[] unsignSignature);
+
+    byte[] generateContractPdf(Long contractId);
 }
