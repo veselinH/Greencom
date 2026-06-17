@@ -15,4 +15,6 @@ public interface ContractService {
     void deactivateContract(Long contractId, byte[] unsignSignature);
 
     byte[] generateContractPdf(Long contractId);
+
+    String getContractDownloadFileName(Long id);
 }

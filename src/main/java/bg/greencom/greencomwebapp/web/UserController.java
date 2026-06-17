@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Base64;
 
 @Controller
@@ -177,12 +178,13 @@ public class UserController {
 
     @GetMapping("/contract/{id}/download")
     public ResponseEntity<byte[]> downloadContract(@PathVariable Long id) throws Exception {
-//        ContractViewModel contract = contractService.findById(id);
+
         byte[] pdfContents = contractService.generateContractPdf(id);
+        String fileName = contractService.getContractDownloadFileName(id);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "contract_" + id + ".pdf");
+        headers.setContentDispositionFormData("attachment", fileName);
 
         return new ResponseEntity<>(pdfContents, headers, HttpStatus.OK);
     }

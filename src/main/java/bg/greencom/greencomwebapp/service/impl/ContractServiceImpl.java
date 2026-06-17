@@ -105,4 +105,15 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException(("Contract generation error: " + e));
         }
     }
+
+    @Override
+    public String getContractDownloadFileName(Long id) {
+        ContractEntity contract = contractRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
+
+        String planName = contract.getPlan().getName()
+                .replaceAll("[^a-zA-Z0-9-_]", "_");
+
+        return planName + "_" + id + "_" + LocalDate.now() + ".pdf";
+    }
 }
