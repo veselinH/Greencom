@@ -59,6 +59,7 @@
 </head>
 <body>
 <div class="header">
+    <img th:if="${logoImage}" th:src="${logoImage}" alt="GreenCom Logo" style="max-height: 80px;" />
     <h1 style="color: #28a745;">GREENCOM</h1>
     <h2>Service Agreement #<span th:text="${contract.id}"></span></h2>
 </div>
@@ -72,6 +73,18 @@
 
 <div style="margin-top: 50px;">
     <p>This document serves as an official confirmation of your subscription to GreenCom services.</p>
+</div>
+
+<div class="signature-section" style="clear: both;">
+    <div class="signature-box">
+        <div th:if="${signatureImage}">
+            <img th:src="${signatureImage}" alt="Customer Signature" style="max-width: 200px; max-height: 100px;" />
+        </div>
+        <div class="sig-line">
+            <p th:text="${contract.getUser().getLastName()}">Customer Name</p>
+            <p>Customer Signature</p>
+        </div>
+    </div>
 </div>
 </body>
 
