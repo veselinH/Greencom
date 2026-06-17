@@ -90,6 +90,18 @@ public class ContractServiceImpl implements ContractService {
         context.setVariable("contract", contract);
         context.setVariable("downloadDate", LocalDate.now());
 
+        try {
+            byte[] logoBytes = new ClassPathResource("static/images/logoz.png").getInputStream().readAllBytes();
+            String logoBase64 = java.util.Base64.getEncoder().encodeToString(logoBytes);
+            context.setVariable("logoImage", "data:image/png;base64," + logoBase64);
+        } catch (Exception ignored) {
+        }
+
+        if (contract.getSignSignature() != null) {
+            String signatureBase64 = java.util.Base64.getEncoder().encodeToString(contract.getSignSignature());
+            context.setVariable("signatureImage", "data:image/png;base64," + signatureBase64);
+        }
+
         String htmlContent = templateEngine.process("documents/contract", context);
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -104,5 +116,16 @@ public class ContractServiceImpl implements ContractService {
         } catch (Exception e){
             throw new RuntimeException(("Contract generation error: " + e));
         }
+    }
+
+    @Override
+    public String getContractDownloadFileName(Long id) {
+        ContractEntity contract = contractRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
+
+        String planName = contract.getPlan().getName()
+                .replaceAll("[^a-zA-Z0-9-_]", "_");
+
+        return planName + "_" + id + "_" + LocalDate.now() + ".pdf";
     }
 }
