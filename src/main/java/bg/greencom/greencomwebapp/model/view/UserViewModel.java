@@ -9,6 +9,8 @@ public class UserViewModel {
     private String username;
     private String email;
     private BigDecimal totalDebtPerMonth;
+    private int loyaltyPoints;
+    private String loyaltyTier;
 
     public String getFirstName() {
         return firstName;
@@ -52,6 +54,24 @@ public class UserViewModel {
 
     public UserViewModel setTotalDebtPerMonth(BigDecimal totalDebtPerMonth) {
         this.totalDebtPerMonth = totalDebtPerMonth;
+        return this;
+    }
+
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+    public UserViewModel setLoyaltyPoints(int loyaltyPoints) {
+        this.loyaltyPoints = loyaltyPoints;
+        return this;
+    }
+
+    public String getLoyaltyTier() {
+        return loyaltyTier;
+    }
+
+    public UserViewModel setLoyaltyTier(String loyaltyTier) {
+        this.loyaltyTier = loyaltyTier;
         return this;
     }
 }

@@ -1,6 +1,8 @@
 package bg.greencom.greencomwebapp.web;
 
+import bg.greencom.greencomwebapp.client.LoyaltyException;
 import bg.greencom.greencomwebapp.model.binding.UserRegisterBindingModel;
+import bg.greencom.greencomwebapp.model.exception.ContractAccessDeniedException;
 import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
@@ -176,8 +178,38 @@ public class UserController {
         return "redirect:/users/profile";
     }
 
+    @PostMapping("/loyalty/redeem")
+    public String redeemLoyaltyPoints(@RequestParam int points,
+                                      @AuthenticationPrincipal GreencomUserDetails user,
+                                      RedirectAttributes redirectAttributes) {
+
+        if (points <= 0) {
+            redirectAttributes.addFlashAttribute("error", "Please enter a positive number of points to redeem.");
+            return "redirect:/users/profile";
+        }
+
+        try {
+            BigDecimal discount = userService.redeemLoyaltyPoints(user.getUsername(), points);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Redeemed " + points + " points for a " + discount + " BGN discount on your monthly bill.");
+        } catch (LoyaltyException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/users/profile";
+    }
+
     @GetMapping("/contract/{id}/download")
-    public ResponseEntity<byte[]> downloadContract(@PathVariable Long id) throws Exception {
+    public ResponseEntity<byte[]> downloadContract(@PathVariable Long id,
+                                                   @AuthenticationPrincipal GreencomUserDetails user) throws Exception {
+
+//      Only the contract owner (or an admin) may download the contract.
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+        if (!isAdmin && !contractService.isContractOwner(id, user.getUsername())) {
+            throw new ContractAccessDeniedException(
+                    "User '" + user.getUsername() + "' is not allowed to download contract " + id + ".");
+        }
 
         byte[] pdfContents = contractService.generateContractPdf(id);
         String fileName = contractService.getContractDownloadFileName(id);

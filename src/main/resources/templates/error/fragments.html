@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="page(code, title, message, linkText, linkHref)">
+<head th:replace="~{fragments/commons :: head}">
+    <title>Greencom</title>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+<header th:replace="~{fragments/commons :: navbar}"></header>
+
+<main class="container flex-grow-1 d-flex align-items-center justify-content-center text-center py-5">
+    <div>
+        <div class="fw-bold text-success lh-1 mb-2" style="font-size: 8rem;" th:text="${code}">404</div>
+        <h2 class="fw-bold mb-3" th:text="${title}">Something went wrong</h2>
+        <p class="text-muted lead mb-4" th:text="${message}">A short description of the error.</p>
+        <a class="btn btn-success btn-lg px-4" th:href="${linkHref}" th:text="${linkText}">Back to homepage</a>
+    </div>
+</main>
+
+<footer class="text-center p-4 bg-dark text-white mt-auto">
+    © 2026 Copyright:
+    <a class="text-white fw-bold text-decoration-none" th:href="@{/}">Greencom Inc.</a>
+</footer>
+</body>
+</html>

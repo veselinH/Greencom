@@ -1,5 +1,7 @@
 package bg.greencom.greencomwebapp.service.impl;
 
+import bg.greencom.greencomwebapp.client.LoyaltyFacade;
+import bg.greencom.greencomwebapp.client.dto.LoyaltyResponse;
 import bg.greencom.greencomwebapp.model.entity.*;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
@@ -39,8 +41,9 @@ public class UserServiceImpl implements UserService {
     private final InternetPlanService internetPlanService;
     private final TelevisionPlanService televisionPlanService;
     private final AdditionalPackageService additionalPackageService;
+    private final LoyaltyFacade loyaltyFacade;
 
-    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService, InternetPlanService internetPlanService, TelevisionPlanService televisionPlanService, AdditionalPackageService additionalPackageService) {
+    public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService, InternetPlanService internetPlanService, TelevisionPlanService televisionPlanService, AdditionalPackageService additionalPackageService, LoyaltyFacade loyaltyFacade) {
         this.userRoleService = userRoleService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
@@ -53,6 +56,7 @@ public class UserServiceImpl implements UserService {
         this.internetPlanService = internetPlanService;
         this.televisionPlanService = televisionPlanService;
         this.additionalPackageService = additionalPackageService;
+        this.loyaltyFacade = loyaltyFacade;
     }
 
     @Override
@@ -173,6 +177,9 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setTotalDebtPerMonth(totalDebt);
+        if (user.getTotalDebtPerMonth().compareTo(BigDecimal.ZERO) < 0) {
+            user.setTotalDebtPerMonth(BigDecimal.ZERO);
+        }
 
         userRepository.saveAndFlush(user);
 
@@ -318,9 +325,40 @@ public class UserServiceImpl implements UserService {
                     .setLastName(userFromRepo.getLastName())
                     .setEmail(userFromRepo.getEmail())
                     .setTotalDebtPerMonth(userFromRepo.getTotalDebtPerMonth());
+
+//          Enrich with loyalty data from the microservice (degrades gracefully if it is down).
+            LoyaltyResponse loyalty = loyaltyFacade.getBalance(username);
+            if (loyalty != null) {
+                userViewModel
+                        .setLoyaltyPoints(loyalty.getPointsBalance())
+                        .setLoyaltyTier(loyalty.getTier());
+            } else {
+                userViewModel.setLoyaltyTier("—");
+            }
         }
 
         return userViewModel;
+    }
+
+    @Override
+    @Transactional
+    public BigDecimal redeemLoyaltyPoints(String username, int points) {
+
+        UserEntity user = findUserByUsername(username);
+        if (user == null) {
+            throw new bg.greencom.greencomwebapp.client.LoyaltyException("User not found.");
+        }
+
+//      Deduct points in the loyalty-service; throws LoyaltyException on insufficient balance / outage.
+        LoyaltyResponse loyalty = loyaltyFacade.redeem(username, points);
+
+//      Apply the returned BGN discount to the user's monthly debt (floored at zero).
+        BigDecimal discount = loyalty.getDiscountBgn() == null ? BigDecimal.ZERO : loyalty.getDiscountBgn();
+        BigDecimal newDebt = user.getTotalDebtPerMonth().subtract(discount).max(BigDecimal.ZERO);
+        user.setTotalDebtPerMonth(newDebt);
+        userRepository.saveAndFlush(user);
+
+        return discount;
     }
 
     @Override

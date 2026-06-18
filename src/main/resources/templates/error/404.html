@@ -1,30 +1,9 @@
-<!doctype html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/notfound.css">
-    <title>Greencom</title>
-</head>
-<body>
-<div id="clouds">
-    <div class="cloud x1"></div>
-    <div class="cloud x1_5"></div>
-    <div class="cloud x2"></div>
-    <div class="cloud x3"></div>
-    <div class="cloud x4"></div>
-    <div class="cloud x5"></div>
-</div>
-<div class='c'>
-    <div class='_404'>404</div>
-    <hr>
-    <div class='_1'></div>
-    <div class='_1'>THE PAGE</div>
-    <div class='_2'>WAS NOT FOUND</div>
-    <a class='btn' href='/home'>BACK TO HOMEPAGE</a>
-</div>
-</body>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{error/fragments :: page(
+          '404',
+          'Page not found',
+          'The page you are looking for does not exist or has been moved.',
+          'Back to homepage',
+          '/home')}">
 </html>

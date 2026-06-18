@@ -40,6 +40,8 @@ public interface UserService {
 
     UserViewModel getUserInfo(String username);
 
+    BigDecimal redeemLoyaltyPoints(String username, int points);
+
     boolean isPenaltyRequired(Long id);
 
     BigDecimal calculatePenalty(Long id);
