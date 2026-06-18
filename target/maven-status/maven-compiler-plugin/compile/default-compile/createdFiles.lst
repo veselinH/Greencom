@@ -1,0 +1,6 @@
+bg\greencom\greencomwebapp\client\LoyaltyFacade.class
+bg\greencom\greencomwebapp\client\dto\LoyaltyResponse.class
+bg\greencom\greencomwebapp\client\dto\RedeemRequest.class
+bg\greencom\greencomwebapp\client\LoyaltyException.class
+bg\greencom\greencomwebapp\client\LoyaltyClient.class
+bg\greencom\greencomwebapp\client\dto\EarnRequest.class
