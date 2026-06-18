@@ -14,5 +14,12 @@ spring:
     password: 'NewPassword'
     username: 'root'
     url: jdbc:mysql://localhost:3306/greencom_loyalty_db?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+loyalty:
+  scheduling:
+    # Spring 6-field cron (sec min hour day-of-month month day-of-week):
+    # 03:00:00 on the 1st day of every month. Set to e.g. "0 * * * * *" to run every minute when testing.
+    bonus-cron: "0 0 3 1 * *"
+    # Fixed delay between cache evictions, in milliseconds (10 minutes).
+    cache-evict-delay-ms: 600000
 server:
   port: 8081
