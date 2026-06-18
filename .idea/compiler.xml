@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Greencom" />
         <module name="GreencomWebApp" />
+        <module name="loyalty-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -15,6 +16,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Greencom" options="-parameters" />
       <module name="GreencomWebApp" options="-parameters" />
+      <module name="loyalty-service" options="-parameters" />
     </option>
   </component>
 </project>
