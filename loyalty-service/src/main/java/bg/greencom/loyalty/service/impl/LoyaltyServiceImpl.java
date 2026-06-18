@@ -5,20 +5,31 @@ import bg.greencom.loyalty.model.LoyaltyAccount;
 import bg.greencom.loyalty.repository.LoyaltyAccountRepository;
 import bg.greencom.loyalty.service.InsufficientPointsException;
 import bg.greencom.loyalty.service.LoyaltyService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class LoyaltyServiceImpl implements LoyaltyService {
+
+    // Cache holding one LoyaltyResponse per username.
+    public static final String ACCOUNTS_CACHE = "loyaltyAccounts";
 
     // 100 points redeem into 1.00 BGN of discount.
     private static final int POINTS_PER_BGN = 100;
 
     private static final int SILVER_THRESHOLD = 500;
     private static final int GOLD_THRESHOLD = 1500;
+
+    // Tier-based bonus awarded by the scheduled monthly job.
+    private static final int BRONZE_BONUS = 10;
+    private static final int SILVER_BONUS = 50;
+    private static final int GOLD_BONUS = 100;
 
     private final LoyaltyAccountRepository loyaltyAccountRepository;
 
@@ -28,12 +39,14 @@ public class LoyaltyServiceImpl implements LoyaltyService {
 
     @Override
     @Transactional
+    @Cacheable(value = ACCOUNTS_CACHE, key = "#username")
     public LoyaltyResponse getAccount(String username) {
         return toResponse(getOrCreate(username), BigDecimal.ZERO);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = ACCOUNTS_CACHE, key = "#username")
     public LoyaltyResponse earn(String username, int points) {
         LoyaltyAccount account = getOrCreate(username);
         account
@@ -46,6 +59,7 @@ public class LoyaltyServiceImpl implements LoyaltyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = ACCOUNTS_CACHE, key = "#username")
     public LoyaltyResponse redeem(String username, int points) {
         LoyaltyAccount account = getOrCreate(username);
 
@@ -66,6 +80,7 @@ public class LoyaltyServiceImpl implements LoyaltyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = ACCOUNTS_CACHE, key = "#username")
     public LoyaltyResponse revoke(String username, int amount) {
         LoyaltyAccount account = getOrCreate(username);
 
@@ -75,6 +90,35 @@ public class LoyaltyServiceImpl implements LoyaltyService {
                 .setUpdatedOn(LocalDateTime.now());
 
         return toResponse(loyaltyAccountRepository.saveAndFlush(account), BigDecimal.ZERO);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = ACCOUNTS_CACHE, allEntries = true)
+    public int awardTierBonusToAll() {
+        List<LoyaltyAccount> accounts = loyaltyAccountRepository.findAll();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (LoyaltyAccount account : accounts) {
+            int bonus = bonusForTier(account.getTotalEarned());
+            account
+                    .setPointsBalance(account.getPointsBalance() + bonus)
+                    .setTotalEarned(account.getTotalEarned() + bonus)
+                    .setUpdatedOn(now);
+        }
+
+        loyaltyAccountRepository.saveAll(accounts);
+        return accounts.size();
+    }
+
+    private int bonusForTier(int totalEarned) {
+        if (totalEarned >= GOLD_THRESHOLD) {
+            return GOLD_BONUS;
+        }
+        if (totalEarned >= SILVER_THRESHOLD) {
+            return SILVER_BONUS;
+        }
+        return BRONZE_BONUS;
     }
 
     private LoyaltyAccount getOrCreate(String username) {
