@@ -4,6 +4,7 @@ C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\l
 C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\loyalty\LoyaltyServiceApplication.java
 C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\loyalty\model\LoyaltyAccount.java
 C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\loyalty\repository\LoyaltyAccountRepository.java
+C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\loyalty\scheduling\LoyaltyScheduler.java
 C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\loyalty\service\impl\LoyaltyServiceImpl.java
 C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\loyalty\service\InsufficientPointsException.java
 C:\Users\vhhri\IdeaProjects\Greencom\loyalty-service\src\main\java\bg\greencom\loyalty\service\LoyaltyService.java
