@@ -3,6 +3,7 @@ bg\greencom\loyalty\dto\EarnRequest.class
 bg\greencom\loyalty\dto\RedeemRequest.class
 bg\greencom\loyalty\service\LoyaltyService.class
 bg\greencom\loyalty\LoyaltyServiceApplication.class
+bg\greencom\loyalty\scheduling\LoyaltyScheduler.class
 bg\greencom\loyalty\dto\LoyaltyResponse.class
 bg\greencom\loyalty\service\impl\LoyaltyServiceImpl.class
 bg\greencom\loyalty\web\LoyaltyController.class
