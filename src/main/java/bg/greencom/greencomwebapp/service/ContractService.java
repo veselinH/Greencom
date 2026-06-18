@@ -17,4 +17,6 @@ public interface ContractService {
     byte[] generateContractPdf(Long contractId);
 
     String getContractDownloadFileName(Long id);
+
+    boolean isContractOwner(Long contractId, String username);
 }
