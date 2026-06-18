@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{error/fragments :: page(
+          '401',
+          'Unauthorized',
+          'You need to be logged in to view this page.',
+          'Go to login',
+          '/users/login')}">
+</html>
