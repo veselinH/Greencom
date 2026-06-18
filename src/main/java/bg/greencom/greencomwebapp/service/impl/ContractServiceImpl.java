@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.service.impl;
 
+import bg.greencom.greencomwebapp.client.LoyaltyFacade;
 import bg.greencom.greencomwebapp.model.entity.AdditionalPackageEntity;
 import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.entity.PlanEntity;
@@ -18,6 +19,8 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -29,11 +32,13 @@ public class ContractServiceImpl implements ContractService {
     private final ContractRepository contractRepository;
     private final ModelMapper modelMapper;
     private final TemplateEngine templateEngine;
+    private final LoyaltyFacade loyaltyFacade;
 
-    public ContractServiceImpl(ContractRepository contractRepository, ModelMapper modelMapper, TemplateEngine templateEngine) {
+    public ContractServiceImpl(ContractRepository contractRepository, ModelMapper modelMapper, TemplateEngine templateEngine, LoyaltyFacade loyaltyFacade) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
         this.templateEngine = templateEngine;
+        this.loyaltyFacade = loyaltyFacade;
     }
 
     @Override
@@ -48,6 +53,9 @@ public class ContractServiceImpl implements ContractService {
         newContract.setAdditionalPackageEntities(additionalPackageEntities);
 
         contractRepository.saveAndFlush(newContract);
+
+//      Award loyalty points (best-effort) for signing the plan.
+        loyaltyFacade.earn(userEntity.getUsername(), toPoints(planEntity.getPrice()));
     }
 
     @Override
@@ -78,6 +86,17 @@ public class ContractServiceImpl implements ContractService {
                 .setActive(false);
 
         contractRepository.saveAndFlush(contract);
+
+//      Revoke the loyalty points that were earned for this plan (best-effort).
+        loyaltyFacade.revoke(contract.getUser().getUsername(), toPoints(contract.getPlan().getPrice()));
+    }
+
+    /** Loyalty points awarded/revoked for a plan: its monthly price rounded to the nearest whole point. */
+    private int toPoints(BigDecimal price) {
+        if (price == null) {
+            return 0;
+        }
+        return price.setScale(0, RoundingMode.HALF_UP).intValue();
     }
 
     @Override
@@ -127,5 +146,13 @@ public class ContractServiceImpl implements ContractService {
                 .replaceAll("[^a-zA-Z0-9-_]", "_");
 
         return planName + "_" + id + "_" + LocalDate.now() + ".pdf";
+    }
+
+    @Override
+    public boolean isContractOwner(Long contractId, String username) {
+        return contractRepository.findById(contractId)
+                .map(contract -> contract.getUser() != null
+                        && contract.getUser().getUsername().equals(username))
+                .orElse(false);
     }
 }
