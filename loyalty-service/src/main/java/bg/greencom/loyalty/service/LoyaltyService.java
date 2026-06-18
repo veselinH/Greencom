@@ -27,4 +27,12 @@ public interface LoyaltyService {
      * Triggered when a user unsigns a contract in the main application.
      */
     LoyaltyResponse revoke(String username, int amount);
+
+    /**
+     * Awards a tier-based bonus to every account (GOLD/SILVER/BRONZE get
+     * different amounts). Invoked by the scheduled monthly bonus job.
+     *
+     * @return the number of accounts that received a bonus
+     */
+    int awardTierBonusToAll();
 }
