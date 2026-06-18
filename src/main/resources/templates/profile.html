@@ -12,6 +12,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
+    <!-- Error Alert -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow border-0">
@@ -41,7 +47,22 @@
                             <strong>Total debt per month:</strong>
                             <span th:text="${currentUser.totalDebtPerMonth}">$0.00</span>
                         </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <strong>Loyalty points:</strong>
+                            <span class="badge bg-success rounded-pill fs-6" th:text="${currentUser.loyaltyPoints}">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <strong>Loyalty tier:</strong>
+                            <span class="badge bg-secondary fs-6" th:text="${currentUser.loyaltyTier}">BRONZE</span>
+                        </li>
                     </ul>
+                    <div class="p-3">
+                        <button type="button" class="btn btn-success w-100"
+                                data-bs-toggle="modal" data-bs-target="#redeemModal"
+                                th:disabled="${currentUser.loyaltyPoints le 0}">
+                            <i class="bi bi-gift me-1"></i> Redeem points
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -369,6 +390,36 @@
 </main>
 
 <footer th:replace="~{fragments/commons::footer}"></footer>
+
+<!-- Redeem Loyalty Points Modal -->
+<div class="modal fade" id="redeemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-success">
+            <form th:action="@{/users/loyalty/redeem}" method="post">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Redeem loyalty points</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">
+                        You have <strong th:text="${currentUser.loyaltyPoints}">0</strong> points.
+                        Every 100 points is worth 1.00 BGN off your monthly bill.
+                    </p>
+                    <div class="mb-3">
+                        <label for="redeemPoints" class="form-label">Points to redeem</label>
+                        <input type="number" id="redeemPoints" name="points" class="form-control"
+                               min="1" th:max="${currentUser.loyaltyPoints}" step="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success px-4">Redeem</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- COMPLETE REPLACEMENT MODAL & SCRIPT -->
 <div class="modal fade" id="penaltyModal"
      th:data-show="${showPenalty ?: false}"

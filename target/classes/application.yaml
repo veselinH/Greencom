@@ -25,5 +25,8 @@ logging:
         SQL: DEBUG
       nodeValue: WARN
     blog: WARN
+loyalty:
+  service:
+    url: http://localhost:8081
 server:
   port: 8080
