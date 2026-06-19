@@ -1,11 +1,11 @@
 package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
-import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.VoicePlanRepository;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
+import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 

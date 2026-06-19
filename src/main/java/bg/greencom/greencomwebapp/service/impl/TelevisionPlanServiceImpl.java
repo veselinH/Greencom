@@ -1,16 +1,14 @@
 package bg.greencom.greencomwebapp.service.impl;
 
-
-import bg.greencom.greencomwebapp.model.entity.AdditionalPackageEntity;
 import bg.greencom.greencomwebapp.model.entity.TelevisionPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.TelevisionTypeEntity;
-import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.service.TelevisionPlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.TelevisionPlanViewModel;
 import bg.greencom.greencomwebapp.repository.TelevisionPlanRepository;
 import bg.greencom.greencomwebapp.repository.TelevisionTypeRepository;
 import bg.greencom.greencomwebapp.service.TelevisionPlanService;
+import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
