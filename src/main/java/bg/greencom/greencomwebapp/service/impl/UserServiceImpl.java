@@ -7,7 +7,6 @@ import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.*;
-import bg.greencom.greencomwebapp.repository.TelevisionPlanRepository;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.service.*;
 import org.modelmapper.ModelMapper;
@@ -152,7 +151,6 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
 
         contractService.addContract(voicePlanFromDB, user,null,  signSignature);
-
     }
 
     /**
@@ -237,11 +235,7 @@ public class UserServiceImpl implements UserService {
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof VoicePlanEntity)
-                .map(contract -> {
-                    VoicePlanViewModel viewModel = modelMapper.map(contract.getPlan(), VoicePlanViewModel.class);
-                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
-                    return viewModel;
-                })
+                .map(this::mapToVoicePlanViewModel)
                 .toList();
     }
 
@@ -259,11 +253,7 @@ public class UserServiceImpl implements UserService {
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof DataPlanEntity)
-                .map(contract -> {
-                    DataPlanViewModel viewModel = modelMapper.map(contract.getPlan(), DataPlanViewModel.class);
-                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
-                    return viewModel;
-                })
+                .map(this::mapToDataPlanViewModel)
                 .toList();
     }
 
@@ -302,12 +292,7 @@ public class UserServiceImpl implements UserService {
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof InternetPlanEntity)
-                .map(contract -> {
-                    InternetPlanViewModel viewModel = modelMapper.map(contract.getPlan(), InternetPlanViewModel.class);
-                    viewModel.setInternetType(((InternetPlanEntity) contract.getPlan()).getInternetType().getName().getValue());
-                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
-                    return viewModel;
-                })
+                .map(this::mapToInternetPlanViewModel)
                 .toList();
     }
 
@@ -351,22 +336,7 @@ public class UserServiceImpl implements UserService {
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof TelevisionPlanEntity)
-                .map(contract -> {
-                    TelevisionPlanViewModel viewModel = modelMapper.map(contract.getPlan(), TelevisionPlanViewModel.class);
-                    viewModel.setTelevisionType(((TelevisionPlanEntity) contract.getPlan()).getTelevisionType().getName().getValue());
-                    viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
-                    if (contract.getAdditionalPackageEntities() != null) {
-                        for (AdditionalPackageEntity additionalPackage : contract.getAdditionalPackageEntities()) {
-                            AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackage, AdditionalPackageViewModel.class);
-                            additionalPackageViewModel.setName(additionalPackage.getName().getValue());
-                            viewModel.getAdditionalPackages().add(additionalPackageViewModel);
-
-                            // Dynamically aggregate the base contract view model price with the add-on package cost
-                            viewModel.setPrice(viewModel.getPrice().add(additionalPackage.getPrice()));
-                        }
-                    }
-                    return viewModel;
-                })
+                .map(this::mapToTelevisionPlanViewModel)
                 .toList();
     }
 
@@ -483,4 +453,39 @@ public class UserServiceImpl implements UserService {
         return penaltyAmount;
     }
 
+    private VoicePlanViewModel mapToVoicePlanViewModel(ContractEntity contract) {
+        VoicePlanViewModel viewModel = modelMapper.map(contract.getPlan(), VoicePlanViewModel.class);
+        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        return viewModel;
+    }
+
+    private DataPlanViewModel mapToDataPlanViewModel(ContractEntity contract) {
+        DataPlanViewModel viewModel = modelMapper.map(contract.getPlan(), DataPlanViewModel.class);
+        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        return viewModel;
+    }
+
+    private InternetPlanViewModel mapToInternetPlanViewModel(ContractEntity contract) {
+        InternetPlanViewModel viewModel = modelMapper.map(contract.getPlan(), InternetPlanViewModel.class);
+        viewModel.setInternetType(((InternetPlanEntity) contract.getPlan()).getInternetType().getName().getValue());
+        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        return viewModel;
+    }
+
+    private TelevisionPlanViewModel mapToTelevisionPlanViewModel(ContractEntity contract) {
+        TelevisionPlanViewModel viewModel = modelMapper.map(contract.getPlan(), TelevisionPlanViewModel.class);
+        viewModel.setTelevisionType(((TelevisionPlanEntity) contract.getPlan()).getTelevisionType().getName().getValue());
+        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        if (contract.getAdditionalPackageEntities() != null) {
+            for (AdditionalPackageEntity additionalPackage : contract.getAdditionalPackageEntities()) {
+                AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackage, AdditionalPackageViewModel.class);
+                additionalPackageViewModel.setName(additionalPackage.getName().getValue());
+                viewModel.getAdditionalPackages().add(additionalPackageViewModel);
+
+                // Dynamically aggregate the base contract view model price with the add-on package cost
+                viewModel.setPrice(viewModel.getPrice().add(additionalPackage.getPrice()));
+            }
+        }
+        return viewModel;
+    }
 }
