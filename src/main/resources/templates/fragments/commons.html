@@ -17,6 +17,7 @@
         <div class="container-fluid">
             <!-- Brand Logo -->
             <a class="navbar-brand" th:href="@{${#authorization.expression('isAuthenticated()') ? '/home' : '/'}}">
+                <!--suppress CheckImageSize -->
                 <img src="/images/logoz.png" width="75" height="50" alt="Greencom Logo">
             </a>
 
