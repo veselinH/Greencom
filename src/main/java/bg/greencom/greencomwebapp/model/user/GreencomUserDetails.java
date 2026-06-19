@@ -3,7 +3,6 @@ package bg.greencom.greencomwebapp.model.user;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 
 /**
@@ -18,16 +17,12 @@ public class GreencomUserDetails implements UserDetails {
 
     private final String username;
     private final String password;
-    private final String firstName;
-    private final String lastName;
     private final String email;
     private final Collection<GrantedAuthority> authorities;
 
-    public GreencomUserDetails(String username, String password, String firstName, String lastName, String email, Collection<GrantedAuthority> authorities) {
+    public GreencomUserDetails(String username, String password, String email, Collection<GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.email = email;
         this.authorities = authorities;
     }
@@ -45,14 +40,6 @@ public class GreencomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 
     public String getEmail() {
