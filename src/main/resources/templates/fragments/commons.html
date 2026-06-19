@@ -69,7 +69,7 @@
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="btn btn-success dropdown-toggle shadow-sm" href="#" id="userDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Welcome, <th:block sec:authentication="principal.firstName"></th:block>!
+                            Welcome, <th:block sec:authentication="principal.username"></th:block>!
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
