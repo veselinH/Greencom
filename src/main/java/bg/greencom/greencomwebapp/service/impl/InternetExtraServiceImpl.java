@@ -20,10 +20,6 @@ public class InternetExtraServiceImpl implements InternetExtraService {
         this.internetExtraRepository = internetExtraRepository;
     }
 
-    /**
-     * Seeds the database with default internet extras on system startup if empty.
-     * Inserts STATIC_IP, ANTI_VIRUS_PROGRAM, and WIFI_ROUTER configurations.
-     */
     @Override
     public void initialize() {
         if (internetExtraRepository.count() == 0) {
@@ -44,10 +40,6 @@ public class InternetExtraServiceImpl implements InternetExtraService {
         }
     }
 
-    /**
-     * Finds a specific internet extra configuration by its matching enum identifier.
-     * Returns null if the specified type does not exist in the database.
-     */
     @Override
     public InternetExtrasEntity findByName(InternetExtraEnum internetExtraEnum) {
         return internetExtraRepository

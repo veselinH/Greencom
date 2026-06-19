@@ -29,10 +29,6 @@ public class AdditionalPackageServiceImpl implements AdditionalPackageService {
         this.additionalPackageRepository = additionalPackageRepository;
     }
 
-    /**
-     * Seeds base supplementary television options on system startup if empty.
-     * Establishes initial commercial rates for ADULT_XTRA, SPORT_XTRA, and MOVIES_XTRA.
-     */
     @Override
     public void initialize() {
         if (additionalPackageRepository.count() == 0) {
@@ -57,10 +53,6 @@ public class AdditionalPackageServiceImpl implements AdditionalPackageService {
         }
     }
 
-    /**
-     * Gathers all available supplementary option configurations from persistence layers,
-     * sorting results alphabetically by their descriptive names.
-     */
     @Override
     public List<AdditionalPackageViewModel> findAllOrderedByName() {
         return additionalPackageRepository
@@ -76,9 +68,6 @@ public class AdditionalPackageServiceImpl implements AdditionalPackageService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Fetches multiple entity configurations matching an explicit set of primary reference keys.
-     */
     @Override
     public Set<AdditionalPackageEntity> findAllByIds(Set<Long> additionalPackageIds) {
         return new HashSet<>(additionalPackageRepository.findAllById(additionalPackageIds));

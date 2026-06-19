@@ -23,10 +23,6 @@ public class UserRoleServiceImpl implements UserRoleService {
         this.userRoleRepository = userRoleRepository;
     }
 
-    /**
-     * Seeds the application database with core identity credentials (USER, ADMIN)
-     * during the initial bootstrap phase if no prior security records exist.
-     */
     @Override
     public void initialize() {
      if (userRoleRepository.count() == 0){
@@ -39,13 +35,6 @@ public class UserRoleServiceImpl implements UserRoleService {
      }
     }
 
-    /**
-     * Finds a security role instance by its unique type enumeration.
-     *
-     * @param userRoleEnum The target application role identifier.
-     * @return             The persistent UserRoleEntity configuration.
-     * @throws ObjectNotFoundException If the requested security role record does not exist.
-     */
     @Override
     public UserRoleEntity findByName(UserRoleEnum userRoleEnum) {
         return userRoleRepository

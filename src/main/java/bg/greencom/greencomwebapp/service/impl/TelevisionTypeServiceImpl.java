@@ -24,13 +24,6 @@ public class TelevisionTypeServiceImpl implements TelevisionTypeService {
         this.televisionTypeRepository = televisionTypeRepository;
     }
 
-    /**
-     * Initializes the television types in the database if it is empty.
-     * <p>
-     * Checks if any television types exist. If the repository count is zero,
-     * it seeds the default values (INTERACTIVE and SATELLITE) into the database.
-     * </p>
-     */
     @Override
     public void initialize() {
         if (televisionTypeRepository.count() == 0) {

@@ -63,9 +63,6 @@ public class UserServiceImpl implements UserService {
         this.loyaltyFacade = loyaltyFacade;
     }
 
-    /**
-     * Seeds the initial administrator profile into the system if no users exist.
-     */
     @Override
     public void initialize() {
         if (userRepository.count() == 0) {
@@ -86,12 +83,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /**
-     * Registers a new client in the database and automatically triggers a successful security login session.
-     *
-     * @param userServiceModel         DTO containing user credentials and registration details.
-     * @param successfulLoginProcessor Consumer callback used to process the post-registration login token.
-     */
     @Override
     public void registerUser(UserServiceModel userServiceModel,
                                          Consumer<Authentication> successfulLoginProcessor) {
@@ -133,9 +124,6 @@ public class UserServiceImpl implements UserService {
                 .orElse(null);
     }
 
-    /**
-     * Links a mobile voice plan to the user profile, recalculates monthly debt, and creates a contract record.
-     */
     @Override
     public void signVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] signSignature) {
 
@@ -154,9 +142,6 @@ public class UserServiceImpl implements UserService {
         contractService.addContract(voicePlanFromDB, user,null,  signSignature);
     }
 
-    /**
-     * Links a mobile data plan to the user profile, recalculates monthly debt, and creates a contract record.
-     */
     @Override
     public void signDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails, byte[] signSignature) {
 
@@ -175,15 +160,6 @@ public class UserServiceImpl implements UserService {
         contractService.addContract(dataPlanFromDB, user, null, signSignature);
     }
 
-    /**
-     * Terminates an existing active plan subscription, handles dynamic debt deductions for base plans
-     * plus attached add-on packages, and prevents debt metrics from falling into negative fields.
-     *
-     * @param contractId       The target subscription contract identifier.
-     * @param username         The owner's system login name.
-     * @param unsignSignature  Digital signature payload finalizing cancellation.
-     * @return                 The descriptive name of the cancelled subscription target.
-     */
     @Override
     @Transactional
     public String unsignPlan(Long contractId, String username, byte[] unsignSignature) {
@@ -221,10 +197,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    /**
-     * Retrieves all active mobile voice plan subscriptions belonging to the specified user.
-     * Maps database contracts directly to view models to maintain unique contract references.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<VoicePlanViewModel> getAllVoicePlans(String username) {
@@ -240,10 +212,6 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    /**
-     * Retrieves all active mobile data plan subscriptions belonging to the specified user.
-     * Maps database contracts directly to view models to maintain unique contract references.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<DataPlanViewModel> getAllDataPlans(String username) {
@@ -258,9 +226,6 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    /**
-     * Links an internet plan to the user profile, recalculates monthly debt, and creates a contract record.
-     */
     @Override
     public void signInternetPlan(InternetPlanViewModel internetPlan, GreencomUserDetails userDetails, byte[] signSignature) {
 
@@ -279,10 +244,6 @@ public class UserServiceImpl implements UserService {
         contractService.addContract(internetPlanFromDB, user, null, signSignature);
     }
 
-    /**
-     * Retrieves all active internet subscription plans for a specific user profile.
-     * Explicitly maps internal type structures and binds persistent contract identifiers.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<InternetPlanViewModel> getAllInternetPlans(String username) {
@@ -297,10 +258,6 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    /**
-     * Provisions a television subscription package containing a base plan and optional extra channels,
-     * adding combined recurring fees to the client's financial profile.
-     */
     @Override
     public void signTelevisionPlan(Long planId, Set<Long> additionalPackageIds, GreencomUserDetails userDetails, byte[] signSignature) {
 
@@ -323,10 +280,6 @@ public class UserServiceImpl implements UserService {
         contractService.addContract(televisionPlanFromDB, user, additionalPackagesFromDB, signSignature);
     }
 
-    /**
-     * Fetches active television subscriptions for a user, flattening supplementary add-on data
-     * and calculating aggregated total pricing directly within the returned view objects.
-     */
     @Override
     @Transactional(readOnly = true)
     public List<TelevisionPlanViewModel> getAllTelevisionPlans(String username) {
@@ -341,10 +294,6 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    /**
-     * Assembles core profile statistics and financial liabilities for a user summary window.
-     * Enriches profiles using external system metrics and incorporates graceful fallbacks.
-     */
     @Override
     public UserViewModel getUserInfo(String username) {
 
@@ -372,15 +321,6 @@ public class UserServiceImpl implements UserService {
         return userViewModel;
     }
 
-    /**
-     * Executes loyalty point redemptions against an external service, processing the resulting
-     * monetary reward as a statement credit toward the client's monthly balance.
-     *
-     * @param username The identifier of the profile redeeming points.
-     * @param points   The aggregate amount of rewards points to process.
-     * @return         The exact currency discount value successfully applied to the profile ledger.
-     * @throws LoyaltyException If the client cannot be found, has insufficient funds, or the upstream API fails.
-     */
     @Override
     @Transactional
     public BigDecimal redeemLoyaltyPoints(String username, int points) {
@@ -402,12 +342,6 @@ public class UserServiceImpl implements UserService {
         return discount;
     }
 
-    /**
-     * Evaluates a contract lifespan to see if termination triggers early cancellation liabilities.
-     *
-     * @param id The unique identifier of the target subscription agreement.
-     * @return   True if early-exit compliance penalty terms are enforceable; false if naturally expired.
-     */
     @Override
     @Transactional
     public boolean isPenaltyRequired(Long id) {
@@ -421,13 +355,6 @@ public class UserServiceImpl implements UserService {
         return monthsBetween <= Integer.parseInt(userPlan.getPlanDuration());
     }
 
-    /**
-     * Calculates early termination financial penalties based on standard provider criteria.
-     * Liquidated damages are capped at a maximum of 3 months of service fees.
-     *
-     * @param id The unique identifier of the terminating subscription contract.
-     * @return   The definitive liquidated penalty amount owed by the client.
-     */
     @Override
     @Transactional
     public BigDecimal calculatePenalty(Long id) {

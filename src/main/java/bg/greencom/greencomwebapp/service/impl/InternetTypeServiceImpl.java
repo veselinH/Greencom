@@ -20,10 +20,6 @@ public class InternetTypeServiceImpl implements InternetTypeService {
         this.internetTypeRepository = internetTypeRepository;
     }
 
-    /**
-     * Seeds default internet technologies into the database if no records exist.
-     * populates initial metadata for FIBER_NET and VDSL configuration options.
-     */
     @Override
     public void initialize() {
         if (internetTypeRepository.count() == 0) {
@@ -37,9 +33,6 @@ public class InternetTypeServiceImpl implements InternetTypeService {
         }
     }
 
-    /**
-     * Looks up an internet type category using its explicit enum classification name.
-     */
     @Override
     public InternetTypeEntity findByName(InternetTypeEnum name) {
         return internetTypeRepository.findByName(name);

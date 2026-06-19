@@ -20,10 +20,6 @@ public class MobileExtraServiceImpl implements MobileExtraService {
         this.mobileExtraRepository = mobileExtraRepository;
     }
 
-    /**
-     * Seeds the database with default mobile extras on system startup if empty.
-     * Inserts MOBILE_TV, MOBILE_MUSIC, and GREENCOM_PREMIUM_CARD configurations.
-     */
     @Override
     public void initialize() {
         if (mobileExtraRepository.count() == 0) {
@@ -44,10 +40,6 @@ public class MobileExtraServiceImpl implements MobileExtraService {
         }
     }
 
-    /**
-     * Finds a specific mobile extra configuration by its matching enum identifier.
-     * Returns null if the specified type does not exist in the database.
-     */
     @Override
     public MobileExtraEntity findByName(MobileExtraEnum mobileExtraEnum) {
 
