@@ -1,6 +1,3 @@
-//GreencomUserDetails is our current logged user
-//We can display certain staff specific for the user in the html template with principal.Field
-//We can check its authorities in html template via thymeleaf
 package bg.greencom.greencomwebapp.model.user;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +6,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+/**
+ * Spring Security {@link UserDetails} implementation that also carries the
+ * display-friendly fields (first name, last name, email) needed by the UI.
+ *
+ * <p>Accessible in Thymeleaf templates via {@code sec:authentication="principal"},
+ * e.g. {@code ${#authentication.principal.firstName}}. Authorities are exposed as
+ * {@code ROLE_*} strings so Spring's {@code hasRole('ADMIN')} expressions work directly.</p>
+ */
 public class GreencomUserDetails implements UserDetails {
 
     private String username;

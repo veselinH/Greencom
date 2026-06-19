@@ -12,6 +12,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Loads a {@link bg.greencom.greencomwebapp.model.user.GreencomUserDetails} from the database
+ * for Spring Security's authentication machinery. Roles are mapped to {@code ROLE_*}
+ * {@link org.springframework.security.core.GrantedAuthority} strings so that Spring's
+ * {@code hasRole()} expressions work without a prefix.
+ */
 public class GreencomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
