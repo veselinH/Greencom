@@ -432,8 +432,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public BigDecimal calculatePenalty(Long id) {
 
-        BigDecimal penaltyAmount = BigDecimal.ZERO;
-        BigDecimal penaltyMonths = BigDecimal.ZERO;
+        BigDecimal penaltyAmount;
+        BigDecimal penaltyMonths;
 
         ContractViewModel userContract = contractService.findById(id);
         PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
