@@ -10,8 +10,9 @@ import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.repository.ContractRepository;
 import bg.greencom.greencomwebapp.service.ContractService;
-import org.hibernate.sql.Template;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -24,9 +25,15 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Set;
 
+/**
+ * Handles contract lifecycle: creation (with loyalty earn), deactivation (with loyalty revoke),
+ * PDF generation, and ownership checks. Loyalty calls are best-effort — a loyalty-service
+ * outage never blocks contract sign/unsign.
+ */
 @Service
 public class ContractServiceImpl implements ContractService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContractServiceImpl.class);
     private static final String OBJECT_TYPE = "contract";
 
     private final ContractRepository contractRepository;
@@ -60,10 +67,12 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public ContractViewModel findById(Long contractId) {
-        ContractEntity contractEntity = contractRepository.findById(contractId).orElse(null);
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
+
         ContractViewModel contractView = modelMapper.map(contractEntity, ContractViewModel.class);
 
-        if (contractEntity != null) {
+        if (contractEntity.getAdditionalPackageEntities() != null) {
             for (AdditionalPackageEntity additionalPackageEntity : contractEntity.getAdditionalPackageEntities()) {
                 AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackageEntity, AdditionalPackageViewModel.class);
                 contractView.getAdditionalPackageViewModels().add(additionalPackageViewModel);
@@ -113,7 +122,9 @@ public class ContractServiceImpl implements ContractService {
             byte[] logoBytes = new ClassPathResource("static/images/logoz.png").getInputStream().readAllBytes();
             String logoBase64 = java.util.Base64.getEncoder().encodeToString(logoBytes);
             context.setVariable("logoImage", "data:image/png;base64," + logoBase64);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            // Logo is optional — the PDF renders without it if the resource is missing.
+            LOGGER.warn("Could not embed logo in contract PDF (contract {}): {}", contractId, e.getMessage());
         }
 
         if (contract.getSignSignature() != null) {
@@ -132,8 +143,8 @@ public class ContractServiceImpl implements ContractService {
             renderer.createPDF(outputStream);
 
             return outputStream.toByteArray();
-        } catch (Exception e){
-            throw new RuntimeException(("Contract generation error: " + e));
+        } catch (Exception e) {
+            throw new RuntimeException("Contract PDF generation failed for contract " + contractId, e);
         }
     }
 
