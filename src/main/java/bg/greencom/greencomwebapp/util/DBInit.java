@@ -4,6 +4,11 @@ import bg.greencom.greencomwebapp.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * Seeds the database with reference data on application startup.
+ * Each {@code initialize()} call is idempotent — it checks whether data already
+ * exists before inserting, so re-deploying the app does not create duplicates.
+ */
 @Component
 public class DBInit implements CommandLineRunner {
 
