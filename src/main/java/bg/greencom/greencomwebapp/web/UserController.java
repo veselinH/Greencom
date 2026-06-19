@@ -34,6 +34,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Base64;
 
+/**
+ * Handles user-facing pages: login, registration, profile, plan sign/unsign,
+ * loyalty-point redemption, and contract PDF download.
+ */
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -168,6 +172,10 @@ public class UserController {
                                 @AuthenticationPrincipal GreencomUserDetails user,
                                 RedirectAttributes redirectAttributes) {
 
+        if (cardNumber == null || cardCVC == null) {
+            redirectAttributes.addFlashAttribute("error", "Payment details are required.");
+            return "redirect:/users/profile";
+        }
         String cleanCard = cardNumber.replaceAll("\\s+", "");
         if (cleanCard.length() != 16 || cardCVC.length() != 3) {
             redirectAttributes.addFlashAttribute("error", "Invalid payment details.");
