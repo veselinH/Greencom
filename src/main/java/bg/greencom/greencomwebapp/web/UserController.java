@@ -3,10 +3,8 @@ package bg.greencom.greencomwebapp.web;
 import bg.greencom.greencomwebapp.client.LoyaltyException;
 import bg.greencom.greencomwebapp.model.binding.UserRegisterBindingModel;
 import bg.greencom.greencomwebapp.model.exception.ContractAccessDeniedException;
-import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
-import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.service.ContractService;
 import bg.greencom.greencomwebapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Base64;
 
 /**
@@ -209,7 +206,7 @@ public class UserController {
 
     @GetMapping("/contract/{id}/download")
     public ResponseEntity<byte[]> downloadContract(@PathVariable Long id,
-                                                   @AuthenticationPrincipal GreencomUserDetails user) throws Exception {
+                                                   @AuthenticationPrincipal GreencomUserDetails user) {
 
 //      Only the contract owner (or an admin) may download the contract.
         boolean isAdmin = user.getAuthorities().stream()
