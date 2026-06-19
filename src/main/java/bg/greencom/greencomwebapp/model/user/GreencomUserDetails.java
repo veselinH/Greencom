@@ -16,12 +16,12 @@ import java.util.Collection;
  */
 public class GreencomUserDetails implements UserDetails {
 
-    private String username;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private Collection<GrantedAuthority> authorities;
+    private final String username;
+    private final String password;
+    private final String firstName;
+    private final String lastName;
+    private final String email;
+    private final Collection<GrantedAuthority> authorities;
 
     public GreencomUserDetails(String username, String password, String firstName, String lastName, String email, Collection<GrantedAuthority> authorities) {
         this.username = username;
@@ -59,23 +59,4 @@ public class GreencomUserDetails implements UserDetails {
         return email;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
