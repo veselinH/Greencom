@@ -48,6 +48,10 @@ public class ContractServiceImpl implements ContractService {
         this.loyaltyFacade = loyaltyFacade;
     }
 
+    /**
+     * Provisions a new customer contract, registers the signature byte stream,
+     * and sends a best-effort call to credit standard profile loyalty points.
+     */
     @Override
     public void addContract(PlanEntity planEntity, UserEntity userEntity, Set<AdditionalPackageEntity> additionalPackageEntities, byte[] signature) {
         ContractEntity newContract = new ContractEntity();
@@ -65,6 +69,10 @@ public class ContractServiceImpl implements ContractService {
         loyaltyFacade.earn(userEntity.getUsername(), toPoints(planEntity.getPrice()));
     }
 
+    /**
+     * Resolves a complete contract summary projection by identifier,
+     * including mapped collections of all nested packages.
+     */
     @Override
     public ContractViewModel findById(Long contractId) {
         ContractEntity contractEntity = contractRepository.findById(contractId)
@@ -82,6 +90,10 @@ public class ContractServiceImpl implements ContractService {
         return contractView;
     }
 
+    /**
+     * Terminates an active contract record using a cancellation signature,
+     * and triggers a best-effort transaction request to revoke accumulated points.
+     */
     @Override
     public void deactivateContract(Long contractId, byte[] unsignSignature) {
         ContractEntity contract = contractRepository
@@ -108,6 +120,10 @@ public class ContractServiceImpl implements ContractService {
         return price.setScale(0, RoundingMode.HALF_UP).intValue();
     }
 
+    /**
+     * Compiles contract data and signature streams into an HTML context,
+     * parsing it into an isolated PDF byte stream using Flying Saucer IText.
+     */
     @Override
     public byte[] generateContractPdf(Long contractId) {
 
@@ -148,6 +164,10 @@ public class ContractServiceImpl implements ContractService {
         }
     }
 
+    /**
+     * Generates a sanitized file download name using safe characters,
+     * specific contract indicators, and the request timeline stamp.
+     */
     @Override
     public String getContractDownloadFileName(Long id) {
         ContractEntity contract = contractRepository.findById(id)
@@ -159,6 +179,10 @@ public class ContractServiceImpl implements ContractService {
         return planName + "_" + id + "_" + LocalDate.now() + ".pdf";
     }
 
+    /**
+     * Validates if the currently authenticated username matches the assigned owner
+     * of the requested contract record.
+     */
     @Override
     public boolean isContractOwner(Long contractId, String username) {
         return contractRepository.findById(contractId)

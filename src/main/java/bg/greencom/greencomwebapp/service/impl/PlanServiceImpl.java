@@ -8,6 +8,9 @@ import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service implementation managing generic base subscription plans.
+ */
 @Service
 public class PlanServiceImpl implements PlanService {
 
@@ -21,11 +24,19 @@ public class PlanServiceImpl implements PlanService {
         this.modelMapper = modelMapper;
     }
 
+    /**
+     * It looks up an active subscription plan using its specific name identifier,
+     * returning null if no active plan matches.
+     */
     @Override
     public PlanEntity findActivePlanByName(String name) {
         return planRepository.findByNameAndActiveTrue(name).orElse(null);
     }
 
+    /**
+     * Finds a plan by its ID and transforms it into a view presentation model.
+     * Throws an exception if the identifier cannot be found.
+     */
     @Override
     public PlanViewModel findPlanById(Long planId) {
         return modelMapper

@@ -27,6 +27,10 @@ public class GreencomUserDetailsService implements UserDetailsService {
     }
 
 
+    /**
+     * Locates the user based on the username string identifier.
+     * Throws an authentication exception if a matching account record is missing.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -39,6 +43,10 @@ public class GreencomUserDetailsService implements UserDetailsService {
         return mapToUserDetails(userEntity);
     }
 
+    /**
+     * Transforms internal domain entity properties into a custom principal structure.
+     * Prefixes existing user permissions into Spring-compatible authority targets.
+     */
     private static UserDetails mapToUserDetails(UserEntity userEntity) {
 
         List<GrantedAuthority> authorities =

@@ -17,6 +17,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation managing television subscription plans and business rules.
+ */
 @Service
 public class TelevisionPlanServiceImpl implements TelevisionPlanService {
 
@@ -32,6 +35,10 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
         this.televisionTypeRepository = televisionTypeRepository;
     }
 
+    /**
+     * Retrieves all active television plans, maps them to view models,
+     * and sorts their sub-packages using natural comparable ordering.
+     */
     @Override
     public Set<TelevisionPlanViewModel> findAllPlansOrderedByPrice() {
 
@@ -55,6 +62,9 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    /**
+     * Creates a new active television plan and saves it immediately to the database.
+     */
     @Override
     public void addPlan(TelevisionPlanServiceModel televisionPlanServiceModel) {
 
@@ -75,11 +85,19 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
 
     }
 
+    /**
+     * Finds a television plan by its ID and maps it to a view model,
+     * returning null if missing.
+     */
     @Override
     public TelevisionPlanViewModel findById(Long id) {
         return televisionPlanRepository.findById(id).map(televisionPlanEntity -> modelMapper.map(televisionPlanEntity, TelevisionPlanViewModel.class)).orElse(null);
     }
 
+    /**
+     * Retrieves the raw entity from the database or throws an exception
+     * if the requested ID is invalid.
+     */
     @Override
     public TelevisionPlanEntity findEntityById(Long planId) {
         return televisionPlanRepository
@@ -87,6 +105,10 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
                 .orElseThrow(() -> new ObjectNotFoundException(planId, OBJECT_TYPE));
     }
 
+    /**
+     * Updates properties of an existing plan, refreshes the modification
+     * timestamp, and persists changes.
+     */
     @Override
     public void updateTelevisionPlan(TelevisionPlanServiceModel televisionPlanServiceModel) {
         TelevisionPlanEntity televisionPlanEntity =

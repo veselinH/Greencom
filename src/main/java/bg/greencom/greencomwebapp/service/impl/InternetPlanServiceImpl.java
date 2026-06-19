@@ -17,6 +17,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation managing internet subscription plans, speeds, and add-on extras.
+ */
 @Service
 public class InternetPlanServiceImpl implements InternetPlanService {
 
@@ -34,6 +37,10 @@ public class InternetPlanServiceImpl implements InternetPlanService {
         this.modelMapper = modelMapper;
     }
 
+    /**
+     * Constructs and persists a new active internet plan, resolving its
+     * underlying tech type and mapping associated add-on extras.
+     */
     @Override
     public void addPlan(InternetPlanServiceModel internetPlanServiceModel) {
 
@@ -65,6 +72,10 @@ public class InternetPlanServiceImpl implements InternetPlanService {
 
     }
 
+    /**
+     * Retrieves all available internet plans sorted by ascending price,
+     * maps them to views, and sorts their nested extras collection.
+     */
     @Override
     public List<InternetPlanViewModel> findAllPlansOrderedByPrice() {
         List<InternetPlanViewModel> allInternetPlans = internetPlanRepository
@@ -83,6 +94,10 @@ public class InternetPlanServiceImpl implements InternetPlanService {
         return allInternetPlans;
     }
 
+    /**
+     * Resolves a single internet plan data view wrapper using its database index key.
+     * Throws an error if the unique entity is not found.
+     */
     @Override
     public InternetPlanViewModel findById(Long id) {
         InternetPlanEntity internetPlanEntity = internetPlanRepository
@@ -95,6 +110,10 @@ public class InternetPlanServiceImpl implements InternetPlanService {
         return internetPlanViewModel;
     }
 
+    /**
+     * Updates specific configurable indicators on an existing record, tracking
+     * the modification timestamp.
+     */
     @Override
     public void updateInternetPlan(InternetPlanServiceModel internetPlanServiceModel) {
 
@@ -114,6 +133,10 @@ public class InternetPlanServiceImpl implements InternetPlanService {
 
     }
 
+    /**
+     * Fetches a raw domain data record pointer from the persistence layer.
+     * Returns null if missing.
+     */
     @Override
     public InternetPlanEntity findEntityById(Long id) {
         return internetPlanRepository.findById(id).orElse(null);

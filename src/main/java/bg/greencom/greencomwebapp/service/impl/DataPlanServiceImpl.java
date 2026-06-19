@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation managing mobile data plans, gigabyte quotas, and add-on extras.
+ */
 @Service
 public class DataPlanServiceImpl implements DataPlanService {
 
@@ -29,7 +32,10 @@ public class DataPlanServiceImpl implements DataPlanService {
         this.mobileExtraService = mobileExtraService;
     }
 
-
+    /**
+     * Creates and stores a new active mobile data subscription configuration,
+     * mapping incoming data and linking associated mobile extras.
+     */
     @Override
     public void addPlan(DataPlanServiceModel dataPlanServiceModel) {
 
@@ -51,6 +57,10 @@ public class DataPlanServiceImpl implements DataPlanService {
         dataPlanRepository.saveAndFlush(dataPlanEntity);
     }
 
+    /**
+     * Fetches all records ordered by base price, converts them into projection
+     * views, and applies natural sorting to their individual extra additions.
+     */
     @Override
     public List<DataPlanViewModel> findAllPlansOrderedByPrice() {
         List<DataPlanViewModel> allDataPlans = dataPlanRepository
@@ -66,6 +76,10 @@ public class DataPlanServiceImpl implements DataPlanService {
         return allDataPlans;
     }
 
+    /**
+     * Resolves a single plan layout view based on its distinct entity database key.
+     * Throws an exception if the entity record cannot be located.
+     */
     @Override
     public DataPlanViewModel findById(Long id) {
         DataPlanEntity dataPlanEntity = dataPlanRepository
@@ -76,6 +90,10 @@ public class DataPlanServiceImpl implements DataPlanService {
 
     }
 
+    /**
+     * Updates an existing database plan state with the incoming model attributes,
+     * maps updated extra fields, and updates the tracking modification date.
+     */
     @Override
     public void updatePlan(DataPlanServiceModel dataPlanServiceModel) {
 
@@ -103,6 +121,10 @@ public class DataPlanServiceImpl implements DataPlanService {
         dataPlanRepository.saveAndFlush(dataPlan);
     }
 
+    /**
+     * Gets the core entity representation directly from database tables,
+     * failing with an exception if it is missing.
+     */
     @Override
     public DataPlanEntity findEntityById(Long id) {
         return dataPlanRepository
