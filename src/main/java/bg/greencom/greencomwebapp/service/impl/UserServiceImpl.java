@@ -1,5 +1,6 @@
 package bg.greencom.greencomwebapp.service.impl;
 
+import bg.greencom.greencomwebapp.client.LoyaltyException;
 import bg.greencom.greencomwebapp.client.LoyaltyFacade;
 import bg.greencom.greencomwebapp.client.dto.LoyaltyResponse;
 import bg.greencom.greencomwebapp.model.entity.*;
