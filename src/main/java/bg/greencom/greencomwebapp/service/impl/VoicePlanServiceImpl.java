@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation managing operations related to mobile voice subscription plans
+ */
 @Service
 public class VoicePlanServiceImpl implements VoicePlanService {
 
@@ -28,7 +31,12 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         this.mobileExtraService = mobileExtraService;
     }
 
-
+    /**
+     * Retrieves all voice plans from the database ordered by price.
+     * Elements within the nested mobile extras collection are sorted to ensure consistent view ordering.
+     *
+     * @return List of sorted VoicePlanViewModel objects.
+     */
     @Override
     public List<VoicePlanViewModel> findAllPlansOrderedByPrice() {
         List<VoicePlanViewModel> allVoicePlans = voicePlanRepository
@@ -42,6 +50,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         return allVoicePlans;
     }
 
+    /**
+     * Contextually provisions a new mobile voice plan in the inventory, tracking initialization
+     * metadata and linking associated extra add-ons.
+     *
+     * @param voicePlanServiceModel The data model containing technical parameters of the new plan.
+     * @return The original input service model.
+     */
     @Override
     public VoicePlanServiceModel addPlan(VoicePlanServiceModel voicePlanServiceModel) {
 
@@ -68,13 +83,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         return voicePlanServiceModel;
     }
 
-//    @Override
-//    public VoicePlanEntity findByName(String name) {
-//        return voicePlanRepository
-//                .findByName(name)
-//                .orElse(null);
-//    }
-
+    /**
+     * Modifies the operational attributes, minutes/data allowances, and extra features
+     * of an existing voice subscription framework.
+     *
+     * @param voicePlanServiceModel Model containing updated properties and the target identifier.
+     * @throws ObjectNotFoundException If the target plan instance cannot be found in persistence.
+     */
     @Override
     public void updatePlan(VoicePlanServiceModel voicePlanServiceModel) {
 
@@ -104,6 +119,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         voicePlanRepository.saveAndFlush(voicePlan);
     }
 
+    /**
+     * Locates a voice subscription plan and projects its database payload onto a user-facing view format.
+     *
+     * @param id The unique database identifier of the target plan.
+     * @return   The mapped VoicePlanViewModel object representation.
+     * @throws ObjectNotFoundException If no matching entity is located.
+     */
     @Override
     public VoicePlanViewModel findById(Long id) {
         VoicePlanEntity voicePlanEntity = voicePlanRepository
@@ -113,6 +135,13 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         return modelMapper.map(voicePlanEntity, VoicePlanViewModel.class);
     }
 
+    /**
+     * Locates and exposes a raw database entity for internal transactional manipulation within the system.
+     *
+     * @param id The unique database identifier of the target plan.
+     * @return   The persistent VoicePlanEntity managed instance.
+     * @throws ObjectNotFoundException If no matching entity is located.
+     */
     @Override
     public VoicePlanEntity findEntityById(Long id) {
 
