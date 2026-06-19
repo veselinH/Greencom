@@ -11,7 +11,6 @@ import bg.greencom.greencomwebapp.service.PlanService;
 import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -23,17 +22,13 @@ public class DataPlanServiceImpl implements DataPlanService {
 
     private static final String OBJECT_TYPE = "data plan";
     private final DataPlanRepository dataPlanRepository;
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final MobileExtraService mobileExtraService;
-    private final PlanService planService;
 
-    public DataPlanServiceImpl(DataPlanRepository dataPlanRepository, UserRepository userRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService, PlanService planService) {
+    public DataPlanServiceImpl(DataPlanRepository dataPlanRepository, ModelMapper modelMapper, MobileExtraService mobileExtraService) {
         this.dataPlanRepository = dataPlanRepository;
-        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.mobileExtraService = mobileExtraService;
-        this.planService = planService;
     }
 
 
@@ -72,16 +67,6 @@ public class DataPlanServiceImpl implements DataPlanService {
 
         return allDataPlans;
     }
-
-//    @Override
-////  Using transactional in order to delete the plan and the foreign
-//    @Transactional
-//    public void deletePlan(String name) {
-//        DataPlanEntity planToDelete = findByName(name);
-//        List<UserEntity> usersWithPlanToDelete = userRepository.findAllByUserDataPlansContains(planToDelete);
-//
-//        dataPlanRepository.delete(planToDelete);
-//    }
 
     @Override
     public DataPlanViewModel findById(Long id) {
