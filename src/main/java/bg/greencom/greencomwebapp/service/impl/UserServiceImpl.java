@@ -26,6 +26,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 
+/**
+ * Service implementation responsible for processing user-related business operations
+ * such as authentication, profile management, and signing/unsigning service plans.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -59,6 +63,9 @@ public class UserServiceImpl implements UserService {
         this.loyaltyFacade = loyaltyFacade;
     }
 
+    /**
+     * Seeds the initial administrator profile into the system if no users exist.
+     */
     @Override
     public void initialize() {
         if (userRepository.count() == 0) {
@@ -79,6 +86,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Registers a new client in the database and automatically triggers a successful security login session.
+     *
+     * @param userServiceModel         DTO containing user credentials and registration details.
+     * @param successfulLoginProcessor Consumer callback used to process the post-registration login token.
+     */
     @Override
     public void registerUser(UserServiceModel userServiceModel,
                                          Consumer<Authentication> successfulLoginProcessor) {
@@ -120,43 +133,58 @@ public class UserServiceImpl implements UserService {
                 .orElse(null);
     }
 
+    /**
+     * Links a mobile voice plan to the user profile, recalculates monthly debt, and creates a contract record.
+     */
     @Override
     public void signVoicePlan(VoicePlanViewModel voicePlan, GreencomUserDetails userDetails, byte[] signSignature) {
-//    Add voice plan to the user and increase the debt
-//      Retrieve both user and voicePlan from the database
+
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
         VoicePlanEntity voicePlanFromDB = voicePlanService.findEntityById(voicePlan.getId());
-//      Add the new plan to the user entity
+
         user.getUserVoiceMobilePlans().add(voicePlanFromDB);
-//      Increase the total debt
+
+        // Increase monthly recurring debt by the plan price
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(voicePlanFromDB.getPrice());
         user.setTotalDebtPerMonth(totalDebt);
-//      Save to database by updating the user
+
         userRepository.saveAndFlush(user);
-//      Save the contract
+
         contractService.addContract(voicePlanFromDB, user,null,  signSignature);
 
     }
 
+    /**
+     * Links a mobile data plan to the user profile, recalculates monthly debt, and creates a contract record.
+     */
     @Override
     public void signDataPlan(DataPlanViewModel dataPlan, GreencomUserDetails userDetails, byte[] signSignature) {
-//      Add data plan to the user and increase the debt
-//      Retrieve both user and dataPlan from the database
+
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
         DataPlanEntity dataPlanFromDB = dataPlanService.findEntityById(dataPlan.getId());
-//      Add the new plan to the user entity
+
         user.getUserDataPlans().add(dataPlanFromDB);
-//      Increase the total debt
+
+        // Increase monthly recurring debt by the plan price
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(dataPlanFromDB.getPrice());
         user.setTotalDebtPerMonth(totalDebt);
-//      Save to database by updating the user
+
         userRepository.saveAndFlush(user);
-//      Save the contract
+
         contractService.addContract(dataPlanFromDB, user, null, signSignature);
     }
 
+    /**
+     * Terminates an existing active plan subscription, handles dynamic debt deductions for base plans
+     * plus attached add-on packages, and prevents debt metrics from falling into negative fields.
+     *
+     * @param contractId       The target subscription contract identifier.
+     * @param username         The owner's system login name.
+     * @param unsignSignature  Digital signature payload finalizing cancellation.
+     * @return                 The descriptive name of the cancelled subscription target.
+     */
     @Override
     @Transactional
     public String unsignPlan(Long contractId, String username, byte[] unsignSignature) {
@@ -167,9 +195,11 @@ public class UserServiceImpl implements UserService {
         ContractViewModel userContract = contractService.findById(contractId);
         PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
 
-//        Lower the dept of the user
+        // Deduct base plan price from monthly debt balance
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.subtract(userPlan.getPrice());
+
+        // Deduct recurring prices of any associated add-on packages
         if (userContract.getAdditionalPackageViewModels() != null) {
             for (AdditionalPackageViewModel additionalPackage : userContract.getAdditionalPackageViewModels()){
                 totalDebt = totalDebt.subtract(additionalPackage.getPrice());
@@ -177,6 +207,8 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setTotalDebtPerMonth(totalDebt);
+
+        // Safety check to ensure calculation roundoffs never drop debt balances below zero
         if (user.getTotalDebtPerMonth().compareTo(BigDecimal.ZERO) < 0) {
             user.setTotalDebtPerMonth(BigDecimal.ZERO);
         }
@@ -190,6 +222,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * Retrieves all active mobile voice plan subscriptions belonging to the specified user.
+     * Maps database contracts directly to view models to maintain unique contract references.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<VoicePlanViewModel> getAllVoicePlans(String username) {
@@ -209,6 +245,10 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    /**
+     * Retrieves all active mobile data plan subscriptions belonging to the specified user.
+     * Maps database contracts directly to view models to maintain unique contract references.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<DataPlanViewModel> getAllDataPlans(String username) {
@@ -227,24 +267,31 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    /**
+     * Links an internet plan to the user profile, recalculates monthly debt, and creates a contract record.
+     */
     @Override
     public void signInternetPlan(InternetPlanViewModel internetPlan, GreencomUserDetails userDetails, byte[] signSignature) {
-//      Add internet plan to the user and increase the debt
-//      Retrieve both user and internetPlan from the database
+
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
         InternetPlanEntity internetPlanFromDB = internetPlanService.findEntityById(internetPlan.getId());
-//      Add the new plan to the user entity
+
         user.getUserInternetPlans().add(internetPlanFromDB);
-//      Increase the total debt
+
+        // Increase monthly recurring debt by the plan price
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(internetPlanFromDB.getPrice());
         user.setTotalDebtPerMonth(totalDebt);
-//      Save to database by updating the user
+
         userRepository.saveAndFlush(user);
-//      Save the contract
+
         contractService.addContract(internetPlanFromDB, user, null, signSignature);
     }
 
+    /**
+     * Retrieves all active internet subscription plans for a specific user profile.
+     * Explicitly maps internal type structures and binds persistent contract identifiers.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<InternetPlanViewModel> getAllInternetPlans(String username) {
@@ -264,28 +311,36 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    /**
+     * Provisions a television subscription package containing a base plan and optional extra channels,
+     * adding combined recurring fees to the client's financial profile.
+     */
     @Override
     public void signTelevisionPlan(Long planId, Set<Long> additionalPackageIds, GreencomUserDetails userDetails, byte[] signSignature) {
-//      Add television plan to the user and increase the debt
-//      Retrieve both user and televisionPlan from the database
+
         UserEntity user = this.findUserByUsername(userDetails.getUsername());
         TelevisionPlanEntity televisionPlanFromDB = televisionPlanService.findEntityById(planId);
         Set<AdditionalPackageEntity> additionalPackagesFromDB = additionalPackageService.findAllByIds(additionalPackageIds);
-//      Add the new plan to the user entity
+
         user.getUserTelevisionPlans().add(televisionPlanFromDB);
-//      Increase the total debt
+
+        // Calculate cumulative debt addition (Base plan + all supplementary add-ons)
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(televisionPlanFromDB.getPrice());
         for (AdditionalPackageEntity packageEntity : additionalPackagesFromDB) {
             totalDebt = totalDebt.add(packageEntity.getPrice());
         }
         user.setTotalDebtPerMonth(totalDebt);
-//      Save to database by updating the user
+
         userRepository.saveAndFlush(user);
-//      Save the contract
+
         contractService.addContract(televisionPlanFromDB, user, additionalPackagesFromDB, signSignature);
     }
 
+    /**
+     * Fetches active television subscriptions for a user, flattening supplementary add-on data
+     * and calculating aggregated total pricing directly within the returned view objects.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<TelevisionPlanViewModel> getAllTelevisionPlans(String username) {
@@ -305,6 +360,8 @@ public class UserServiceImpl implements UserService {
                             AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackage, AdditionalPackageViewModel.class);
                             additionalPackageViewModel.setName(additionalPackage.getName().getValue());
                             viewModel.getAdditionalPackages().add(additionalPackageViewModel);
+
+                            // Dynamically aggregate the base contract view model price with the add-on package cost
                             viewModel.setPrice(viewModel.getPrice().add(additionalPackage.getPrice()));
                         }
                     }
@@ -313,6 +370,10 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    /**
+     * Assembles core profile statistics and financial liabilities for a user summary window.
+     * Enriches profiles using external system metrics and incorporates graceful fallbacks.
+     */
     @Override
     public UserViewModel getUserInfo(String username) {
 
@@ -340,6 +401,15 @@ public class UserServiceImpl implements UserService {
         return userViewModel;
     }
 
+    /**
+     * Executes loyalty point redemptions against an external service, processing the resulting
+     * monetary reward as a statement credit toward the client's monthly balance.
+     *
+     * @param username The identifier of the profile redeeming points.
+     * @param points   The aggregate amount of rewards points to process.
+     * @return         The exact currency discount value successfully applied to the profile ledger.
+     * @throws LoyaltyException If the client cannot be found, has insufficient funds, or the upstream API fails.
+     */
     @Override
     @Transactional
     public BigDecimal redeemLoyaltyPoints(String username, int points) {
@@ -361,6 +431,12 @@ public class UserServiceImpl implements UserService {
         return discount;
     }
 
+    /**
+     * Evaluates a contract lifespan to see if termination triggers early cancellation liabilities.
+     *
+     * @param id The unique identifier of the target subscription agreement.
+     * @return   True if early-exit compliance penalty terms are enforceable; false if naturally expired.
+     */
     @Override
     @Transactional
     public boolean isPenaltyRequired(Long id) {
@@ -374,6 +450,13 @@ public class UserServiceImpl implements UserService {
         return monthsBetween <= Integer.parseInt(userPlan.getPlanDuration());
     }
 
+    /**
+     * Calculates early termination financial penalties based on standard provider criteria.
+     * Liquidated damages are capped at a maximum of 3 months of service fees.
+     *
+     * @param id The unique identifier of the terminating subscription contract.
+     * @return   The definitive liquidated penalty amount owed by the client.
+     */
     @Override
     @Transactional
     public BigDecimal calculatePenalty(Long id) {
@@ -386,11 +469,15 @@ public class UserServiceImpl implements UserService {
 
         long monthsBetween = ChronoUnit.MONTHS.between(userContract.getSignedOn(), LocalDate.now());
 
+        // Standard Penalty Cap Rule: If more than 3 months remain, liability caps out at 3 months of fees.
+        // Otherwise, the client only owes a payout matching the exact remaining fraction of their term.
         if (monthsBetween <= Long.parseLong(userPlan.getPlanDuration()) - 3){
             penaltyMonths = BigDecimal.valueOf(3);
         } else {
             penaltyMonths = BigDecimal.valueOf(Long.parseLong(userPlan.getPlanDuration()) - monthsBetween);
         }
+
+        // Aggregate full liability amount by multiplying target months against base service rate.
         penaltyAmount = userPlan.getPrice().multiply(penaltyMonths);
 
         return penaltyAmount;
