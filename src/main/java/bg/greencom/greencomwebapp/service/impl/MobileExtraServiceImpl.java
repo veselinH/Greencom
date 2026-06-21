@@ -5,6 +5,8 @@ import bg.greencom.greencomwebapp.model.entity.enums.MobileExtraEnum;
 import bg.greencom.greencomwebapp.repository.MobileExtraRepository;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -13,6 +15,8 @@ import java.util.Set;
  */
 @Service
 public class MobileExtraServiceImpl implements MobileExtraService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MobileExtraServiceImpl.class);
 
     private final MobileExtraRepository mobileExtraRepository;
 
@@ -37,6 +41,7 @@ public class MobileExtraServiceImpl implements MobileExtraService {
                             mobileExtraEntity1,
                             mobileExtraEntity2,
                             mobileExtraEntity3));
+            LOGGER.info("Mobile extras initialized.");
         }
     }
 

@@ -10,6 +10,7 @@ import bg.greencom.greencomwebapp.model.view.*;
 import bg.greencom.greencomwebapp.repository.UserRepository;
 import bg.greencom.greencomwebapp.service.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,6 +35,8 @@ import java.util.function.Consumer;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private final UserRoleService userRoleService;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
@@ -45,6 +50,12 @@ public class UserServiceImpl implements UserService {
     private final TelevisionPlanService televisionPlanService;
     private final AdditionalPackageService additionalPackageService;
     private final LoyaltyFacade loyaltyFacade;
+
+    @Value("${greencom.admin.username}")
+    private String adminUsername;
+
+    @Value("${greencom.admin.password}")
+    private String adminPassword;
 
     public UserServiceImpl(UserRoleService userRoleService, UserRepository userRepository, ModelMapper modelMapper, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, VoicePlanService voicePlanService, DataPlanService dataPlanService, PlanService planService, ContractService contractService, InternetPlanService internetPlanService, TelevisionPlanService televisionPlanService, AdditionalPackageService additionalPackageService, LoyaltyFacade loyaltyFacade) {
         this.userRoleService = userRoleService;
@@ -70,15 +81,16 @@ public class UserServiceImpl implements UserService {
             user.getRoles().add(userRoleService.findByName(UserRoleEnum.USER));
 
             user
-                    .setUsername("admin")
+                    .setUsername(adminUsername)
                     .setFirstName("Veselin")
                     .setLastName("Hristov")
                     .setEmail("admin@greencom.bg")
                     .setTotalDebtPerMonth(BigDecimal.ZERO)
-                    .setPassword(passwordEncoder.encode("admin"))
+                    .setPassword(passwordEncoder.encode(adminPassword))
                     .setRegisteredOn(LocalDateTime.now());
 
             userRepository.save(user);
+            LOGGER.info("Admin user created successfully.");
         }
     }
 
@@ -95,6 +107,7 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(BigDecimal.ZERO);
 
         userRepository.save(user);
+        LOGGER.info("User {} registered successfully.", userServiceModel.getUsername());
 
 //      Automatically login the user after registering an account
         UserDetails userDetails = userDetailsService.loadUserByUsername(userServiceModel.getUsername());
@@ -137,8 +150,8 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(totalDebt);
 
         userRepository.saveAndFlush(user);
-
         contractService.addContract(voicePlanFromDB, user,null,  signSignature);
+        LOGGER.info("User {} signed voice plan {} successfully.", user.getUsername(), voicePlanFromDB.getName());
     }
 
     @Override
@@ -155,8 +168,8 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(totalDebt);
 
         userRepository.saveAndFlush(user);
-
         contractService.addContract(dataPlanFromDB, user, null, signSignature);
+        LOGGER.info("User {} signed data plan {} successfully.", user.getUsername(), dataPlanFromDB.getName());
     }
 
     @Override
@@ -188,8 +201,8 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.saveAndFlush(user);
-
         contractService.deactivateContract(contractId, unsignSignature);
+        LOGGER.info("User {} unsigned contract {} successfully.", user.getUsername(), contractId);
 
         planName.append(userPlan.getName());
         return planName.toString();
@@ -239,8 +252,8 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(totalDebt);
 
         userRepository.saveAndFlush(user);
-
         contractService.addContract(internetPlanFromDB, user, null, signSignature);
+        LOGGER.info("User {} signed internet plan {} successfully.", user.getUsername(), internetPlanFromDB.getName());
     }
 
     @Override
@@ -275,8 +288,8 @@ public class UserServiceImpl implements UserService {
         user.setTotalDebtPerMonth(totalDebt);
 
         userRepository.saveAndFlush(user);
-
         contractService.addContract(televisionPlanFromDB, user, additionalPackagesFromDB, signSignature);
+        LOGGER.info("User {} signed television plan {} successfully.", user.getUsername(), televisionPlanFromDB.getName());
     }
 
     @Override
@@ -337,6 +350,7 @@ public class UserServiceImpl implements UserService {
         BigDecimal newDebt = user.getTotalDebtPerMonth().subtract(discount).max(BigDecimal.ZERO);
         user.setTotalDebtPerMonth(newDebt);
         userRepository.saveAndFlush(user);
+        LOGGER.info("User {} redeemed {} points from loyalty service.", username, points);
 
         return discount;
     }

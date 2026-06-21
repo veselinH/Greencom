@@ -5,6 +5,8 @@ import bg.greencom.greencomwebapp.model.entity.enums.InternetExtraEnum;
 import bg.greencom.greencomwebapp.repository.InternetExtraRepository;
 import bg.greencom.greencomwebapp.service.InternetExtraService;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -13,6 +15,8 @@ import java.util.Set;
  */
 @Service
 public class InternetExtraServiceImpl implements InternetExtraService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternetExtraServiceImpl.class);
 
     private final InternetExtraRepository internetExtraRepository;
 
@@ -37,6 +41,7 @@ public class InternetExtraServiceImpl implements InternetExtraService {
                             extra2,
                             extra3
                     ));
+            LOGGER.info("Internet extras initialized.");
         }
     }
 
