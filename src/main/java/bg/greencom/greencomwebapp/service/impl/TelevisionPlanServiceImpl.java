@@ -11,6 +11,8 @@ import bg.greencom.greencomwebapp.service.TelevisionPlanService;
 import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class TelevisionPlanServiceImpl implements TelevisionPlanService {
 
     private static final String OBJECT_TYPE = "television plan";
+    private static final Logger LOGGER = LoggerFactory.getLogger(TelevisionPlanServiceImpl.class);
 
     private final TelevisionPlanRepository televisionPlanRepository;
     private final ModelMapper modelMapper;
@@ -75,6 +78,7 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
                 .setActive(true);
 
         televisionPlanRepository.saveAndFlush(televisionPlan);
+        LOGGER.info("Television plan {} added successfully", televisionPlanServiceModel.getName());
 
     }
 
@@ -105,5 +109,6 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
                 .setActive(televisionPlanServiceModel.isActive());
 
         televisionPlanRepository.saveAndFlush(televisionPlanEntity);
+        LOGGER.info("Television plan {} updated successfully", televisionPlanServiceModel.getName());
     }
 }

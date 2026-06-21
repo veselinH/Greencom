@@ -8,6 +8,8 @@ import bg.greencom.greencomwebapp.service.VoicePlanService;
 import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class VoicePlanServiceImpl implements VoicePlanService {
 
     private static final String OBJECT_TYPE = "voice plan";
+    private static final Logger LOGGER = LoggerFactory.getLogger(VoicePlanServiceImpl.class);
 
     private final VoicePlanRepository voicePlanRepository;
     private final ModelMapper modelMapper;
@@ -66,6 +69,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
 
         voicePlanRepository.saveAndFlush(voicePlanEntity);
+        LOGGER.info("Voice plan {} added successfully", voicePlanServiceModel.getName());
 
         return voicePlanServiceModel;
     }
@@ -97,6 +101,7 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                 .setActive(voicePlanServiceModel.isActive());
 
         voicePlanRepository.saveAndFlush(voicePlan);
+        LOGGER.info("Voice plan {} updated successfully", voicePlanServiceModel.getName());
     }
 
     @Override

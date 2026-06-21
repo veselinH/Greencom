@@ -11,6 +11,8 @@ import bg.greencom.greencomwebapp.service.InternetPlanService;
 import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class InternetPlanServiceImpl implements InternetPlanService {
 
     private static final String OBJECT_TYPE = "internet plan";
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternetPlanServiceImpl.class);
 
     private final InternetExtraService internetExtraService;
     private final InternetPlanRepository internetPlanRepository;
@@ -65,6 +68,7 @@ public class InternetPlanServiceImpl implements InternetPlanService {
         }
 
         internetPlanRepository.saveAndFlush(internetPlanEntity);
+        LOGGER.info("Internet plan {} added successfully", internetPlanServiceModel.getName());
 
     }
 
@@ -114,6 +118,7 @@ public class InternetPlanServiceImpl implements InternetPlanService {
                 .setActive(internetPlanServiceModel.isActive());
 
         internetPlanRepository.saveAndFlush(internetPlanEntity);
+        LOGGER.info("Internet plan {} updated successfully", internetPlanServiceModel.getName());
 
     }
 

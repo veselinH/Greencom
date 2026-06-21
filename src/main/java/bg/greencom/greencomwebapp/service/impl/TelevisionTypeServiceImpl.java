@@ -5,6 +5,8 @@ import bg.greencom.greencomwebapp.model.entity.enums.TelevisionTypeEnum;
 import bg.greencom.greencomwebapp.repository.TelevisionTypeRepository;
 import bg.greencom.greencomwebapp.service.TelevisionTypeService;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -17,6 +19,8 @@ import java.util.Set;
  */
 @Service
 public class TelevisionTypeServiceImpl implements TelevisionTypeService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TelevisionTypeServiceImpl.class);
 
     private final TelevisionTypeRepository televisionTypeRepository;
 
@@ -34,6 +38,7 @@ public class TelevisionTypeServiceImpl implements TelevisionTypeService {
             type2.setName(TelevisionTypeEnum.SATELLITE);
 
             televisionTypeRepository.saveAll(Set.of(type1, type2));
+            LOGGER.info("Television types initialized.");
         }
     }
 }

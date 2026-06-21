@@ -62,9 +62,11 @@ public class ContractServiceImpl implements ContractService {
         newContract.setAdditionalPackageEntities(additionalPackageEntities);
 
         contractRepository.saveAndFlush(newContract);
+        LOGGER.info("User {} signed new contract with plan name {}", userEntity.getUsername(), planEntity.getName());
 
         // Award loyalty points (best-effort) for signing the plan.
         loyaltyFacade.earn(userEntity.getUsername(), toPoints(planEntity.getPrice()));
+        LOGGER.info("Loyalty points awarded for contract signing of user {} successfully", userEntity.getUsername());
     }
 
     @Override
@@ -95,9 +97,11 @@ public class ContractServiceImpl implements ContractService {
                 .setActive(false);
 
         contractRepository.saveAndFlush(contract);
+        LOGGER.info("Contract {} deactivated successfully for user {}", contractId, contract.getUser().getUsername());
 
         // Revoke the loyalty points that were earned for this plan (best-effort).
         loyaltyFacade.revoke(contract.getUser().getUsername(), toPoints(contract.getPlan().getPrice()));
+        LOGGER.info("Loyalty points for contract {} revoked successfully", contractId);
     }
 
     @Override

@@ -6,6 +6,8 @@ import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.repository.AdditionalPackageRepository;
 import bg.greencom.greencomwebapp.service.AdditionalPackageService;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -22,6 +24,7 @@ public class AdditionalPackageServiceImpl implements AdditionalPackageService {
     private static final BigDecimal ADULT_XTRA_PRICE = BigDecimal.valueOf(1.99);
     private static final BigDecimal SPORT_XTRA_PRICE = BigDecimal.valueOf(11.99);
     private static final BigDecimal MOVIE_XTRA_PRICE = BigDecimal.valueOf(7.99);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdditionalPackageServiceImpl.class);
 
     private final AdditionalPackageRepository additionalPackageRepository;
 
@@ -50,6 +53,7 @@ public class AdditionalPackageServiceImpl implements AdditionalPackageService {
                             extra1,
                             extra2,
                             extra3));
+            LOGGER.info("Additional packages initialized successfully");
         }
     }
 

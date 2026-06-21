@@ -9,6 +9,8 @@ import bg.greencom.greencomwebapp.service.MobileExtraService;
 import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 public class DataPlanServiceImpl implements DataPlanService {
 
     private static final String OBJECT_TYPE = "data plan";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataPlanServiceImpl.class);
+
     private final DataPlanRepository dataPlanRepository;
     private final ModelMapper modelMapper;
     private final MobileExtraService mobileExtraService;
@@ -51,6 +55,7 @@ public class DataPlanServiceImpl implements DataPlanService {
         }
 
         dataPlanRepository.saveAndFlush(dataPlanEntity);
+        LOGGER.info("Data plan {} added successfully", dataPlanServiceModel.getName());
     }
 
     @Override
@@ -103,6 +108,7 @@ public class DataPlanServiceImpl implements DataPlanService {
                 .setActive(dataPlanServiceModel.isActive());
 
         dataPlanRepository.saveAndFlush(dataPlan);
+        LOGGER.info("Data plan {} updated successfully", dataPlanServiceModel.getName());
     }
 
     @Override
