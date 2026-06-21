@@ -17,6 +17,7 @@
         <div class="container-fluid">
             <!-- Brand Logo -->
             <a class="navbar-brand" th:href="@{${#authorization.expression('isAuthenticated()') ? '/home' : '/'}}">
+                <!--suppress CheckImageSize -->
                 <img src="/images/logoz.png" width="75" height="50" alt="Greencom Logo">
             </a>
 
@@ -69,7 +70,7 @@
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="btn btn-success dropdown-toggle shadow-sm" href="#" id="userDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Welcome, <th:block sec:authentication="principal.firstName"></th:block>!
+                            Welcome, <th:block sec:authentication="principal.username"></th:block>!
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
@@ -105,10 +106,10 @@
                 <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4 text-dark">Services</h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#!" class="text-reset text-decoration-none hover-link">Mobile</a></li>
-                        <li class="mb-2"><a href="#!" class="text-reset text-decoration-none hover-link">Home internet</a></li>
-                        <li class="mb-2"><a href="#!" class="text-reset text-decoration-none hover-link">Home television</a></li>
-                        <li class="mb-2"><a href="#!" class="text-reset text-decoration-none hover-link">Landline phone</a></li>
+                        <li class="mb-2"><a th:href="@{/mobile/voice-plans}" class="text-decoration-none">Voice Plans</a></li>
+                        <li class="mb-2"><a th:href="@{/mobile/data-plans}" class="text-decoration-none">Data Plans</a></li>
+                        <li class="mb-2"><a th:href="@{/internet/internet-plans}" class="text-decoration-none">Internet Plans</a></li>
+                        <li class="mb-2"><a th:href="@{/television/television-plans}" class="text-decoration-none">Television Plans</a></li>
                     </ul>
                 </div>
 

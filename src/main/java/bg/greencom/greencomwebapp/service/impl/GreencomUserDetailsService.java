@@ -12,6 +12,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Loads a {@link bg.greencom.greencomwebapp.model.user.GreencomUserDetails} from the database
+ * for Spring Security's authentication machinery. Roles are mapped to {@code ROLE_*}
+ * {@link org.springframework.security.core.GrantedAuthority} strings so that Spring's
+ * {@code hasRole()} expressions work without a prefix.
+ */
 public class GreencomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -21,6 +27,10 @@ public class GreencomUserDetailsService implements UserDetailsService {
     }
 
 
+    /**
+     * Locates the user based on the username string identifier.
+     * Throws an authentication exception if a matching account record is missing.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -33,6 +43,10 @@ public class GreencomUserDetailsService implements UserDetailsService {
         return mapToUserDetails(userEntity);
     }
 
+    /**
+     * Transforms internal domain entity properties into a custom principal structure.
+     * Prefixes existing user permissions into Spring-compatible authority targets.
+     */
     private static UserDetails mapToUserDetails(UserEntity userEntity) {
 
         List<GrantedAuthority> authorities =
@@ -45,8 +59,6 @@ public class GreencomUserDetailsService implements UserDetailsService {
                 userEntity.getUsername(),
                 userEntity.getPassword(),
                 userEntity.getFirstName(),
-                userEntity.getLastName(),
-                userEntity.getEmail(),
                 authorities);
     }
 }

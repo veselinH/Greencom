@@ -5,7 +5,6 @@ import bg.greencom.greencomwebapp.model.entity.enums.AdditionalPackageEnum;
 import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.repository.AdditionalPackageRepository;
 import bg.greencom.greencomwebapp.service.AdditionalPackageService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +13,9 @@ import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation managing commercial add-on options like movie, adult, and sports channels.
+ */
 @Service
 public class AdditionalPackageServiceImpl implements AdditionalPackageService {
 
@@ -22,11 +24,9 @@ public class AdditionalPackageServiceImpl implements AdditionalPackageService {
     private static final BigDecimal MOVIE_XTRA_PRICE = BigDecimal.valueOf(7.99);
 
     private final AdditionalPackageRepository additionalPackageRepository;
-    private final ModelMapper modelMapper;
 
-    public AdditionalPackageServiceImpl(AdditionalPackageRepository additionalPackageRepository, ModelMapper modelMapper) {
+    public AdditionalPackageServiceImpl(AdditionalPackageRepository additionalPackageRepository) {
         this.additionalPackageRepository = additionalPackageRepository;
-        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -55,19 +55,17 @@ public class AdditionalPackageServiceImpl implements AdditionalPackageService {
 
     @Override
     public List<AdditionalPackageViewModel> findAllOrderedByName() {
-        List<AdditionalPackageViewModel> additionalPackageViewModels =
-                additionalPackageRepository
-                        .findAllByOrderByNameAsc()
-                        .stream()
-                        .map(additionalPackageEntity -> {
-                            AdditionalPackageViewModel additionalPackageViewModel = new AdditionalPackageViewModel();
-                            additionalPackageViewModel.setName(additionalPackageEntity.getName().getValue());
-                            additionalPackageViewModel.setPrice(additionalPackageEntity.getPrice());
-                            additionalPackageViewModel.setId(additionalPackageEntity.getId());
-                            return additionalPackageViewModel;
-                        })
-                        .collect(Collectors.toList());
-        return additionalPackageViewModels;
+        return additionalPackageRepository
+                .findAllByOrderByNameAsc()
+                .stream()
+                .map(additionalPackageEntity -> {
+                    AdditionalPackageViewModel additionalPackageViewModel = new AdditionalPackageViewModel();
+                    additionalPackageViewModel.setName(additionalPackageEntity.getName().getValue());
+                    additionalPackageViewModel.setPrice(additionalPackageEntity.getPrice());
+                    additionalPackageViewModel.setId(additionalPackageEntity.getId());
+                    return additionalPackageViewModel;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

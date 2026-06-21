@@ -2,14 +2,13 @@ package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.model.entity.InternetPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.InternetTypeEntity;
-import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
-import bg.greencom.greencomwebapp.model.exception.PlanNotFoundException;
 import bg.greencom.greencomwebapp.model.service.InternetPlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.InternetPlanViewModel;
 import bg.greencom.greencomwebapp.repository.InternetPlanRepository;
 import bg.greencom.greencomwebapp.repository.InternetTypeRepository;
 import bg.greencom.greencomwebapp.service.InternetExtraService;
 import bg.greencom.greencomwebapp.service.InternetPlanService;
+import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation managing internet subscription plans, speeds, and add-on extras.
+ */
 @Service
 public class InternetPlanServiceImpl implements InternetPlanService {
 

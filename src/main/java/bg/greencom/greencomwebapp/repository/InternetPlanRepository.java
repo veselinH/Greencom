@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface InternetPlanRepository extends JpaRepository<InternetPlanEntity, Long> {
@@ -16,6 +15,4 @@ public interface InternetPlanRepository extends JpaRepository<InternetPlanEntity
              "LEFT JOIN FETCH i.internetExtras " +
               "ORDER BY i.active DESC, i.price ASC, i.name ASC")
       List<InternetPlanEntity> findAllInternetPlansOrderedByPrice();
-
-//      Optional<InternetPlanEntity> findByName(String name);
 }

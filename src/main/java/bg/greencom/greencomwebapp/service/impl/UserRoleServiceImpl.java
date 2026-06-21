@@ -4,13 +4,19 @@ import bg.greencom.greencomwebapp.model.entity.UserRoleEntity;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.repository.UserRoleRepository;
 import bg.greencom.greencomwebapp.service.UserRoleService;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+/**
+ * Service implementation responsible for provisioning, initialization,
+ * and retrieval of system access roles and application security privileges.
+ */
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
 
+    private static final String OBJECT_TYPE = "user role";
     private final UserRoleRepository userRoleRepository;
 
     public UserRoleServiceImpl(UserRoleRepository userRoleRepository) {
@@ -33,7 +39,9 @@ public class UserRoleServiceImpl implements UserRoleService {
     public UserRoleEntity findByName(UserRoleEnum userRoleEnum) {
         return userRoleRepository
                 .findByName(userRoleEnum)
-                .orElse(null);
-        // TODO: orElse must be changed error handling
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        userRoleEnum,
+                        OBJECT_TYPE
+                ));
     }
 }

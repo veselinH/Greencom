@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+/**
+ * Service implementation for managing internet connection technologies and categories.
+ */
 @Service
 public class InternetTypeServiceImpl implements InternetTypeService {
 

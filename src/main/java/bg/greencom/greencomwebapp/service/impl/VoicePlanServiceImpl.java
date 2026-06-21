@@ -1,11 +1,11 @@
 package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
-import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.service.VoicePlanServiceModel;
 import bg.greencom.greencomwebapp.model.view.VoicePlanViewModel;
 import bg.greencom.greencomwebapp.repository.VoicePlanRepository;
 import bg.greencom.greencomwebapp.service.MobileExtraService;
 import bg.greencom.greencomwebapp.service.VoicePlanService;
+import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation managing operations related to mobile voice subscription plans
+ */
 @Service
 public class VoicePlanServiceImpl implements VoicePlanService {
 
@@ -27,7 +30,6 @@ public class VoicePlanServiceImpl implements VoicePlanService {
         this.modelMapper = modelMapper;
         this.mobileExtraService = mobileExtraService;
     }
-
 
     @Override
     public List<VoicePlanViewModel> findAllPlansOrderedByPrice() {
@@ -67,13 +69,6 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
         return voicePlanServiceModel;
     }
-
-//    @Override
-//    public VoicePlanEntity findByName(String name) {
-//        return voicePlanRepository
-//                .findByName(name)
-//                .orElse(null);
-//    }
 
     @Override
     public void updatePlan(VoicePlanServiceModel voicePlanServiceModel) {

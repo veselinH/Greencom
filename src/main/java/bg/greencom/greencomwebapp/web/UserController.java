@@ -3,10 +3,8 @@ package bg.greencom.greencomwebapp.web;
 import bg.greencom.greencomwebapp.client.LoyaltyException;
 import bg.greencom.greencomwebapp.model.binding.UserRegisterBindingModel;
 import bg.greencom.greencomwebapp.model.exception.ContractAccessDeniedException;
-import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
-import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.service.ContractService;
 import bg.greencom.greencomwebapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,9 +29,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Base64;
 
+/**
+ * Handles user-facing pages: login, registration, profile, plan sign/unsign,
+ * loyalty-point redemption, and contract PDF download.
+ */
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -168,6 +169,10 @@ public class UserController {
                                 @AuthenticationPrincipal GreencomUserDetails user,
                                 RedirectAttributes redirectAttributes) {
 
+        if (cardNumber == null || cardCVC == null) {
+            redirectAttributes.addFlashAttribute("error", "Payment details are required.");
+            return "redirect:/users/profile";
+        }
         String cleanCard = cardNumber.replaceAll("\\s+", "");
         if (cleanCard.length() != 16 || cardCVC.length() != 3) {
             redirectAttributes.addFlashAttribute("error", "Invalid payment details.");
@@ -201,7 +206,7 @@ public class UserController {
 
     @GetMapping("/contract/{id}/download")
     public ResponseEntity<byte[]> downloadContract(@PathVariable Long id,
-                                                   @AuthenticationPrincipal GreencomUserDetails user) throws Exception {
+                                                   @AuthenticationPrincipal GreencomUserDetails user) {
 
 //      Only the contract owner (or an admin) may download the contract.
         boolean isAdmin = user.getAuthorities().stream()

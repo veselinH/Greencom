@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+/**
+ * Service implementation managing available mobile add-on packages and features.
+ */
 @Service
 public class MobileExtraServiceImpl implements MobileExtraService {
 
@@ -16,7 +19,6 @@ public class MobileExtraServiceImpl implements MobileExtraService {
     public MobileExtraServiceImpl(MobileExtraRepository mobileExtraRepository) {
         this.mobileExtraRepository = mobileExtraRepository;
     }
-
 
     @Override
     public void initialize() {

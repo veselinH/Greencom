@@ -5,13 +5,14 @@ import bg.greencom.greencomwebapp.model.entity.AdditionalPackageEntity;
 import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.entity.PlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
-import bg.greencom.greencomwebapp.model.exception.ObjectNotFoundException;
+import org.hibernate.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.repository.ContractRepository;
 import bg.greencom.greencomwebapp.service.ContractService;
-import org.hibernate.sql.Template;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -24,9 +25,15 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Set;
 
+/**
+ * Handles contract lifecycle: creation (with loyalty earn), deactivation (with loyalty revoke),
+ * PDF generation, and ownership checks. Loyalty calls are best-effort — a loyalty-service
+ * outage never blocks contract sign/unsign.
+ */
 @Service
 public class ContractServiceImpl implements ContractService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContractServiceImpl.class);
     private static final String OBJECT_TYPE = "contract";
 
     private final ContractRepository contractRepository;
@@ -34,7 +41,8 @@ public class ContractServiceImpl implements ContractService {
     private final TemplateEngine templateEngine;
     private final LoyaltyFacade loyaltyFacade;
 
-    public ContractServiceImpl(ContractRepository contractRepository, ModelMapper modelMapper, TemplateEngine templateEngine, LoyaltyFacade loyaltyFacade) {
+    public ContractServiceImpl(ContractRepository contractRepository, ModelMapper modelMapper,
+                               TemplateEngine templateEngine, LoyaltyFacade loyaltyFacade) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
         this.templateEngine = templateEngine;
@@ -42,7 +50,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void addContract(PlanEntity planEntity, UserEntity userEntity, Set<AdditionalPackageEntity> additionalPackageEntities, byte[] signature) {
+    public void addContract(PlanEntity planEntity, UserEntity userEntity,
+                            Set<AdditionalPackageEntity> additionalPackageEntities, byte[] signature) {
         ContractEntity newContract = new ContractEntity();
         newContract
                 .setUser(userEntity)
@@ -54,19 +63,21 @@ public class ContractServiceImpl implements ContractService {
 
         contractRepository.saveAndFlush(newContract);
 
-//      Award loyalty points (best-effort) for signing the plan.
+        // Award loyalty points (best-effort) for signing the plan.
         loyaltyFacade.earn(userEntity.getUsername(), toPoints(planEntity.getPrice()));
     }
 
     @Override
     public ContractViewModel findById(Long contractId) {
-        ContractEntity contractEntity = contractRepository.findById(contractId).orElse(null);
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
+
         ContractViewModel contractView = modelMapper.map(contractEntity, ContractViewModel.class);
 
-        if (contractEntity != null) {
-            for (AdditionalPackageEntity additionalPackageEntity : contractEntity.getAdditionalPackageEntities()) {
-                AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackageEntity, AdditionalPackageViewModel.class);
-                contractView.getAdditionalPackageViewModels().add(additionalPackageViewModel);
+        if (contractEntity.getAdditionalPackageEntities() != null) {
+            for (AdditionalPackageEntity pkg : contractEntity.getAdditionalPackageEntities()) {
+                contractView.getAdditionalPackageViewModels().add(
+                        modelMapper.map(pkg, AdditionalPackageViewModel.class));
             }
         }
 
@@ -75,10 +86,8 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public void deactivateContract(Long contractId, byte[] unsignSignature) {
-        ContractEntity contract = contractRepository
-                .findById(contractId)
-                .orElseThrow(
-                        () -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
+        ContractEntity contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
 
         contract
                 .setUnsignSignature(unsignSignature)
@@ -87,21 +96,12 @@ public class ContractServiceImpl implements ContractService {
 
         contractRepository.saveAndFlush(contract);
 
-//      Revoke the loyalty points that were earned for this plan (best-effort).
+        // Revoke the loyalty points that were earned for this plan (best-effort).
         loyaltyFacade.revoke(contract.getUser().getUsername(), toPoints(contract.getPlan().getPrice()));
-    }
-
-    /** Loyalty points awarded/revoked for a plan: its monthly price rounded to the nearest whole point. */
-    private int toPoints(BigDecimal price) {
-        if (price == null) {
-            return 0;
-        }
-        return price.setScale(0, RoundingMode.HALF_UP).intValue();
     }
 
     @Override
     public byte[] generateContractPdf(Long contractId) {
-
         ContractEntity contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
 
@@ -113,7 +113,9 @@ public class ContractServiceImpl implements ContractService {
             byte[] logoBytes = new ClassPathResource("static/images/logoz.png").getInputStream().readAllBytes();
             String logoBase64 = java.util.Base64.getEncoder().encodeToString(logoBytes);
             context.setVariable("logoImage", "data:image/png;base64," + logoBase64);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            // Logo is optional — the PDF renders without it if the resource is missing.
+            LOGGER.warn("Could not embed logo in contract PDF (contract {}): {}", contractId, e.getMessage());
         }
 
         if (contract.getSignSignature() != null) {
@@ -125,15 +127,14 @@ public class ContractServiceImpl implements ContractService {
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
-
-            renderer.getFontResolver().addFont(new ClassPathResource("fonts/Helvetica.ttf").getURL().toString(), true);
+            renderer.getFontResolver().addFont(
+                    new ClassPathResource("fonts/Helvetica.ttf").getURL().toString(), true);
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
             renderer.createPDF(outputStream);
-
             return outputStream.toByteArray();
-        } catch (Exception e){
-            throw new RuntimeException(("Contract generation error: " + e));
+        } catch (Exception e) {
+            throw new RuntimeException("Contract PDF generation failed for contract " + contractId, e);
         }
     }
 
@@ -154,5 +155,13 @@ public class ContractServiceImpl implements ContractService {
                 .map(contract -> contract.getUser() != null
                         && contract.getUser().getUsername().equals(username))
                 .orElse(false);
+    }
+
+    /** Monthly price rounded to the nearest integer gives the loyalty points to award/revoke. */
+    private int toPoints(BigDecimal price) {
+        if (price == null) {
+            return 0;
+        }
+        return price.setScale(0, RoundingMode.HALF_UP).intValue();
     }
 }
