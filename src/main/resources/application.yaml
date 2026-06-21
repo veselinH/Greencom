@@ -30,3 +30,7 @@ loyalty:
     url: http://localhost:8081
 server:
   port: 8080
+greencom:
+    admin:
+      username: "${GREENCOM_ADMIN_USERNAME:admin}"
+      password: "${GREENCOM_ADMIN_PASSWORD:admin}"
