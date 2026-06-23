@@ -32,7 +32,7 @@ public class GreencomUserDetails implements UserDetails, OidcUser, CredentialsCo
     private final String username;
     private String password;
     private final String email;
-    private String lastName;
+    private final String lastName;
     private final Collection<GrantedAuthority> authorities;
     private final Map<String, Object> attributes;
     private final OidcIdToken idToken;
