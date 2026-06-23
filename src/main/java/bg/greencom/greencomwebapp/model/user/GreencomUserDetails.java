@@ -98,11 +98,6 @@ public class GreencomUserDetails implements UserDetails, OidcUser, CredentialsCo
         return lastName;
     }
 
-    public GreencomUserDetails setLastName(String lastName) {
-        this.lastName = lastName;
-        return this;
-    }
-
     // --- OAuth2User ---
 
     @Override
