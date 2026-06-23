@@ -1,6 +1,9 @@
 package bg.greencom.greencomwebapp.config;
 
 import bg.greencom.greencomwebapp.repository.UserRepository;
+import bg.greencom.greencomwebapp.security.OAuth2LoginSuccessHandler;
+import bg.greencom.greencomwebapp.service.impl.CustomOAuth2UserService;
+import bg.greencom.greencomwebapp.service.impl.CustomOidcUserService;
 import bg.greencom.greencomwebapp.service.impl.GreencomUserDetailsService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +42,18 @@ import static org.springframework.security.web.authentication.UsernamePasswordAu
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOidcUserService customOidcUserService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+    public SecurityConfiguration(CustomOAuth2UserService customOAuth2UserService,
+                                 CustomOidcUserService customOidcUserService,
+                                 OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) {
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.customOidcUserService = customOidcUserService;
+        this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
@@ -62,6 +77,13 @@ public class SecurityConfiguration {
                         .defaultSuccessUrl("/home", true)
                         .failureForwardUrl("/users/login-errors")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/users/login")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)   // plain OAuth2 providers
+                                .oidcUserService(customOidcUserService)) // OIDC providers (e.g. Google)
+                        .successHandler(oAuth2LoginSuccessHandler)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/users/logout")
