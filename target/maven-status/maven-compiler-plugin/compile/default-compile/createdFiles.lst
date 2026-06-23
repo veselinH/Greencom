@@ -1,6 +1,14 @@
+bg\greencom\greencomwebapp\service\impl\OAuth2UserProvisioningService.class
 bg\greencom\greencomwebapp\client\LoyaltyFacade.class
+bg\greencom\greencomwebapp\security\OAuth2LoginSuccessHandler.class
 bg\greencom\greencomwebapp\client\dto\LoyaltyResponse.class
 bg\greencom\greencomwebapp\client\dto\RedeemRequest.class
+bg\greencom\greencomwebapp\config\SecurityConfiguration.class
+bg\greencom\greencomwebapp\service\impl\CustomOAuth2UserService.class
 bg\greencom\greencomwebapp\client\LoyaltyException.class
+bg\greencom\greencomwebapp\web\UserController.class
 bg\greencom\greencomwebapp\client\LoyaltyClient.class
+bg\greencom\greencomwebapp\model\user\GreencomUserDetails.class
+bg\greencom\greencomwebapp\service\impl\CustomOidcUserService.class
 bg\greencom\greencomwebapp\client\dto\EarnRequest.class
+bg\greencom\greencomwebapp\service\impl\GreencomUserDetailsService.class
