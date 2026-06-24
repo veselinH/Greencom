@@ -21,8 +21,14 @@ spring:
       client:
         registration:
           google:
-            client-id: "${GOOGLE_OAUTH_CLIENT_ID:751312265744-n9o7jhg38h71ookvh9d4v3u1cu0163p4.apps.googleusercontent.com}"
+            client-id: "${GOOGLE_OAUTH_CLIENT_ID}"
             client-secret: "${GOOGLE_OAUTH_CLIENT_SECRET}"
+          facebook:
+            client-id: "${FACEBOOK_OAUTH_CLIENT_ID}"
+            client-secret: "${FACEBOOK_OAUTH_CLIENT_SECRET}"
+            scope:
+              - email
+              - public_profile
 logging:
   level:
     org:
@@ -41,5 +47,5 @@ server:
   port: 8080
 greencom:
     admin:
-      username: "${GREENCOM_ADMIN_USERNAME:admin}"
-      password: "${GREENCOM_ADMIN_PASSWORD:admin}"
+      username: "${GREENCOM_ADMIN_USERNAME}"
+      password: "${GREENCOM_ADMIN_PASSWORD}"
