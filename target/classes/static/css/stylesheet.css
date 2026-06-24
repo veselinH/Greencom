@@ -26,6 +26,19 @@
     border-color: #166fe5;
 }
 
+.btn-github {
+    background-color: #24292f;
+    color: #ffffff;
+    border: 1px solid #24292f;
+}
+
+.btn-github:hover,
+.btn-github:focus {
+    background-color: #1b1f23;
+    color: #ffffff;
+    border-color: #1b1f23;
+}
+
 /* --- Card hover-lift effect ---
    Applied via the .hover-shadow class (home/index) and the .plan-card class
    (plan-list and profile pages). Both share the same lift on hover. */
