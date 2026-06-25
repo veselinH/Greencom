@@ -93,4 +93,14 @@ public interface UserService {
      * The penalty covers the remaining months in the minimum term, capped at 3 months' price.
      */
     BigDecimal calculatePenalty(Long id);
+
+    /**
+     * Returns a list of all users.
+     */
+    List<UserViewModel> getAllUsers();
+
+    /**
+     * Adds a role to the user.
+     */
+    boolean addRole(String username, String role);
 }
