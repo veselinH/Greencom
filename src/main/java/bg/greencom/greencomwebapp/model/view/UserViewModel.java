@@ -1,6 +1,10 @@
 package bg.greencom.greencomwebapp.model.view;
 
+import bg.greencom.greencomwebapp.model.entity.UserRoleEntity;
+
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserViewModel {
 
@@ -9,6 +13,7 @@ public class UserViewModel {
     private String username;
     private String email;
     private BigDecimal totalDebtPerMonth;
+    private Set<String> roles = new HashSet<>();
     private int loyaltyPoints;
     private String loyaltyTier;
 
@@ -55,6 +60,14 @@ public class UserViewModel {
     public UserViewModel setTotalDebtPerMonth(BigDecimal totalDebtPerMonth) {
         this.totalDebtPerMonth = totalDebtPerMonth;
         return this;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public int getLoyaltyPoints() {
