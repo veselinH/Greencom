@@ -59,9 +59,7 @@
                     </li>
                 </ul>
 
-                <!-- Combined Right Side: Date, and User Profile -->
                 <ul class="navbar-nav ms-auto align-items-center">
-
                     <!-- Date & Time -->
                     <li class="nav-item me-3 text-muted small">
                         <span id="nav-date"></span> | <span id="nav-time"></span>
@@ -75,6 +73,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
+                            <li><a class="dropdown-item" th:href="@{users/roles}" sec:authorize="hasRole('ADMIN')">User roles</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form th:action="@{/users/logout}" th:method="post" class="px-3 py-1">
