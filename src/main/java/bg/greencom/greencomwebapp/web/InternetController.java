@@ -48,11 +48,11 @@ public class InternetController {
     }
 
     @GetMapping("/add-internet-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addInternetPlan() {return "internet-plans/add-internet-plan";}
 
     @PostMapping("/add-internet-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addInternetPlanConfirm(@Valid InternetPlanBindingModel internetPlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
@@ -70,7 +70,7 @@ public class InternetController {
     }
 
     @GetMapping("/edit-internet-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editInternetPlan(@PathVariable Long id, Model model) {
         InternetPlanViewModel internetPlanFromRepo = modelMapper.map(internetPlanService.findById(id), InternetPlanViewModel.class);
 
@@ -86,7 +86,7 @@ public class InternetController {
     }
 
     @PatchMapping("/edit-internet-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editInternetPlanConfirm(@PathVariable Long id,
                                           @Valid InternetPlanBindingModel internetPlanBindingModel,
                                           BindingResult bindingResult,

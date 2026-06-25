@@ -53,11 +53,11 @@ public class TelevisionController {
     }
 
     @GetMapping("/add-television-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addTelevisionPlan() {return "television-plans/add-television-plan";}
 
     @PostMapping("/add-television-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addTelevisionPlanConfirm(@Valid TelevisionPlanBindingModel televisionPlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
@@ -91,7 +91,7 @@ public class TelevisionController {
     }
 
     @GetMapping("/edit-television-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editTelevisionPlan(@PathVariable Long id, Model model) {
         TelevisionPlanViewModel televisionPlanFromRepo = modelMapper.map(televisionPlanService.findById(id), TelevisionPlanViewModel.class);
 
@@ -107,7 +107,7 @@ public class TelevisionController {
     }
 
     @PatchMapping("/edit-television-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editTelevisionPlanConfirm(@PathVariable Long id,
                                           @Valid TelevisionPlanBindingModel televisionPlanBindingModel,
                                           BindingResult bindingResult,

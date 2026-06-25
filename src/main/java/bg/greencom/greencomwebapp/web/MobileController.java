@@ -58,13 +58,13 @@ public class MobileController {
     }
 
     @GetMapping("/add-voice-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addVoicePlan() {
         return "mobile-plans/voice-plans/add-voice-mobile-plan";
     }
 
     @PostMapping("/add-voice-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addVoicePlanConfirm(@Valid VoicePlanBindingModel voicePlanBindingModel,
                                       BindingResult bindingResult,
                                       RedirectAttributes redirectAttributes) {
@@ -95,7 +95,7 @@ public class MobileController {
 //    }
 
     @GetMapping("/edit-voice-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editVoicePlan(@PathVariable Long id, Model model) {
         VoicePlanViewModel voicePlanById = voicePlanService.findById(id);
         VoicePlanBindingModel voicePlanFromRepo = modelMapper.map(voicePlanById, VoicePlanBindingModel.class);
@@ -112,7 +112,7 @@ public class MobileController {
     }
 
     @PatchMapping("/edit-voice-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editVoicePlanConfirm(@PathVariable Long id,
                                        @Valid VoicePlanBindingModel voicePlanFromRepo,
                                        BindingResult bindingResult,
@@ -179,13 +179,13 @@ public class MobileController {
     }
 
     @GetMapping("/add-data-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addDataPlan() {
         return "mobile-plans/data-plans/add-data-mobile-plan";
     }
 
     @PostMapping("/add-data-plan")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String addDataPlanConfirm(@Valid DataPlanBindingModel dataPlanBindingModel,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes) {
@@ -205,7 +205,7 @@ public class MobileController {
     }
 
     @GetMapping("/edit-data-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editDataPlan(@PathVariable Long id, Model model) {
         DataPlanViewModel dataPlanById = dataPlanService.findById(id);
         model.addAttribute("dataPlanFromRepo", dataPlanById);
@@ -220,7 +220,7 @@ public class MobileController {
     }
 
     @PatchMapping("/edit-data-plan/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR')")
     public String editDataPlanConfirm(@PathVariable Long id,
                                       @Valid DataPlanBindingModel dataPlanFromRepo,
                                       BindingResult bindingResult,
