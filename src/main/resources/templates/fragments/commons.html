@@ -7,6 +7,7 @@
     <title>Greencom</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <script th:src="@{/js/signature-manager.js}"></script>
@@ -37,7 +38,7 @@
                     </li>
 
                     <!-- Admin Dropdown -->
-                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item dropdown" sec:authorize="hasRole('MODERATOR')">
                         <a class="btn btn-success dropdown-toggle me-2" href="#" id="adminDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Add plan
@@ -73,7 +74,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
-                            <li><a class="dropdown-item" th:href="@{users/roles}" sec:authorize="hasRole('ADMIN')">User roles</a></li>
+                            <li><a class="dropdown-item" th:href="@{/users/roles}" sec:authorize="hasRole('ADMIN')">User roles</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form th:action="@{/users/logout}" th:method="post" class="px-3 py-1">
@@ -96,7 +97,7 @@
                 <!-- Branding Column -->
                 <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4">
-                        <i class="fas fa-satellite-dish me-3 text-success"></i>Greencom
+                        <i class="bi bi-broadcast-pin me-3 text-success"></i>Greencom
                     </h6>
                     <p class="small">Making Connections That Count</p>
                     <img src="/images/logoz.png" alt="Greencom Logo" class="img-fluid rounded shadow-sm">
@@ -116,9 +117,9 @@
                 <!-- Contact Column -->
                 <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
                     <h6 class="text-uppercase fw-bold mb-4 text-dark">Contact</h6>
-                    <p><i class="fas fa-home me-3 text-success"></i> Varna, 9000, BG</p>
-                    <p><i class="fas fa-envelope me-3 text-success"></i> helpdesk@greencom.bg</p>
-                    <p><i class="fas fa-phone me-3 text-success"></i> + 359 800 000 000</p>
+                    <p><i class="bi bi-house-door-fill me-3 text-success"></i> Varna, 9000, BG</p>
+                    <p><i class="bi bi-envelope-fill me-3 text-success"></i> helpdesk@greencom.bg</p>
+                    <p><i class="bi bi-telephone-fill me-3 text-success"></i> + 359 800 000 000</p>
                 </div>
             </div>
         </div>
