@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/commons::head}"><title>Users roles</title></head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+<header th:replace="~{fragments/commons::navbar}"></header>
+
+<main class="container py-5 flex-grow-1">
+
+    <!-- Confirmation message (flash attribute set on redirect) -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white py-3">
+            <h4 class="mb-0">User Roles</h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="ps-4">Username</th>
+                        <th scope="col">Roles</th>
+                        <th scope="col" class="text-end pe-4">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+
+                        <!-- Username -->
+                        <td class="ps-4 fw-semibold" th:text="${user.username}">username</td>
+
+                        <!-- Role badges -->
+                        <td>
+                            <span class="badge bg-secondary me-1">USER</span>
+                            <span th:if="${user.roles.contains('Moderator')}"
+                                  class="badge bg-info text-dark me-1">MODERATOR</span>
+                            <span th:if="${user.roles.contains('Admin')}"
+                                  class="badge bg-dark me-1">ADMIN</span>
+                        </td>
+
+                        <!-- Action: toggle MODERATOR (hidden for the protected ADMIN account) -->
+                        <td class="text-end pe-4">
+
+                            <!-- Application admin: no changes allowed -->
+                            <span th:if="${user.roles.contains('Admin')}"
+                                  class="text-muted small fst-italic">Protected account</span>
+
+                            <!-- Has MODERATOR -->
+                            <form th:if="${!user.roles.contains('Admin') and user.roles.contains('Moderator')}"
+                                  th:action="@{/users/roles/remove}" method="post" class="d-inline">
+                                <input type="hidden" name="username" th:value="${user.username}">
+                                <input type="hidden" name="role" value="MODERATOR">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-dash-circle me-1"></i> Remove Moderator
+                                </button>
+                            </form>
+
+                            <!-- No MODERATOR -> offer to add it -->
+                            <form th:if="${!user.roles.contains('Admin') and !user.roles.contains('Moderator')}"
+                                  th:action="@{/users/roles/add}" method="post" class="d-inline">
+                                <input type="hidden" name="username" th:value="${user.username}">
+                                <input type="hidden" name="role" value="MODERATOR">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-plus-circle me-1"></i> Add Moderator
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <!-- Empty state -->
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="3" class="text-center text-muted py-4">No users found.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>
