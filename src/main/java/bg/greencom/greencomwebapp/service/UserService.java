@@ -103,4 +103,9 @@ public interface UserService {
      * Adds a role to the user.
      */
     boolean addRole(String username, String role);
+
+    /**
+     * Removes a role from the user.
+     */
+    boolean removeRole(String username, String role);
 }
