@@ -403,6 +403,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean addRole(String username, String role) {
         UserRoleEntity roleEntity = userRoleService.findByName(UserRoleEnum.valueOf(role));
         UserEntity user = userRepository.findByUsername(username).orElse(null);
@@ -411,7 +412,23 @@ public class UserServiceImpl implements UserService {
             userRepository.saveAndFlush(user);
             LOGGER.info("Role {} added to user {}.", role, username);
         } else {
-            LOGGER.error("User {} not found.", username);
+            LOGGER.error("Failed to add role {} to user {}: User not found.", role, username);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeRole(String username, String role) {
+        UserRoleEntity roleEntity = userRoleService.findByName(UserRoleEnum.valueOf(role));
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            user.getRoles().remove(roleEntity);
+            userRepository.saveAndFlush(user);
+            LOGGER.info("Role {} removed from user {}.", role, username);
+        } else {
+            LOGGER.error("Failed to remove role {} from user {}: User not found.", role, username);
             return false;
         }
         return true;
