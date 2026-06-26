@@ -1,7 +1,5 @@
 package bg.greencom.greencomwebapp.model.view;
 
-import bg.greencom.greencomwebapp.model.entity.UserRoleEntity;
-
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
