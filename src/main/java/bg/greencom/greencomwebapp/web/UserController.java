@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -224,6 +225,49 @@ public class UserController {
         headers.setContentDispositionFormData("attachment", fileName);
 
         return new ResponseEntity<>(pdfContents, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/roles")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String viewUsersRole(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        return "users_roles";
+    }
+
+    @PostMapping("/roles/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String addRole(@RequestParam String username,
+                          @RequestParam String role,
+                          RedirectAttributes redirectAttributes) {
+
+        boolean roleAdded = userService.addRole(username, role);
+        if (roleAdded) {
+            redirectAttributes
+                    .addFlashAttribute("successMessage", "Role '" + role + "' successfully added to user '" + username + "'.");
+        } else {
+            redirectAttributes
+                    .addFlashAttribute("error", "Failed to add role '" + role + "' to user '" + username + "'.");
+        }
+
+        return "redirect:/users/roles";
+    }
+
+    @PostMapping("/roles/remove")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String removeRole(@RequestParam String username,
+                             @RequestParam String role,
+                              RedirectAttributes redirectAttributes){
+
+        boolean roleRemoved = userService.removeRole(username, role);
+        if (roleRemoved) {
+            redirectAttributes
+                    .addFlashAttribute("successMessage", "Role '" + role + "' successfully removed from user '" + username + "'.");
+        } else {
+            redirectAttributes
+                    .addFlashAttribute("error", "Failed to remove role '" + role + "' from user '" + username + "'.");
+        }
+
+        return "redirect:/users/roles";
     }
 
     private void executeUnsign(Long id, String username, String signature, RedirectAttributes redirectAttributes) {

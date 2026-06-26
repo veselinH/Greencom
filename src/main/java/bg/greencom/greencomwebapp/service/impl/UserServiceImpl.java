@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation responsible for processing user-related business operations
@@ -392,6 +393,51 @@ public class UserServiceImpl implements UserService {
         penaltyAmount = userPlan.getPrice().multiply(penaltyMonths);
 
         return penaltyAmount;
+    }
+
+    @Override
+    public List<UserViewModel> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::mapToUserViewModel)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public boolean addRole(String username, String role) {
+        UserRoleEntity roleEntity = userRoleService.findByName(UserRoleEnum.valueOf(role));
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            user.getRoles().add(roleEntity);
+            userRepository.saveAndFlush(user);
+            LOGGER.info("Role {} added to user {}.", role, username);
+        } else {
+            LOGGER.error("Failed to add role {} to user {}: User not found.", role, username);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeRole(String username, String role) {
+        UserRoleEntity roleEntity = userRoleService.findByName(UserRoleEnum.valueOf(role));
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            user.getRoles().remove(roleEntity);
+            userRepository.saveAndFlush(user);
+            LOGGER.info("Role {} removed from user {}.", role, username);
+        } else {
+            LOGGER.error("Failed to remove role {} from user {}: User not found.", role, username);
+            return false;
+        }
+        return true;
+    }
+
+    private UserViewModel mapToUserViewModel(UserEntity userEntity) {
+        UserViewModel viewModel = modelMapper.map(userEntity, UserViewModel.class);
+        viewModel.setRoles(userEntity.getRoles().stream().map(userRoleEntity -> userRoleEntity.getName().getValue()).collect(Collectors.toSet()));
+        return viewModel;
     }
 
     private VoicePlanViewModel mapToVoicePlanViewModel(ContractEntity contract) {

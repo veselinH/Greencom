@@ -32,10 +32,12 @@ public class UserRoleServiceImpl implements UserRoleService {
      if (userRoleRepository.count() == 0){
          UserRoleEntity roleUser = new UserRoleEntity();
          roleUser.setName(UserRoleEnum.USER);
+         UserRoleEntity roleModerator = new UserRoleEntity();
+         roleModerator.setName(UserRoleEnum.MODERATOR);
          UserRoleEntity roleAdmin = new UserRoleEntity();
          roleAdmin.setName(UserRoleEnum.ADMIN);
 
-         userRoleRepository.saveAll(Set.of(roleUser, roleAdmin));
+         userRoleRepository.saveAll(Set.of(roleUser, roleModerator, roleAdmin));
          LOGGER.info("User roles initialized.");
      }
     }
