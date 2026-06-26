@@ -53,7 +53,7 @@
                             <span th:if="${user.roles.contains('Admin')}"
                                   class="text-muted small fst-italic">Protected account</span>
 
-                            <!-- Has MODERATOR -> offer to remove it -->
+                            <!-- Has MODERATOR -->
                             <form th:if="${!user.roles.contains('Admin') and user.roles.contains('Moderator')}"
                                   th:action="@{/users/roles/remove}" method="post" class="d-inline">
                                 <input type="hidden" name="username" th:value="${user.username}">
