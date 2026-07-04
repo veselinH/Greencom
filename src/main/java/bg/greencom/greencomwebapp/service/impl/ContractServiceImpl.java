@@ -5,6 +5,7 @@ import bg.greencom.greencomwebapp.model.entity.AdditionalPackageEntity;
 import bg.greencom.greencomwebapp.model.entity.ContractEntity;
 import bg.greencom.greencomwebapp.model.entity.PlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
+import bg.greencom.greencomwebapp.model.view.ContractPdfViewModel;
 import org.hibernate.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.ContractViewModel;
@@ -109,8 +110,10 @@ public class ContractServiceImpl implements ContractService {
         ContractEntity contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
 
+        ContractPdfViewModel contractPdf = mapToContractPdfViewModel(contract);
+
         Context context = new Context();
-        context.setVariable("contract", contract);
+        context.setVariable("contract", contractPdf);
         context.setVariable("downloadDate", LocalDate.now());
 
         try {
@@ -140,6 +143,21 @@ public class ContractServiceImpl implements ContractService {
         } catch (Exception e) {
             throw new RuntimeException("Contract PDF generation failed for contract " + contractId, e);
         }
+    }
+
+    private static ContractPdfViewModel mapToContractPdfViewModel(ContractEntity contract) {
+
+        ContractPdfViewModel contractPdf = new ContractPdfViewModel();
+        contractPdf
+                .setId(contract.getId())
+                .setFirstName(contract.getUser().getFirstName())
+                .setLastName(contract.getUser().getLastName())
+                .setPlanName(contract.getPlan().getName())
+                .setPrice(contract.getPlan().getPrice())
+                .setPlanDuration(contract.getPlan().getPlanDuration())
+                .setSignedOn(contract.getSignedOn());
+
+        return contractPdf;
     }
 
     @Override
