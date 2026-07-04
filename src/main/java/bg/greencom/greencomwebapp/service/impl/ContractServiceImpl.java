@@ -1,10 +1,7 @@
 package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.client.LoyaltyFacade;
-import bg.greencom.greencomwebapp.model.entity.AdditionalPackageEntity;
-import bg.greencom.greencomwebapp.model.entity.ContractEntity;
-import bg.greencom.greencomwebapp.model.entity.PlanEntity;
-import bg.greencom.greencomwebapp.model.entity.UserEntity;
+import bg.greencom.greencomwebapp.model.entity.*;
 import bg.greencom.greencomwebapp.model.view.ContractPdfViewModel;
 import org.hibernate.ObjectNotFoundException;
 import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
@@ -16,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -25,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Handles contract lifecycle: creation (with loyalty earn), deactivation (with loyalty revoke),
@@ -106,6 +105,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional
     public byte[] generateContractPdf(Long contractId) {
         ContractEntity contract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new ObjectNotFoundException(contractId, OBJECT_TYPE));
@@ -147,15 +147,30 @@ public class ContractServiceImpl implements ContractService {
 
     private static ContractPdfViewModel mapToContractPdfViewModel(ContractEntity contract) {
 
+        PlanEntity plan = contract.getPlan();
         ContractPdfViewModel contractPdf = new ContractPdfViewModel();
         contractPdf
                 .setId(contract.getId())
                 .setFirstName(contract.getUser().getFirstName())
                 .setLastName(contract.getUser().getLastName())
-                .setPlanName(contract.getPlan().getName())
-                .setPrice(contract.getPlan().getPrice())
-                .setPlanDuration(contract.getPlan().getPlanDuration())
+                .setPlanName(plan.getName())
+                .setPlanType(plan.getPlanType())
+                .setPrice(plan.getPrice())
+                .setPlanDuration(plan.getPlanDuration())
+                .setPlanDetails(plan.getPlanDetails())
                 .setSignedOn(contract.getSignedOn());
+
+        if (contract.getAdditionalPackageEntities() != null) {
+            contractPdf.setAdditionalPackages(contract.getAdditionalPackageEntities().stream()
+                    .map(additionalPackageEntity -> {
+                        AdditionalPackageViewModel additionalPackageViewModel = new AdditionalPackageViewModel();
+                        additionalPackageViewModel.setName(additionalPackageEntity.getName().getValue());
+                        additionalPackageViewModel.setPrice(additionalPackageEntity.getPrice());
+                        return additionalPackageViewModel;
+                    })
+                    .collect(Collectors.toSet()));
+        }
+
 
         return contractPdf;
     }
