@@ -25,7 +25,6 @@ public class UserEntity extends BaseEntity {
     private List<VoicePlanEntity> userVoiceMobilePlans;
     private List<DataPlanEntity> userDataPlans;
     private List<TelevisionPlanEntity> userTelevisionPlans;
-    private List<FixedVoicePlanEntity> userFixedVoicePlans;
     private List<ContractEntity> userContracts = new ArrayList<>();
 
     public UserEntity() {
@@ -148,16 +147,6 @@ public class UserEntity extends BaseEntity {
 
     public UserEntity setUserTelevisionPlans(List<TelevisionPlanEntity> userTelevisionPlans) {
         this.userTelevisionPlans = userTelevisionPlans;
-        return this;
-    }
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    public List<FixedVoicePlanEntity> getUserFixedVoicePlans() {
-        return userFixedVoicePlans;
-    }
-
-    public UserEntity setUserFixedVoicePlans(List<FixedVoicePlanEntity> userFixedVoicePlans) {
-        this.userFixedVoicePlans = userFixedVoicePlans;
         return this;
     }
 
