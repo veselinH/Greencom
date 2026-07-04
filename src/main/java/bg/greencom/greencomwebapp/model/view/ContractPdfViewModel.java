@@ -2,6 +2,10 @@ package bg.greencom.greencomwebapp.model.view;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class ContractPdfViewModel {
 
@@ -9,9 +13,12 @@ public class ContractPdfViewModel {
     private String firstName;
     private String lastName;
     private String planName;
+    private String planType;
     private BigDecimal price;
     private String planDuration;
     private LocalDate signedOn;
+    private Map<String, String> planDetails = new LinkedHashMap<>();
+    private Set<AdditionalPackageViewModel> additionalPackages = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -49,6 +56,24 @@ public class ContractPdfViewModel {
         return this;
     }
 
+    public String getPlanType() {
+        return planType;
+    }
+
+    public ContractPdfViewModel setPlanType(String planType) {
+        this.planType = planType;
+        return this;
+    }
+
+    public Map<String, String> getPlanDetails() {
+        return planDetails;
+    }
+
+    public ContractPdfViewModel setPlanDetails(Map<String, String> planDetails) {
+        this.planDetails = planDetails;
+        return this;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -73,6 +98,15 @@ public class ContractPdfViewModel {
 
     public ContractPdfViewModel setSignedOn(LocalDate signedOn) {
         this.signedOn = signedOn;
+        return this;
+    }
+
+    public Set<AdditionalPackageViewModel> getAdditionalPackages() {
+        return additionalPackages;
+    }
+
+    public ContractPdfViewModel setAdditionalPackages(Set<AdditionalPackageViewModel> additionalPackages) {
+        this.additionalPackages = additionalPackages;
         return this;
     }
 }
