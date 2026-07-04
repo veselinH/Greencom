@@ -14,32 +14,6 @@
             border-bottom: 2px solid #28a745;
             margin-bottom: 30px;
         }
-        .company-name {
-            color: #28a745;
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .section-title {
-            background-color: #f8f9fa;
-            padding: 5px 10px;
-            font-weight: bold;
-            margin-top: 20px;
-            border-left: 4px solid #28a745;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-        table td {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
-        .label {
-            font-weight: bold;
-            width: 30%;
-        }
         .signature-section {
             margin-top: 50px;
             width: 100%;
@@ -64,10 +38,25 @@
 </div>
 
 <div>
-    <p><strong>Customer:</strong> <span th:text="${contract.getUser().getLastName()}"></span></p>
-    <p><strong>Plan:</strong> <span th:text="${contract.getPlan().getName()}"></span></p>
-    <p><strong>Price:</strong> $<span th:text="${contract.getPlan().getPrice()}"></span>/mo</p>
+    <p><strong>Customer:</strong> <span th:text="${contract.firstName} + ' ' + ${contract.lastName}"></span></p>
+    <p><strong>Plan:</strong> <span th:text="${contract.planName}"></span></p>
+    <p><strong>Type:</strong> <span th:text="${contract.planType}"></span></p>
+    <p><strong>Price:</strong> <span th:text="${contract.price}"></span> BGN/mo</p>
+    <p><strong>Duration:</strong> <span th:text="${contract.planDuration}"></span> months</p>
     <p><strong>Signed On:</strong> <span th:text="${contract.signedOn}"></span></p>
+    <p><strong>Plan specifics:</strong></p>
+    <p th:each="detail : ${contract.planDetails}">
+        <strong th:text="${detail.key} + ':'">Field</strong>
+        <span th:text="${detail.value}"></span>
+    </p>
+    <div th:if="${contract.additionalPackages != null}">
+        <p><strong>Additional Packages:</strong></p>
+        <p th:each="extra : ${contract.additionalPackages}">
+            <span th:text="${extra.name}"></span>
+            <span th:text="${extra.price}"></span>
+            <span>BGN/mo</span>
+        </p>
+    </div>
 </div>
 
 <div style="margin-top: 50px;">
@@ -80,7 +69,7 @@
             <img th:src="${signatureImage}" alt="Customer Signature" style="max-width: 200px; max-height: 100px;" />
         </div>
         <div class="sig-line">
-            <p th:text="${contract.getUser().getLastName()}">Customer Name</p>
+            <p th:text="${contract.lastName}">Customer Name</p>
             <p>Customer Signature</p>
         </div>
     </div>

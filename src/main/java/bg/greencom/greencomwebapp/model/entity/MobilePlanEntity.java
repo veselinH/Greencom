@@ -4,9 +4,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Transient;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @MappedSuperclass
 public abstract class MobilePlanEntity extends PlanEntity {
@@ -56,5 +59,22 @@ public abstract class MobilePlanEntity extends PlanEntity {
     public MobilePlanEntity setMobileExtras(List<MobileExtraEntity> mobileExtras) {
         this.mobileExtras = mobileExtras;
         return this;
+    }
+
+    @Override
+    @Transient
+    public String getPlanType() {
+        return "Mobile";
+    }
+
+    @Override
+    @Transient
+    public Map<String, String> getPlanDetails() {
+        Map<String, String> details = new LinkedHashMap<>();
+        details.put("BG Internet (MB)", bgInternetMegabytes);
+        if (roamingInternetMegabytes != null) {
+            details.put("Roaming Internet (MB)", roamingInternetMegabytes);
+        }
+        return details;
     }
 }

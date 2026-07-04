@@ -2,8 +2,8 @@ package bg.greencom.greencomwebapp.model.entity;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "television_plans")
@@ -44,5 +44,25 @@ public class TelevisionPlanEntity extends PlanEntity {
     public TelevisionPlanEntity setTelevisionType(TelevisionTypeEntity televisionType) {
         this.televisionType = televisionType;
         return this;
+    }
+
+    @Override
+    @Transient
+    public String getPlanType() {
+        return "Television";
+    }
+
+    @Override
+    @Transient
+    public Map<String, String> getPlanDetails() {
+        Map<String, String> details = new LinkedHashMap<>();
+        details.put("Channels", String.valueOf(channelCount));
+        if (channelCountInHD != null) {
+            details.put("HD Channels", String.valueOf(channelCountInHD));
+        }
+        if (televisionType != null && televisionType.getName() != null) {
+            details.put("Television Type", televisionType.getName().name());
+        }
+        return details;
     }
 }

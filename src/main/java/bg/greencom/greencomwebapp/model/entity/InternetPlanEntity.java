@@ -2,6 +2,8 @@ package bg.greencom.greencomwebapp.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -54,6 +56,24 @@ public class InternetPlanEntity extends PlanEntity {
     public InternetPlanEntity setInternetExtras(Set<InternetExtrasEntity> internetExtras) {
         this.internetExtras = internetExtras;
         return this;
+    }
+
+    @Override
+    @Transient
+    public String getPlanType() {
+        return "Internet";
+    }
+
+    @Override
+    @Transient
+    public Map<String, String> getPlanDetails() {
+        Map<String, String> details = new LinkedHashMap<>();
+        details.put("Download", downloadMbps + " Mbps");
+        details.put("Upload", uploadMbps + " Mbps");
+        if (internetType != null && internetType.getName() != null) {
+            details.put("Connection Type", internetType.getName().name());
+        }
+        return details;
     }
 }
 
