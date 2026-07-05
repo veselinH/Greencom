@@ -436,17 +436,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean editUserProfile(Long id, UserProfileEditBindingModel userProfileEditBindingModel) {
+    public boolean editUserProfile(String username, UserProfileEditBindingModel userProfileEditBindingModel) {
 
-        UserEntity user = userRepository.findById(id).orElse(null);
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             user.setFirstName(userProfileEditBindingModel.getFirstName());
             user.setLastName(userProfileEditBindingModel.getLastName());
             user.setEmail(userProfileEditBindingModel.getEmail());
             userRepository.saveAndFlush(user);
-            LOGGER.info("User profile with id {} edited successfully.", id);
+            LOGGER.info("User profile for '{}' edited successfully.", username);
         } else {
-            LOGGER.error("Failed to edit user profile with id {}: User not found.", id);
+            LOGGER.error("Failed to edit user profile for '{}': User not found.", username);
             return false;
         }
 
