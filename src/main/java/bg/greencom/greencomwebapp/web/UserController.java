@@ -1,6 +1,7 @@
 package bg.greencom.greencomwebapp.web;
 
 import bg.greencom.greencomwebapp.client.LoyaltyException;
+import bg.greencom.greencomwebapp.model.binding.UserProfileEditBindingModel;
 import bg.greencom.greencomwebapp.model.binding.UserRegisterBindingModel;
 import bg.greencom.greencomwebapp.model.exception.ContractAccessDeniedException;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
@@ -268,6 +269,41 @@ public class UserController {
         }
 
         return "redirect:/users/roles";
+    }
+
+    /**
+     * Display error messages when editing user profile
+     */
+    @GetMapping("/profile/edit/{id}/errors")
+    public String editProfileErrors(@PathVariable Long id){
+        return "redirect:/user/profile";
+    }
+
+    /**
+     * Edit the user profile
+     * No GetRequest. We already have the user info in currentUser from viewProfile()
+     */
+    @PostMapping("/profile/edit/{id}")
+    public String editProfile(@PathVariable Long id,
+                              @Valid UserProfileEditBindingModel userProfileEditBindingModel,
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes){
+
+        if (bindingResult.hasErrors()){
+            redirectAttributes
+                    .addFlashAttribute("userProfileEditBindingModel", userProfileEditBindingModel)
+                    .addFlashAttribute("org.springframework.validation.BindingResult.userProfileEditBindingModel", bindingResult);
+            return "redirect:/user/profile/" + id + "/errors";
+        }
+
+        boolean successfulEdit = userService.editUserProfile(id, userProfileEditBindingModel);
+        if (successfulEdit){
+            redirectAttributes.addFlashAttribute("successMessage", "Profile successfully edited.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Failed to edit profile.");
+        }
+
+        return "redirect:/user/profile";
     }
 
     private void executeUnsign(Long id, String username, String signature, RedirectAttributes redirectAttributes) {
