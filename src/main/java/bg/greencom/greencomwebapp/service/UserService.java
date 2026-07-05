@@ -114,5 +114,5 @@ public interface UserService {
     /**
      * Edits the user profile.
      */
-    boolean editUserProfile(Long id, UserProfileEditBindingModel userProfileEditBindingModel);
+    boolean editUserProfile(String username, UserProfileEditBindingModel userProfileEditBindingModel);
 }
