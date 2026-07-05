@@ -1,9 +1,11 @@
 package bg.greencom.greencomwebapp.service;
 
+import bg.greencom.greencomwebapp.model.binding.UserProfileEditBindingModel;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
 import bg.greencom.greencomwebapp.model.view.*;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
@@ -108,4 +110,9 @@ public interface UserService {
      * Removes a role from the user.
      */
     boolean removeRole(String username, String role);
+
+    /**
+     * Edits the user profile.
+     */
+    boolean editUserProfile(String username, UserProfileEditBindingModel userProfileEditBindingModel);
 }

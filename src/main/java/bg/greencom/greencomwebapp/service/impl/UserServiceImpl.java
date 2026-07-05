@@ -2,6 +2,7 @@ package bg.greencom.greencomwebapp.service.impl;
 
 import bg.greencom.greencomwebapp.client.LoyaltyFacade;
 import bg.greencom.greencomwebapp.client.dto.LoyaltyResponse;
+import bg.greencom.greencomwebapp.model.binding.UserProfileEditBindingModel;
 import bg.greencom.greencomwebapp.model.entity.*;
 import bg.greencom.greencomwebapp.model.entity.enums.UserRoleEnum;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
@@ -431,6 +432,24 @@ public class UserServiceImpl implements UserService {
             LOGGER.error("Failed to remove role {} from user {}: User not found.", role, username);
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean editUserProfile(String username, UserProfileEditBindingModel userProfileEditBindingModel) {
+
+        UserEntity user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            user.setFirstName(userProfileEditBindingModel.getFirstName());
+            user.setLastName(userProfileEditBindingModel.getLastName());
+            user.setEmail(userProfileEditBindingModel.getEmail());
+            userRepository.saveAndFlush(user);
+            LOGGER.info("User profile for '{}' edited successfully.", username);
+        } else {
+            LOGGER.error("Failed to edit user profile for '{}': User not found.", username);
+            return false;
+        }
+
         return true;
     }
 
