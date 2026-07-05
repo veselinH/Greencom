@@ -3,9 +3,11 @@ package bg.greencom.greencomwebapp.web;
 import bg.greencom.greencomwebapp.client.LoyaltyException;
 import bg.greencom.greencomwebapp.model.binding.UserProfileEditBindingModel;
 import bg.greencom.greencomwebapp.model.binding.UserRegisterBindingModel;
+import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.exception.ContractAccessDeniedException;
 import bg.greencom.greencomwebapp.model.service.UserServiceModel;
 import bg.greencom.greencomwebapp.model.user.GreencomUserDetails;
+import bg.greencom.greencomwebapp.model.view.UserViewModel;
 import bg.greencom.greencomwebapp.service.ContractService;
 import bg.greencom.greencomwebapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -131,12 +133,23 @@ public class UserController {
     @GetMapping("/profile")
     public String viewProfile(@AuthenticationPrincipal GreencomUserDetails user, Model model) {
 
+        UserViewModel currentUser = userService.getUserInfo(user.getUsername());
+
         model
                 .addAttribute("userVoicePlans", userService.getAllVoicePlans(user.getUsername()))
                 .addAttribute("userDataPlans", userService.getAllDataPlans(user.getUsername()))
                 .addAttribute("userInternetPlans", userService.getAllInternetPlans(user.getUsername()))
                 .addAttribute("userTelevisionPlans", userService.getAllTelevisionPlans(user.getUsername()))
-                .addAttribute("currentUser", userService.getUserInfo(user.getUsername()));
+                .addAttribute("currentUser", currentUser);
+
+//      Pre-fill the edit form with the current values (unless a failed submit already left a model to re-show).
+        if (!model.containsAttribute("userProfileEditBindingModel")) {
+            UserProfileEditBindingModel editModel = new UserProfileEditBindingModel();
+            editModel.setFirstName(currentUser.getFirstName());
+            editModel.setLastName(currentUser.getLastName());
+            editModel.setEmail(currentUser.getEmail());
+            model.addAttribute("userProfileEditBindingModel", editModel);
+        }
 
         return "profile";
     }
@@ -272,38 +285,39 @@ public class UserController {
     }
 
     /**
-     * Display error messages when editing user profile
+     * Edit the logged-in user's profile (first name, last name, email).
+     * The user is taken from the authentication principal, so a user can only edit their own profile.
+     * No GetRequest: the current values are already rendered by viewProfile().
      */
-    @GetMapping("/profile/edit/{id}/errors")
-    public String editProfileErrors(@PathVariable Long id){
-        return "redirect:/user/profile";
-    }
-
-    /**
-     * Edit the user profile
-     * No GetRequest. We already have the user info in currentUser from viewProfile()
-     */
-    @PostMapping("/profile/edit/{id}")
-    public String editProfile(@PathVariable Long id,
-                              @Valid UserProfileEditBindingModel userProfileEditBindingModel,
+    @PostMapping("/profile/edit")
+    public String editProfile(@Valid UserProfileEditBindingModel userProfileEditBindingModel,
                               BindingResult bindingResult,
+                              @AuthenticationPrincipal GreencomUserDetails user,
                               RedirectAttributes redirectAttributes){
+
+//      Allow the user's own current email; reject only an email already taken by someone else.
+        UserEntity existingByEmail = userService.findUserByEmail(userProfileEditBindingModel.getEmail());
+        if (existingByEmail != null && !existingByEmail.getUsername().equals(user.getUsername())) {
+            bindingResult.addError(new FieldError(
+                    "userProfileEditBindingModel", "email", "This email is already in use."));
+        }
 
         if (bindingResult.hasErrors()){
             redirectAttributes
                     .addFlashAttribute("userProfileEditBindingModel", userProfileEditBindingModel)
-                    .addFlashAttribute("org.springframework.validation.BindingResult.userProfileEditBindingModel", bindingResult);
-            return "redirect:/user/profile/" + id + "/errors";
+                    .addFlashAttribute("org.springframework.validation.BindingResult.userProfileEditBindingModel", bindingResult)
+                    .addFlashAttribute("openEditModal", true);
+            return "redirect:/users/profile";
         }
 
-        boolean successfulEdit = userService.editUserProfile(id, userProfileEditBindingModel);
+        boolean successfulEdit = userService.editUserProfile(user.getUsername(), userProfileEditBindingModel);
         if (successfulEdit){
             redirectAttributes.addFlashAttribute("successMessage", "Profile successfully edited.");
         } else {
             redirectAttributes.addFlashAttribute("error", "Failed to edit profile.");
         }
 
-        return "redirect:/user/profile";
+        return "redirect:/users/profile";
     }
 
     private void executeUnsign(Long id, String username, String signature, RedirectAttributes redirectAttributes) {
