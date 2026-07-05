@@ -1,6 +1,5 @@
 package bg.greencom.greencomwebapp.model.binding;
 
-import bg.greencom.greencomwebapp.validation.annotation.UniqueEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -30,7 +29,7 @@ public class UserProfileEditBindingModel {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    @UniqueEmail
+    @NotBlank(message = "Please enter your email.")
     @Email(message = "Enter a valid email address.")
     public String getEmail() {
         return email;
