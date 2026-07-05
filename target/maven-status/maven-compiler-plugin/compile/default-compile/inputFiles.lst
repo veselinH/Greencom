@@ -12,6 +12,7 @@ C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\mo
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\binding\InternetPlanBindingModel.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\binding\PlanBindingModel.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\binding\TelevisionPlanBindingModel.java
+C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\binding\UserProfileEditBindingModel.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\binding\UserRegisterBindingModel.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\binding\VoicePlanBindingModel.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\AdditionalPackageEntity.java
@@ -24,7 +25,6 @@ C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\mo
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\enums\MobileExtraEnum.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\enums\TelevisionTypeEnum.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\enums\UserRoleEnum.java
-C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\FixedVoicePlanEntity.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\InternetExtrasEntity.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\InternetPlanEntity.java
 C:\Users\vhhri\IdeaProjects\Greencom\src\main\java\bg\greencom\greencomwebapp\model\entity\InternetTypeEntity.java
