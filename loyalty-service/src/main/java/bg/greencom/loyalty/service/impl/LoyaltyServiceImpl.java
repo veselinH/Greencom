@@ -5,6 +5,8 @@ import bg.greencom.loyalty.model.LoyaltyAccount;
 import bg.greencom.loyalty.repository.LoyaltyAccountRepository;
 import bg.greencom.loyalty.service.InsufficientPointsException;
 import bg.greencom.loyalty.service.LoyaltyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,15 @@ import java.util.List;
 @Service
 public class LoyaltyServiceImpl implements LoyaltyService {
 
-    // Cache holding one LoyaltyResponse per username.
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoyaltyServiceImpl.class);
+
     public static final String ACCOUNTS_CACHE = "loyaltyAccounts";
 
-    // 100 points redeem into 1.00 BGN of discount.
     private static final int POINTS_PER_BGN = 100;
 
     private static final int SILVER_THRESHOLD = 500;
     private static final int GOLD_THRESHOLD = 1500;
 
-    // Tier-based bonus awarded by the scheduled monthly job.
     private static final int BRONZE_BONUS = 10;
     private static final int SILVER_BONUS = 50;
     private static final int GOLD_BONUS = 100;
@@ -54,7 +55,11 @@ public class LoyaltyServiceImpl implements LoyaltyService {
                 .setTotalEarned(account.getTotalEarned() + points)
                 .setUpdatedOn(LocalDateTime.now());
 
-        return toResponse(loyaltyAccountRepository.saveAndFlush(account), BigDecimal.ZERO);
+        LoyaltyAccount saved = loyaltyAccountRepository.saveAndFlush(account);
+        LOGGER.info("User {} earned {} loyalty points; new balance is {}.",
+                username, points, saved.getPointsBalance());
+
+        return toResponse(saved, BigDecimal.ZERO);
     }
 
     @Override
@@ -64,6 +69,8 @@ public class LoyaltyServiceImpl implements LoyaltyService {
         LoyaltyAccount account = getOrCreate(username);
 
         if (points > account.getPointsBalance()) {
+            LOGGER.warn("User {} attempted to redeem {} points with balance {}.",
+                    username, points, account.getPointsBalance());
             throw new InsufficientPointsException(
                     "Cannot redeem " + points + " points; balance is " + account.getPointsBalance() + ".");
         }
@@ -75,7 +82,11 @@ public class LoyaltyServiceImpl implements LoyaltyService {
         BigDecimal discountBgn = BigDecimal.valueOf(points)
                 .divide(BigDecimal.valueOf(POINTS_PER_BGN));
 
-        return toResponse(loyaltyAccountRepository.saveAndFlush(account), discountBgn);
+        LoyaltyAccount saved = loyaltyAccountRepository.saveAndFlush(account);
+        LOGGER.info("User {} redeemed {} loyalty points for {} BGN discount; new balance is {}.",
+                username, points, discountBgn, saved.getPointsBalance());
+
+        return toResponse(saved, discountBgn);
     }
 
     @Override
@@ -89,7 +100,11 @@ public class LoyaltyServiceImpl implements LoyaltyService {
                 .setPointsBalance(newBalance)
                 .setUpdatedOn(LocalDateTime.now());
 
-        return toResponse(loyaltyAccountRepository.saveAndFlush(account), BigDecimal.ZERO);
+        LoyaltyAccount saved = loyaltyAccountRepository.saveAndFlush(account);
+        LOGGER.info("Revoked {} loyalty points from user {}; new balance is {}.",
+                amount, username, saved.getPointsBalance());
+
+        return toResponse(saved, BigDecimal.ZERO);
     }
 
     @Override
@@ -124,12 +139,15 @@ public class LoyaltyServiceImpl implements LoyaltyService {
     private LoyaltyAccount getOrCreate(String username) {
         return loyaltyAccountRepository
                 .findByUsername(username)
-                .orElseGet(() -> loyaltyAccountRepository.saveAndFlush(
-                        new LoyaltyAccount()
-                                .setUsername(username)
-                                .setPointsBalance(0)
-                                .setTotalEarned(0)
-                                .setUpdatedOn(LocalDateTime.now())));
+                .orElseGet(() -> {
+                    LOGGER.info("Created new loyalty account for user {}.", username);
+                    return loyaltyAccountRepository.saveAndFlush(
+                            new LoyaltyAccount()
+                                    .setUsername(username)
+                                    .setPointsBalance(0)
+                                    .setTotalEarned(0)
+                                    .setUpdatedOn(LocalDateTime.now()));
+                });
     }
 
     private LoyaltyResponse toResponse(LoyaltyAccount account, BigDecimal discountBgn) {
