@@ -37,7 +37,7 @@ class LoyaltyControllerTest {
                 .setPointsBalance(balance)
                 .setTotalEarned(totalEarned)
                 .setTier(tier)
-                .setDiscountBgn(discount);
+                .setDiscountEur(discount);
     }
 
     @Test
@@ -84,7 +84,7 @@ class LoyaltyControllerTest {
                         .content(objectMapper.writeValueAsString(new RedeemRequest().setPoints(200))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pointsBalance").value(50))
-                .andExpect(jsonPath("$.discountBgn").value(2.00));
+                .andExpect(jsonPath("$.discountEur").value(2.00));
     }
 
     @Test

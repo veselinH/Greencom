@@ -41,8 +41,11 @@
     <p><strong>Customer:</strong> <span th:text="${contract.firstName} + ' ' + ${contract.lastName}"></span></p>
     <p><strong>Plan:</strong> <span th:text="${contract.planName}"></span></p>
     <p><strong>Type:</strong> <span th:text="${contract.planType}"></span></p>
-    <p><strong>Price:</strong> <span th:text="${contract.price}"></span> BGN/mo</p>
+    <p><strong>Price:</strong> <span th:text="${contract.price}"></span> €/mo</p>
     <p><strong>Duration:</strong> <span th:text="${contract.planDuration}"></span> months</p>
+    <p th:if="${contract.mobileNumber != null}">
+        <strong>Mobile Number:</strong> <span th:text="${contract.mobileNumber}"></span>
+    </p>
     <p><strong>Signed On:</strong> <span th:text="${contract.signedOn}"></span></p>
     <p><strong>Plan specifics:</strong></p>
     <p th:each="detail : ${contract.planDetails}">
@@ -54,7 +57,7 @@
         <p th:each="extra : ${contract.additionalPackages}">
             <span th:text="${extra.name}"></span>
             <span th:text="${extra.price}"></span>
-            <span>BGN/mo</span>
+            <span>€/mo</span>
         </p>
     </div>
 </div>

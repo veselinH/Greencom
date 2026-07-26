@@ -323,7 +323,8 @@ class UserServiceTests {
         voicePlan.setId(1L);
         bg.greencom.greencomwebapp.model.entity.ContractEntity contract =
                 new bg.greencom.greencomwebapp.model.entity.ContractEntity()
-                        .setPlan(voicePlan);
+                        .setPlan(voicePlan)
+                        .setMobileNumber("0831234567");
         contract.setId(11L);
         contract.setActive(true);
         testUser.getUserContracts().add(contract);
@@ -334,6 +335,7 @@ class UserServiceTests {
 
         assertEquals(1, result.size());
         assertEquals(11L, result.get(0).getContractId());
+        assertEquals("0831234567", result.get(0).getMobileNumber());
     }
 
     @Test
@@ -367,7 +369,7 @@ class UserServiceTests {
         mockUserFound();
         testUser.setTotalDebtPerMonth(new BigDecimal("50.00"));
         when(loyaltyFacade.redeem("test_user", 200))
-                .thenReturn(new LoyaltyResponse().setDiscountBgn(new BigDecimal("2.00")));
+                .thenReturn(new LoyaltyResponse().setDiscountEur(new BigDecimal("2.00")));
 
         BigDecimal discount = userService.redeemLoyaltyPoints("test_user", 200);
 

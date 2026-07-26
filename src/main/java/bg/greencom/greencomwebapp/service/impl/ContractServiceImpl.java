@@ -8,6 +8,7 @@ import bg.greencom.greencomwebapp.model.view.AdditionalPackageViewModel;
 import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.repository.ContractRepository;
 import bg.greencom.greencomwebapp.service.ContractService;
+import bg.greencom.greencomwebapp.util.MobileNumberGenerator;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +36,16 @@ public class ContractServiceImpl implements ContractService {
     private final ModelMapper modelMapper;
     private final TemplateEngine templateEngine;
     private final LoyaltyFacade loyaltyFacade;
+    private final MobileNumberGenerator mobileNumberGenerator;
 
     public ContractServiceImpl(ContractRepository contractRepository, ModelMapper modelMapper,
-                               TemplateEngine templateEngine, LoyaltyFacade loyaltyFacade) {
+                               TemplateEngine templateEngine, LoyaltyFacade loyaltyFacade,
+                               MobileNumberGenerator mobileNumberGenerator) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
         this.templateEngine = templateEngine;
         this.loyaltyFacade = loyaltyFacade;
+        this.mobileNumberGenerator = mobileNumberGenerator;
     }
 
     @Override
@@ -55,6 +59,10 @@ public class ContractServiceImpl implements ContractService {
                 .setSignSignature(signature);
         newContract.setActive(true);
         newContract.setAdditionalPackageEntities(additionalPackageEntities);
+
+        if (planEntity instanceof VoicePlanEntity) {
+            newContract.setMobileNumber(mobileNumberGenerator.generate());
+        }
 
         contractRepository.saveAndFlush(newContract);
         LOGGER.info("User {} signed new contract with plan name {}", userEntity.getUsername(), planEntity.getName());
@@ -150,7 +158,8 @@ public class ContractServiceImpl implements ContractService {
                 .setPrice(plan.getPrice())
                 .setPlanDuration(plan.getPlanDuration())
                 .setPlanDetails(plan.getPlanDetails())
-                .setSignedOn(contract.getSignedOn());
+                .setSignedOn(contract.getSignedOn())
+                .setMobileNumber(contract.getMobileNumber());
 
         if (contract.getAdditionalPackageEntities() != null) {
             contractPdf.setAdditionalPackages(contract.getAdditionalPackageEntities().stream()

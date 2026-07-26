@@ -35,7 +35,7 @@ The web app calls the loyalty service over HTTP using a Feign client (`LoyaltyCl
 
 ## Loyalty Program (loyalty-service)
 
-Signing a contract earns points (1 point per BGN of monthly price); unsigning revokes them. Points can be redeemed for a discount on the monthly bill (100 points = 1.00 BGN). Accounts have tiers based on total points earned — BRONZE, SILVER (≥ 500), GOLD (≥ 1500) — and a monthly cron job awards a tier-based bonus (10/50/100 points). Account reads are cached; a fixed-delay job periodically evicts the cache.
+Signing a contract earns points (1 point per € of monthly price); unsigning revokes them. Points can be redeemed for a discount on the monthly bill (100 points = 1.00 €). Accounts have tiers based on total points earned — BRONZE, SILVER (≥ 500), GOLD (≥ 1500) — and a monthly cron job awards a tier-based bonus (10/50/100 points). Account reads are cached; a fixed-delay job periodically evicts the cache.
 
 REST API (base path `/api/loyalty`):
 
@@ -43,7 +43,7 @@ REST API (base path `/api/loyalty`):
 |---|---|---|
 | GET | `/{username}` | Balance, total earned, and tier |
 | POST | `/{username}/earn` | Award points |
-| PUT | `/{username}/redeem` | Spend points, returns the BGN discount |
+| PUT | `/{username}/redeem` | Spend points, returns the € discount |
 | DELETE | `/{username}/points?amount=N` | Revoke points (floored at 0) |
 
 ## Getting Started

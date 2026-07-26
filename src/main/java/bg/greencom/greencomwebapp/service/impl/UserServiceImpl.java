@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService {
             UserEntity user = new UserEntity();
             user.getRoles().add(userRoleService.findByName(UserRoleEnum.ADMIN));
             user.getRoles().add(userRoleService.findByName(UserRoleEnum.USER));
+            user.getRoles().add(userRoleService.findByName(UserRoleEnum.MODERATOR));
 
             user
                     .setUsername(adminUsername)
@@ -329,7 +330,7 @@ public class UserServiceImpl implements UserService {
 
         LoyaltyResponse loyalty = loyaltyFacade.redeem(username, points);
 
-        BigDecimal discount = loyalty.getDiscountBgn() == null ? BigDecimal.ZERO : loyalty.getDiscountBgn();
+        BigDecimal discount = loyalty.getDiscountEur() == null ? BigDecimal.ZERO : loyalty.getDiscountEur();
         BigDecimal newDebt = user.getTotalDebtPerMonth().subtract(discount).max(BigDecimal.ZERO);
         user.setTotalDebtPerMonth(newDebt);
         userRepository.saveAndFlush(user);
@@ -438,6 +439,7 @@ public class UserServiceImpl implements UserService {
     private VoicePlanViewModel mapToVoicePlanViewModel(ContractEntity contract) {
         VoicePlanViewModel viewModel = modelMapper.map(contract.getPlan(), VoicePlanViewModel.class);
         viewModel.setContractId(contract.getId());
+        viewModel.setMobileNumber(contract.getMobileNumber());
         return viewModel;
     }
 
