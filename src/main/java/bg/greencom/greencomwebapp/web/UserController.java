@@ -202,7 +202,7 @@ public class UserController {
         try {
             BigDecimal discount = userService.redeemLoyaltyPoints(user.getUsername(), points);
             redirectAttributes.addFlashAttribute("successMessage",
-                    "Redeemed " + points + " points for a " + discount + " BGN discount on your monthly bill.");
+                    "Redeemed " + points + " points for a " + discount + " € discount on your monthly bill.");
         } catch (LoyaltyException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

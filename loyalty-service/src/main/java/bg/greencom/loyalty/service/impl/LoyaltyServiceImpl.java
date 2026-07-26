@@ -23,7 +23,7 @@ public class LoyaltyServiceImpl implements LoyaltyService {
 
     public static final String ACCOUNTS_CACHE = "loyaltyAccounts";
 
-    private static final int POINTS_PER_BGN = 100;
+    private static final int POINTS_PER_EURO = 100;
 
     private static final int SILVER_THRESHOLD = 500;
     private static final int GOLD_THRESHOLD = 1500;
@@ -79,14 +79,14 @@ public class LoyaltyServiceImpl implements LoyaltyService {
                 .setPointsBalance(account.getPointsBalance() - points)
                 .setUpdatedOn(LocalDateTime.now());
 
-        BigDecimal discountBgn = BigDecimal.valueOf(points)
-                .divide(BigDecimal.valueOf(POINTS_PER_BGN));
+        BigDecimal discountEur = BigDecimal.valueOf(points)
+                .divide(BigDecimal.valueOf(POINTS_PER_EURO));
 
         LoyaltyAccount saved = loyaltyAccountRepository.saveAndFlush(account);
-        LOGGER.info("User {} redeemed {} loyalty points for {} BGN discount; new balance is {}.",
-                username, points, discountBgn, saved.getPointsBalance());
+        LOGGER.info("User {} redeemed {} loyalty points for {} EUR discount; new balance is {}.",
+                username, points, discountEur, saved.getPointsBalance());
 
-        return toResponse(saved, discountBgn);
+        return toResponse(saved, discountEur);
     }
 
     @Override
@@ -150,13 +150,13 @@ public class LoyaltyServiceImpl implements LoyaltyService {
                 });
     }
 
-    private LoyaltyResponse toResponse(LoyaltyAccount account, BigDecimal discountBgn) {
+    private LoyaltyResponse toResponse(LoyaltyAccount account, BigDecimal discountEur) {
         return new LoyaltyResponse()
                 .setUsername(account.getUsername())
                 .setPointsBalance(account.getPointsBalance())
                 .setTotalEarned(account.getTotalEarned())
                 .setTier(resolveTier(account.getTotalEarned()))
-                .setDiscountBgn(discountBgn);
+                .setDiscountEur(discountEur);
     }
 
     private String resolveTier(int totalEarned) {

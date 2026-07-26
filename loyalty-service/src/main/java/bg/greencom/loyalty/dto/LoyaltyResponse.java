@@ -8,7 +8,7 @@ public class LoyaltyResponse {
     private int pointsBalance;
     private int totalEarned;
     private String tier;
-    private BigDecimal discountBgn;
+    private BigDecimal discountEur;
 
     public LoyaltyResponse() {
     }
@@ -49,12 +49,12 @@ public class LoyaltyResponse {
         return this;
     }
 
-    public BigDecimal getDiscountBgn() {
-        return discountBgn;
+    public BigDecimal getDiscountEur() {
+        return discountEur;
     }
 
-    public LoyaltyResponse setDiscountBgn(BigDecimal discountBgn) {
-        this.discountBgn = discountBgn;
+    public LoyaltyResponse setDiscountEur(BigDecimal discountEur) {
+        this.discountEur = discountEur;
         return this;
     }
 }

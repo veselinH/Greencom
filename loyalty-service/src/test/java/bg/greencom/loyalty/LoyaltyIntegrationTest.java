@@ -62,7 +62,7 @@ class LoyaltyIntegrationTest {
                         .content("{\"points\":200}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pointsBalance").value(400))
-                .andExpect(jsonPath("$.discountBgn").value(2));
+                .andExpect(jsonPath("$.discountEur").value(2));
 
         mockMvc.perform(delete("/api/loyalty/{username}/points", USERNAME)
                         .param("amount", "500"))

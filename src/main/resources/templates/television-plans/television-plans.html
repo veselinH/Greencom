@@ -35,7 +35,7 @@
 
                     <div class="mb-4">
                         <span class="display-5 fw-bold text-dark" th:text="*{price}">8</span>
-                        <span class="text-muted">$/month</span>
+                        <span class="text-muted">€/month</span>
                     </div>
 
                     <!-- Details List -->
@@ -61,7 +61,7 @@
                                 </label>
                                 <label class="form-check-label small"
                                        th:for="${'extra-' + t.id + '-' + extra.id}"
-                                       th:text="|${extra.name} (+$${extra.price}/mo)|">
+                                       th:text="|${extra.name} (+€${extra.price}/mo)|">
                                 </label>
                             </div>
                         </li>

@@ -68,7 +68,7 @@ class LoyaltyServiceImplTest {
         assertThat(response.getUsername()).isEqualTo(USERNAME);
         assertThat(response.getPointsBalance()).isEqualTo(250);
         assertThat(response.getTier()).isEqualTo("BRONZE");
-        assertThat(response.getDiscountBgn()).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(response.getDiscountEur()).isEqualByComparingTo(BigDecimal.ZERO);
         verify(loyaltyAccountRepository, never()).saveAndFlush(any());
     }
 
@@ -111,7 +111,7 @@ class LoyaltyServiceImplTest {
 
         assertThat(response.getPointsBalance()).isEqualTo(300);
         assertThat(response.getTotalEarned()).isEqualTo(500);
-        assertThat(response.getDiscountBgn()).isEqualByComparingTo(new BigDecimal("2"));
+        assertThat(response.getDiscountEur()).isEqualByComparingTo(new BigDecimal("2"));
     }
 
     @Test

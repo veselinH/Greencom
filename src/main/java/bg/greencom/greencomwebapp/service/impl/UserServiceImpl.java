@@ -330,7 +330,7 @@ public class UserServiceImpl implements UserService {
 
         LoyaltyResponse loyalty = loyaltyFacade.redeem(username, points);
 
-        BigDecimal discount = loyalty.getDiscountBgn() == null ? BigDecimal.ZERO : loyalty.getDiscountBgn();
+        BigDecimal discount = loyalty.getDiscountEur() == null ? BigDecimal.ZERO : loyalty.getDiscountEur();
         BigDecimal newDebt = user.getTotalDebtPerMonth().subtract(discount).max(BigDecimal.ZERO);
         user.setTotalDebtPerMonth(newDebt);
         userRepository.saveAndFlush(user);

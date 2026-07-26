@@ -369,7 +369,7 @@ class UserServiceTests {
         mockUserFound();
         testUser.setTotalDebtPerMonth(new BigDecimal("50.00"));
         when(loyaltyFacade.redeem("test_user", 200))
-                .thenReturn(new LoyaltyResponse().setDiscountBgn(new BigDecimal("2.00")));
+                .thenReturn(new LoyaltyResponse().setDiscountEur(new BigDecimal("2.00")));
 
         BigDecimal discount = userService.redeemLoyaltyPoints("test_user", 200);
 
