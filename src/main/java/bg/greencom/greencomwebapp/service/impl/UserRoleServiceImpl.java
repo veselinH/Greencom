@@ -11,10 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-/**
- * Service implementation responsible for provisioning, initialization,
- * and retrieval of system access roles and application security privileges.
- */
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
 

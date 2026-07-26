@@ -2,10 +2,6 @@ package bg.greencom.greencomwebapp.client.dto;
 
 import java.math.BigDecimal;
 
-/**
- * Response returned by the loyalty-service for every account operation.
- * Mirrors {@code bg.greencom.loyalty.dto.LoyaltyResponse} in the microservice.
- */
 public class LoyaltyResponse {
 
     private String username;

@@ -73,7 +73,6 @@ public class ContractEntity extends BaseEntity{
         return this;
     }
 
-    //    Saved as BLOB - Binary Large Object
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "sign_signature", columnDefinition = "LONGBLOB")

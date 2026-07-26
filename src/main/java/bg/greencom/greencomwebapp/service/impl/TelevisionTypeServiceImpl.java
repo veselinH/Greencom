@@ -10,13 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-/**
- * Service implementation for managing television types.
- * <p>
- * This service handles business logic related to {@link TelevisionTypeEntity},
- * including system startup database initialization.
- * </p>
- */
 @Service
 public class TelevisionTypeServiceImpl implements TelevisionTypeService {
 

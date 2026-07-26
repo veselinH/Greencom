@@ -19,9 +19,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Service implementation managing television subscription plans and business rules.
- */
 @Service
 public class TelevisionPlanServiceImpl implements TelevisionPlanService {
 
@@ -48,10 +45,9 @@ public class TelevisionPlanServiceImpl implements TelevisionPlanService {
                     TelevisionPlanViewModel viewModel = modelMapper.map(televisionPlanEntity, TelevisionPlanViewModel.class);
                     viewModel.setTelevisionType(televisionPlanEntity.getTelevisionType().getName().getValue());
 
-//                  Sort the additional package extras
                     Set<AdditionalPackageViewModel> sortedExtras = viewModel.getAdditionalPackages()
                             .stream()
-                            .sorted() // Uses TelevisionExtras.compareTo()
+                            .sorted()
                             .collect(Collectors.toCollection(LinkedHashSet::new));
 
                     viewModel.setAdditionalPackages(sortedExtras);

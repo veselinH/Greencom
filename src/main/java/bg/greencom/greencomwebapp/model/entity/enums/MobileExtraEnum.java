@@ -8,7 +8,6 @@ public enum MobileExtraEnum {
 
     private final String value;
 
-
     MobileExtraEnum(String value) {
         this.value = value;
     }

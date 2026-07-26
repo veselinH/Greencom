@@ -24,19 +24,6 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
 import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
 
-/**
- * Spring Security configuration for the Greencom web application.
- *
- * <p>Key design decisions:
- * <ul>
- *   <li>Uses the Spring 6 lambda-style DSL (no deprecated chained {@code .and()} calls).</li>
- *   <li>{@code Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8()} keeps password hashes
- *       compatible with accounts created under Boot 2.x / Spring Security 5.x.</li>
- *   <li>{@link DelegatingSecurityContextRepository} combines the request-scoped and
- *       session-scoped strategies, which is required for the manual auto-login performed in
- *       {@code UserController.registerUser} after a successful registration.</li>
- * </ul>
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -81,8 +68,8 @@ public class SecurityConfiguration {
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/users/login")
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)   // plain OAuth2 providers
-                                .oidcUserService(customOidcUserService)) // OIDC providers (e.g. Google)
+                                .userService(customOAuth2UserService)
+                                .oidcUserService(customOidcUserService))
                         .successHandler(oAuth2LoginSuccessHandler)
                 )
                 .logout(logout -> logout

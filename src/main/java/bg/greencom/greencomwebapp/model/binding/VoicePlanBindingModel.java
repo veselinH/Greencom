@@ -98,5 +98,4 @@ public class VoicePlanBindingModel extends PlanBindingModel {
         return this;
     }
 
-
 }

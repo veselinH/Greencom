@@ -8,13 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-/**
- * Thin wrapper around {@link LoyaltyClient} that keeps the loyalty-service a
- * non-critical dependency: read/award/revoke calls degrade gracefully (log and
- * carry on) so the loyalty-service being down never breaks signing, unsigning or
- * the profile page. Only {@link #redeem} surfaces failures, since the user
- * explicitly requested that action and needs feedback.
- */
 @Component
 public class LoyaltyFacade {
 
@@ -26,10 +19,6 @@ public class LoyaltyFacade {
         this.loyaltyClient = loyaltyClient;
     }
 
-    /**
-     * Returns the account for the profile page, or {@code null} if the
-     * loyalty-service cannot be reached (the page then shows a placeholder).
-     */
     public LoyaltyResponse getBalance(String username) {
         try {
             return loyaltyClient.getBalance(username);
@@ -39,7 +28,6 @@ public class LoyaltyFacade {
         }
     }
 
-    /** Awards points when a contract is signed. Best-effort. */
     public void earn(String username, int points) {
         if (points <= 0) {
             return;
@@ -51,7 +39,6 @@ public class LoyaltyFacade {
         }
     }
 
-    /** Removes points when a contract is unsigned. Best-effort. */
     public void revoke(String username, int amount) {
         if (amount <= 0) {
             return;
@@ -63,10 +50,6 @@ public class LoyaltyFacade {
         }
     }
 
-    /**
-     * Redeems points for a discount. Throws {@link LoyaltyException} with a
-     * user-facing message if the balance is insufficient or the service is down.
-     */
     public LoyaltyResponse redeem(String username, int points) {
         try {
             return loyaltyClient.redeem(username, new RedeemRequest(points));

@@ -38,14 +38,10 @@ public class MobileController {
         this.dataPlanService = dataPlanService;
     }
 
-    // Voice plan section
-    // ------------------
     @ModelAttribute
     public VoicePlanBindingModel voicePlanBindingModel() {
         return new VoicePlanBindingModel();
     }
-
-
 
     @GetMapping("/voice-plans")
     public String voicePlans(Model model) {
@@ -75,22 +71,11 @@ public class MobileController {
             return "redirect:/mobile/add-voice-plan";
         }
 
-
         VoicePlanServiceModel voicePlanServiceModel = modelMapper.map(voicePlanBindingModel, VoicePlanServiceModel.class);
         voicePlanService.addPlan(voicePlanServiceModel);
 
         return "redirect:/mobile/voice-plans";
     }
-
-
-//    @DeleteMapping("/voice-plan/{name}")
-//    public String removeVoicePlan(@PathVariable String name,
-//                                  @AuthenticationPrincipal GreencomUserDetails userDetails) {
-//
-//        voicePlanService.deleteVoicePlan(name, userDetails);
-//
-//        return "redirect:/mobile/voice-plans";
-//    }
 
     @GetMapping("/edit-voice-plan/{id}")
     @PreAuthorize("hasRole('MODERATOR')")
@@ -140,28 +125,19 @@ public class MobileController {
         return "mobile-plans/voice-plans/voice-mobile-plans";
     }
 
-//  Add voice plan to the user
     @PatchMapping("/voice-plan/{id}")
     public String signVoicePlanConfirm(@PathVariable Long id,
                                        @AuthenticationPrincipal GreencomUserDetails userDetails,
                                        @RequestParam String signature) {
 
-//        Decode the signature image
         String base64Data = signature.split(",")[1];
         byte[] signSignature = Base64.getDecoder().decode(base64Data);
-//        Retrieve the voice plan
         VoicePlanViewModel voicePlan = voicePlanService.findById(id);
 
         userService.signVoicePlan(voicePlan, userDetails, signSignature);
 
         return "redirect:/mobile/voice-plans";
     }
-
-    // End of voice plan section
-    // -------------------------
-
-    // Data plan section
-    // -----------------
 
     @ModelAttribute
     public DataPlanBindingModel dataPlanBindingModel() {
@@ -253,7 +229,6 @@ public class MobileController {
                                       @AuthenticationPrincipal GreencomUserDetails userDetails,
                                       @RequestParam String signature) {
 
-//        Decode the signature image
         String base64Data = signature.split(",")[1];
         byte[] signSignature = Base64.getDecoder().decode(base64Data);
         DataPlanViewModel dataPlan = dataPlanService.findById(id);
@@ -263,6 +238,4 @@ public class MobileController {
         return "redirect:/mobile/data-plans";
     }
 
-    // End of data plan section
-    // ------------------------
 }

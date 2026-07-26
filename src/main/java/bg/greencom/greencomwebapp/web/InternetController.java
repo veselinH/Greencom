@@ -113,16 +113,13 @@ public class InternetController {
         return "internet-plans/internet-plans";
     }
 
-//    Sign a contract to the user
     @PatchMapping("/internet-plan/{id}")
     public String signInternetPlanConfirm(@PathVariable Long id,
                                           @AuthenticationPrincipal GreencomUserDetails userDetails,
                                           @RequestParam String signature) {
 
-//        Decode the signature image
         String base64Data = signature.split(",")[1];
         byte[] signSignature = Base64.getDecoder().decode(base64Data);
-//        Retrieve the internet plan
         InternetPlanViewModel internetPlan = internetPlanService.findById(id);
 
         userService.signInternetPlan(internetPlan, userDetails, signSignature);
