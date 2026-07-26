@@ -9,16 +9,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-/**
- * Resolves a plain-OAuth2 login (non-OIDC providers such as GitHub or Facebook) into the
- * application's own principal.
- *
- * <p>Delegates to {@link DefaultOAuth2UserService} for the provider's user-info call, then uses
- * {@link OAuth2UserProvisioningService} to look up / provision the local shadow {@link UserEntity}.
- * The returned {@link GreencomUserDetails} implements both {@code UserDetails} and {@code OAuth2User},
- * so the rest of the app treats every login flow uniformly. OIDC providers (e.g. Google) are handled
- * separately by {@link CustomOidcUserService}.
- */
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 

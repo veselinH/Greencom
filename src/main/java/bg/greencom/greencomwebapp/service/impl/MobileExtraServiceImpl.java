@@ -10,9 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-/**
- * Service implementation managing available mobile add-on packages and features.
- */
 @Service
 public class MobileExtraServiceImpl implements MobileExtraService {
 
@@ -34,7 +31,6 @@ public class MobileExtraServiceImpl implements MobileExtraService {
             mobileExtraEntity1.setName(MobileExtraEnum.MOBILE_TV);
             mobileExtraEntity2.setName(MobileExtraEnum.MOBILE_MUSIC);
             mobileExtraEntity3.setName(MobileExtraEnum.GREENCOM_PREMIUM_CARD);
-
 
             mobileExtraRepository
                     .saveAll(Set.of(

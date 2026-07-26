@@ -10,9 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-/**
- * Service implementation managing available internet add-on packages and features.
- */
 @Service
 public class InternetExtraServiceImpl implements InternetExtraService {
 

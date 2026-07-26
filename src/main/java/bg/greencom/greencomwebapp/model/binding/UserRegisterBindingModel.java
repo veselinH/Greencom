@@ -16,7 +16,6 @@ public class UserRegisterBindingModel {
     private String password;
     private String confirmPassword;
 
-
     @NotBlank(message = "Please enter your first name.")
     @Size(min = 2, max = 10, message = "First name must be between 2 and 10 letters.")
     public String getFirstName() {

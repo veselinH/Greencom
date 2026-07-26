@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
 @Entity
 @Table(name = "plans")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -82,19 +81,11 @@ public class PlanEntity extends BaseEntity {
         isActive = active;
     }
 
-    /**
-     * Human-readable label for the concrete plan type, shown on the contract PDF.
-     * Subtypes override to identify themselves.
-     */
     @Transient
     public String getPlanType() {
         return "Service";
     }
 
-    /**
-     * Type-specific fields to render on the contract PDF, as an ordered map of
-     * label to display value. Subtypes override to expose their own fields.
-     */
     @Transient
     public Map<String, String> getPlanDetails() {
         return new LinkedHashMap<>();

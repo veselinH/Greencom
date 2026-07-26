@@ -2,6 +2,7 @@ package bg.greencom.loyalty.web;
 
 import bg.greencom.loyalty.dto.LoyaltyResponse;
 import bg.greencom.loyalty.dto.RedeemRequest;
+import bg.greencom.loyalty.service.InsufficientPointsException;
 import bg.greencom.loyalty.service.LoyaltyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,9 @@ class LoyaltyControllerTest {
         mockMvc.perform(post("/api/loyalty/{username}/earn", "ivan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"points\":0}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").isNotEmpty());
     }
 
     @Test
@@ -82,5 +85,29 @@ class LoyaltyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pointsBalance").value(50))
                 .andExpect(jsonPath("$.discountBgn").value(2.00));
+    }
+
+    @Test
+    void redeem_returnsErrorBodyWhenBalanceIsInsufficient() throws Exception {
+        when(loyaltyService.redeem(eq("ivan"), eq(500)))
+                .thenThrow(new InsufficientPointsException("Cannot redeem 500 points; balance is 100."));
+
+        mockMvc.perform(put("/api/loyalty/{username}/redeem", "ivan")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new RedeemRequest().setPoints(500))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Cannot redeem 500 points; balance is 100."));
+    }
+
+    @Test
+    void revoke_removesPoints() throws Exception {
+        when(loyaltyService.revoke(eq("ivan"), eq(100)))
+                .thenReturn(response(150, 250, "BRONZE", BigDecimal.ZERO));
+
+        mockMvc.perform(delete("/api/loyalty/{username}/points", "ivan")
+                        .param("amount", "100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.pointsBalance").value(150));
     }
 }

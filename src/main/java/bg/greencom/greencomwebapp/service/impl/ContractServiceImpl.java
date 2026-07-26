@@ -25,11 +25,6 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Handles contract lifecycle: creation (with loyalty earn), deactivation (with loyalty revoke),
- * PDF generation, and ownership checks. Loyalty calls are best-effort — a loyalty-service
- * outage never blocks contract sign/unsign.
- */
 @Service
 public class ContractServiceImpl implements ContractService {
 
@@ -64,7 +59,6 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.saveAndFlush(newContract);
         LOGGER.info("User {} signed new contract with plan name {}", userEntity.getUsername(), planEntity.getName());
 
-        // Award loyalty points (best-effort) for signing the plan.
         loyaltyFacade.earn(userEntity.getUsername(), toPoints(planEntity.getPrice()));
         LOGGER.info("Loyalty points awarded for contract signing of user {} successfully", userEntity.getUsername());
     }
@@ -99,7 +93,6 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.saveAndFlush(contract);
         LOGGER.info("Contract {} deactivated successfully for user {}", contractId, contract.getUser().getUsername());
 
-        // Revoke the loyalty points that were earned for this plan (best-effort).
         loyaltyFacade.revoke(contract.getUser().getUsername(), toPoints(contract.getPlan().getPrice()));
         LOGGER.info("Loyalty points for contract {} revoked successfully", contractId);
     }
@@ -121,7 +114,6 @@ public class ContractServiceImpl implements ContractService {
             String logoBase64 = java.util.Base64.getEncoder().encodeToString(logoBytes);
             context.setVariable("logoImage", "data:image/png;base64," + logoBase64);
         } catch (Exception e) {
-            // Logo is optional — the PDF renders without it if the resource is missing.
             LOGGER.warn("Could not embed logo in contract PDF (contract {}): {}", contractId, e.getMessage());
         }
 
@@ -171,7 +163,6 @@ public class ContractServiceImpl implements ContractService {
                     .collect(Collectors.toSet()));
         }
 
-
         return contractPdf;
     }
 
@@ -194,7 +185,6 @@ public class ContractServiceImpl implements ContractService {
                 .orElse(false);
     }
 
-    /** Monthly price rounded to the nearest integer gives the loyalty points to award/revoke. */
     private int toPoints(BigDecimal price) {
         if (price == null) {
             return 0;

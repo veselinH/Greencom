@@ -41,16 +41,6 @@ public abstract class MobilePlanEntity extends PlanEntity {
         return this;
     }
 
-//    @Column(nullable = false)
-//    public BigDecimal getPrice() {
-//        return price;
-//    }
-//
-//    public MobilePlanEntity setPrice(BigDecimal price) {
-//        this.price = price;
-//        return this;
-//    }
-
     @ManyToMany(fetch = FetchType.EAGER)
     public List<MobileExtraEntity> getMobileExtras() {
         return mobileExtras;

@@ -6,11 +6,6 @@ import bg.greencom.greencomwebapp.client.dto.RedeemRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Feign client for the standalone loyalty-service (runs on localhost:8081).
- * The base URL is configured statically via {@code loyalty.service.url} since
- * everything runs locally (no service discovery).
- */
 @FeignClient(name = "loyalty-service", url = "${loyalty.service.url}", path = "/api/loyalty")
 public interface LoyaltyClient {
 

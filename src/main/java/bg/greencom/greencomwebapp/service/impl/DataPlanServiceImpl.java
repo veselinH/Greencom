@@ -17,9 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Service implementation managing mobile data plans, gigabyte quotas, and add-on extras.
- */
 @Service
 public class DataPlanServiceImpl implements DataPlanService {
 
@@ -117,6 +114,5 @@ public class DataPlanServiceImpl implements DataPlanService {
                 .findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(id, OBJECT_TYPE));
     }
-
 
 }

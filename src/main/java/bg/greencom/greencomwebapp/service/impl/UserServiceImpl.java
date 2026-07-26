@@ -30,10 +30,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-/**
- * Service implementation responsible for processing user-related business operations
- * such as authentication, profile management, and signing/unsigning service plans.
- */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -111,7 +107,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         LOGGER.info("User {} registered successfully.", userServiceModel.getUsername());
 
-//      Automatically login the user after registering an account
         UserDetails userDetails = userDetailsService.loadUserByUsername(userServiceModel.getUsername());
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
@@ -146,7 +141,6 @@ public class UserServiceImpl implements UserService {
 
         user.getUserVoiceMobilePlans().add(voicePlanFromDB);
 
-        // Increase monthly recurring debt by the plan price
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(voicePlanFromDB.getPrice());
         user.setTotalDebtPerMonth(totalDebt);
@@ -164,7 +158,6 @@ public class UserServiceImpl implements UserService {
 
         user.getUserDataPlans().add(dataPlanFromDB);
 
-        // Increase monthly recurring debt by the plan price
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(dataPlanFromDB.getPrice());
         user.setTotalDebtPerMonth(totalDebt);
@@ -184,11 +177,9 @@ public class UserServiceImpl implements UserService {
         ContractViewModel userContract = contractService.findById(contractId);
         PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
 
-        // Deduct base plan price from monthly debt balance
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.subtract(userPlan.getPrice());
 
-        // Deduct recurring prices of any associated add-on packages
         if (userContract.getAdditionalPackageViewModels() != null) {
             for (AdditionalPackageViewModel additionalPackage : userContract.getAdditionalPackageViewModels()){
                 totalDebt = totalDebt.subtract(additionalPackage.getPrice());
@@ -197,7 +188,6 @@ public class UserServiceImpl implements UserService {
 
         user.setTotalDebtPerMonth(totalDebt);
 
-        // Safety check to ensure calculation roundoffs never drop debt balances below zero
         if (user.getTotalDebtPerMonth().compareTo(BigDecimal.ZERO) < 0) {
             user.setTotalDebtPerMonth(BigDecimal.ZERO);
         }
@@ -218,7 +208,6 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByUsername(username).orElse(null);
         if (user == null) return Collections.emptyList();
 
-        // Map from Contract to ViewModels to preserve the unique Contract ID
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof VoicePlanEntity)
@@ -232,7 +221,6 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByUsername(username).orElse(null);
         if (user == null) return Collections.emptyList();
 
-        // Map from Contract to ViewModels to preserve the unique Contract ID
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof DataPlanEntity)
@@ -248,7 +236,6 @@ public class UserServiceImpl implements UserService {
 
         user.getUserInternetPlans().add(internetPlanFromDB);
 
-        // Increase monthly recurring debt by the plan price
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(internetPlanFromDB.getPrice());
         user.setTotalDebtPerMonth(totalDebt);
@@ -264,7 +251,6 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByUsername(username).orElse(null);
         if (user == null) return Collections.emptyList();
 
-        // Map from Contract to ViewModels to preserve the unique Contract ID
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof InternetPlanEntity)
@@ -281,7 +267,6 @@ public class UserServiceImpl implements UserService {
 
         user.getUserTelevisionPlans().add(televisionPlanFromDB);
 
-        // Calculate cumulative debt addition (Base plan + all supplementary add-ons)
         BigDecimal totalDebt = user.getTotalDebtPerMonth();
         totalDebt = totalDebt.add(televisionPlanFromDB.getPrice());
         for (AdditionalPackageEntity packageEntity : additionalPackagesFromDB) {
@@ -300,7 +285,6 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByUsername(username).orElse(null);
         if (user == null) return Collections.emptyList();
 
-        // Map from Contract to ViewModels to preserve the unique Contract ID
         return user.getUserContracts().stream()
                 .filter(ContractEntity::isActive)
                 .filter(contract -> contract.getPlan() instanceof TelevisionPlanEntity)
@@ -321,7 +305,6 @@ public class UserServiceImpl implements UserService {
                     .setEmail(userFromRepo.getEmail())
                     .setTotalDebtPerMonth(userFromRepo.getTotalDebtPerMonth());
 
-//          Enrich with loyalty data from the microservice (degrades gracefully if it is down).
             LoyaltyResponse loyalty = loyaltyFacade.getBalance(username);
             if (loyalty != null) {
                 userViewModel
@@ -344,10 +327,8 @@ public class UserServiceImpl implements UserService {
             throw new bg.greencom.greencomwebapp.client.LoyaltyException("User not found.");
         }
 
-//      Deduct points in the loyalty-service; throws LoyaltyException on insufficient balance / outage.
         LoyaltyResponse loyalty = loyaltyFacade.redeem(username, points);
 
-//      Apply the returned BGN discount to the user's monthly debt (floored at zero).
         BigDecimal discount = loyalty.getDiscountBgn() == null ? BigDecimal.ZERO : loyalty.getDiscountBgn();
         BigDecimal newDebt = user.getTotalDebtPerMonth().subtract(discount).max(BigDecimal.ZERO);
         user.setTotalDebtPerMonth(newDebt);
@@ -364,9 +345,7 @@ public class UserServiceImpl implements UserService {
         ContractViewModel userContract = contractService.findById(id);
         PlanViewModel userPlan = planService.findPlanById(userContract.getPlanId());
 
-//        Check if contract has expired
         long monthsBetween = ChronoUnit.MONTHS.between(userContract.getSignedOn(), LocalDate.now());
-//        Contract has not expired
         return monthsBetween <= Integer.parseInt(userPlan.getPlanDuration());
     }
 
@@ -382,15 +361,12 @@ public class UserServiceImpl implements UserService {
 
         long monthsBetween = ChronoUnit.MONTHS.between(userContract.getSignedOn(), LocalDate.now());
 
-        // Standard Penalty Cap Rule: If more than 3 months remain, liability caps out at 3 months of fees.
-        // Otherwise, the client only owes a payout matching the exact remaining fraction of their term.
         if (monthsBetween <= Long.parseLong(userPlan.getPlanDuration()) - 3){
             penaltyMonths = BigDecimal.valueOf(3);
         } else {
             penaltyMonths = BigDecimal.valueOf(Long.parseLong(userPlan.getPlanDuration()) - monthsBetween);
         }
 
-        // Aggregate full liability amount by multiplying target months against base service rate.
         penaltyAmount = userPlan.getPrice().multiply(penaltyMonths);
 
         return penaltyAmount;
@@ -461,34 +437,33 @@ public class UserServiceImpl implements UserService {
 
     private VoicePlanViewModel mapToVoicePlanViewModel(ContractEntity contract) {
         VoicePlanViewModel viewModel = modelMapper.map(contract.getPlan(), VoicePlanViewModel.class);
-        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        viewModel.setContractId(contract.getId());
         return viewModel;
     }
 
     private DataPlanViewModel mapToDataPlanViewModel(ContractEntity contract) {
         DataPlanViewModel viewModel = modelMapper.map(contract.getPlan(), DataPlanViewModel.class);
-        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        viewModel.setContractId(contract.getId());
         return viewModel;
     }
 
     private InternetPlanViewModel mapToInternetPlanViewModel(ContractEntity contract) {
         InternetPlanViewModel viewModel = modelMapper.map(contract.getPlan(), InternetPlanViewModel.class);
         viewModel.setInternetType(((InternetPlanEntity) contract.getPlan()).getInternetType().getName().getValue());
-        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        viewModel.setContractId(contract.getId());
         return viewModel;
     }
 
     private TelevisionPlanViewModel mapToTelevisionPlanViewModel(ContractEntity contract) {
         TelevisionPlanViewModel viewModel = modelMapper.map(contract.getPlan(), TelevisionPlanViewModel.class);
         viewModel.setTelevisionType(((TelevisionPlanEntity) contract.getPlan()).getTelevisionType().getName().getValue());
-        viewModel.setContractId(contract.getId()); // Explicitly set the unique ID
+        viewModel.setContractId(contract.getId());
         if (contract.getAdditionalPackageEntities() != null) {
             for (AdditionalPackageEntity additionalPackage : contract.getAdditionalPackageEntities()) {
                 AdditionalPackageViewModel additionalPackageViewModel = modelMapper.map(additionalPackage, AdditionalPackageViewModel.class);
                 additionalPackageViewModel.setName(additionalPackage.getName().getValue());
                 viewModel.getAdditionalPackages().add(additionalPackageViewModel);
 
-                // Dynamically aggregate the base contract view model price with the add-on package cost
                 viewModel.setPrice(viewModel.getPrice().add(additionalPackage.getPrice()));
             }
         }

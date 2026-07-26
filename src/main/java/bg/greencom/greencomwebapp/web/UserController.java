@@ -35,10 +35,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.util.Base64;
 
-/**
- * Handles user-facing pages: login, registration, profile, plan sign/unsign,
- * loyalty-point redemption, and contract PDF download.
- */
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -95,7 +91,6 @@ public class UserController {
                                HttpServletRequest request,
                                HttpServletResponse response) {
 
-//      Control on the password
         if (!userRegisterBindingModel.getPassword().equals(userRegisterBindingModel.getConfirmPassword())) {
             bindingResult.addError(
                     new FieldError(
@@ -104,7 +99,6 @@ public class UserController {
                             "Passwords must be the same."));
         }
 
-//      If bindingResult return errors from the bindingModel we redirect to the same page with the errors on the fields
         if (bindingResult.hasErrors()) {
             redirectAttributes
                     .addFlashAttribute("userRegisterBindingModel", userRegisterBindingModel)
@@ -113,9 +107,7 @@ public class UserController {
             return "redirect:register";
         }
 
-
         userService.registerUser(modelMapper.map(userRegisterBindingModel, UserServiceModel.class), successfulAuth -> {
-//          Auto login after registering an account
             SecurityContextHolderStrategy strategy = SecurityContextHolder.getContextHolderStrategy();
 
             SecurityContext context = strategy.createEmptyContext();
@@ -142,7 +134,6 @@ public class UserController {
                 .addAttribute("userTelevisionPlans", userService.getAllTelevisionPlans(user.getUsername()))
                 .addAttribute("currentUser", currentUser);
 
-//      Pre-fill the edit form with the current values (unless a failed submit already left a model to re-show).
         if (!model.containsAttribute("userProfileEditBindingModel")) {
             UserProfileEditBindingModel editModel = new UserProfileEditBindingModel();
             editModel.setFirstName(currentUser.getFirstName());
@@ -223,7 +214,6 @@ public class UserController {
     public ResponseEntity<byte[]> downloadContract(@PathVariable Long id,
                                                    @AuthenticationPrincipal GreencomUserDetails user) {
 
-//      Only the contract owner (or an admin) may download the contract.
         boolean isAdmin = user.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         if (!isAdmin && !contractService.isContractOwner(id, user.getUsername())) {
@@ -284,18 +274,12 @@ public class UserController {
         return "redirect:/users/roles";
     }
 
-    /**
-     * Edit the logged-in user's profile (first name, last name, email).
-     * The user is taken from the authentication principal, so a user can only edit their own profile.
-     * No GetRequest: the current values are already rendered by viewProfile().
-     */
     @PostMapping("/profile/edit")
     public String editProfile(@Valid UserProfileEditBindingModel userProfileEditBindingModel,
                               BindingResult bindingResult,
                               @AuthenticationPrincipal GreencomUserDetails user,
                               RedirectAttributes redirectAttributes){
 
-//      Allow the user's own current email; reject only an email already taken by someone else.
         UserEntity existingByEmail = userService.findUserByEmail(userProfileEditBindingModel.getEmail());
         if (existingByEmail != null && !existingByEmail.getUsername().equals(user.getUsername())) {
             bindingResult.addError(new FieldError(
@@ -321,18 +305,14 @@ public class UserController {
     }
 
     private void executeUnsign(Long id, String username, String signature, RedirectAttributes redirectAttributes) {
-        //        Decoding the signature image
         String base64Data = signature.split(",")[1];
         byte[] unsignSignature = Base64.getDecoder().decode(base64Data);
 
-//        Unsign contract
         String planName = userService.unsignPlan(id, username, unsignSignature);
 
-//        Return successful message on the page
         if (!planName.isEmpty()){
             redirectAttributes.addFlashAttribute("successMessage", "Plan '" + planName + "' successfully unsigned.");
         }
-
 
     }
 

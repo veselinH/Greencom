@@ -10,9 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
-/**
- * Service implementation for managing internet connection technologies and categories.
- */
 @Service
 public class InternetTypeServiceImpl implements InternetTypeService {
 

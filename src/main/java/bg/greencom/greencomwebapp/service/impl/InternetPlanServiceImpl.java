@@ -19,9 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Service implementation managing internet subscription plans, speeds, and add-on extras.
- */
 @Service
 public class InternetPlanServiceImpl implements InternetPlanService {
 

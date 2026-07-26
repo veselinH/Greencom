@@ -1,9 +1,5 @@
 package bg.greencom.greencomwebapp.client.dto;
 
-/**
- * Request body sent to the loyalty-service when redeeming points.
- * Mirrors {@code bg.greencom.loyalty.dto.RedeemRequest} in the microservice.
- */
 public class RedeemRequest {
 
     private int points;

@@ -36,7 +36,6 @@ public class ContractViewModel {
         this.userId = userId;
     }
 
-
     public Set<AdditionalPackageViewModel> getAdditionalPackageViewModels() {
         return additionalPackageViewModels;
     }

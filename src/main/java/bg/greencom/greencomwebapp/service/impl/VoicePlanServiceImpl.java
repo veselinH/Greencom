@@ -15,9 +15,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Service implementation managing operations related to mobile voice subscription plans
- */
 @Service
 public class VoicePlanServiceImpl implements VoicePlanService {
 
@@ -52,11 +49,9 @@ public class VoicePlanServiceImpl implements VoicePlanService {
 
         VoicePlanEntity voicePlanEntity = modelMapper.map(voicePlanServiceModel, VoicePlanEntity.class);
 
-
         voicePlanEntity
                 .setCreatedOn(LocalDateTime.now())
                 .setActive(true);
-
 
         if (voicePlanServiceModel.getMobileExtras() != null) {
             voicePlanEntity
@@ -66,7 +61,6 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                             .map(mobileExtraService::findByName)
                             .collect(Collectors.toList()));
         }
-
 
         voicePlanRepository.saveAndFlush(voicePlanEntity);
         LOGGER.info("Voice plan {} added successfully", voicePlanServiceModel.getName());
@@ -82,7 +76,6 @@ public class VoicePlanServiceImpl implements VoicePlanService {
                         .findById(voicePlanServiceModel.getId())
                         .orElseThrow(
                                 () -> new ObjectNotFoundException(voicePlanServiceModel.getId(), OBJECT_TYPE));
-
 
         voicePlan
                 .setName(voicePlanServiceModel.getName())

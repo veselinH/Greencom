@@ -15,9 +15,6 @@ import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Service implementation managing commercial add-on options like movie, adult, and sports channels.
- */
 @Service
 public class AdditionalPackageServiceImpl implements AdditionalPackageService {
 

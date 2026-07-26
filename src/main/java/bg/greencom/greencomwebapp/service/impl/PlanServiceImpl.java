@@ -8,9 +8,6 @@ import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-/**
- * Service implementation managing generic base subscription plans.
- */
 @Service
 public class PlanServiceImpl implements PlanService {
 
@@ -39,6 +36,4 @@ public class PlanServiceImpl implements PlanService {
                         PlanViewModel.class);
     }
 }
-
-
 
