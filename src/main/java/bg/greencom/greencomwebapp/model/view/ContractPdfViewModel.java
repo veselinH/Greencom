@@ -17,6 +17,7 @@ public class ContractPdfViewModel {
     private BigDecimal price;
     private String planDuration;
     private LocalDate signedOn;
+    private String mobileNumber;
     private Map<String, String> planDetails = new LinkedHashMap<>();
     private Set<AdditionalPackageViewModel> additionalPackages = new HashSet<>();
 
@@ -98,6 +99,15 @@ public class ContractPdfViewModel {
 
     public ContractPdfViewModel setSignedOn(LocalDate signedOn) {
         this.signedOn = signedOn;
+        return this;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public ContractPdfViewModel setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
         return this;
     }
 

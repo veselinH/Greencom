@@ -3,11 +3,13 @@ package bg.greencom.greencomwebapp.service.impl;
 import bg.greencom.greencomwebapp.client.LoyaltyFacade;
 import bg.greencom.greencomwebapp.model.entity.AdditionalPackageEntity;
 import bg.greencom.greencomwebapp.model.entity.ContractEntity;
+import bg.greencom.greencomwebapp.model.entity.InternetPlanEntity;
 import bg.greencom.greencomwebapp.model.entity.UserEntity;
 import bg.greencom.greencomwebapp.model.entity.VoicePlanEntity;
 import bg.greencom.greencomwebapp.model.entity.enums.AdditionalPackageEnum;
 import bg.greencom.greencomwebapp.model.view.ContractViewModel;
 import bg.greencom.greencomwebapp.repository.ContractRepository;
+import bg.greencom.greencomwebapp.util.MobileNumberGenerator;
 import org.hibernate.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +40,9 @@ class ContractServiceImplTest {
 
     @Mock
     private LoyaltyFacade loyaltyFacade;
+
+    @Mock
+    private MobileNumberGenerator mobileNumberGenerator;
 
     private ContractServiceImpl contractService;
 
@@ -52,7 +58,7 @@ class ContractServiceImplTest {
         templateEngine.setTemplateResolver(templateResolver);
 
         contractService = new ContractServiceImpl(
-                contractRepository, new ModelMapper(), templateEngine, loyaltyFacade);
+                contractRepository, new ModelMapper(), templateEngine, loyaltyFacade, mobileNumberGenerator);
     }
 
     private UserEntity user() {
@@ -78,7 +84,8 @@ class ContractServiceImplTest {
         ContractEntity contract = new ContractEntity()
                 .setUser(user())
                 .setPlan(plan())
-                .setSignedOn(LocalDate.now().minusMonths(2));
+                .setSignedOn(LocalDate.now().minusMonths(2))
+                .setMobileNumber("0831234567");
         contract.setId(10L);
         contract.setActive(true);
         return contract;
@@ -86,6 +93,8 @@ class ContractServiceImplTest {
 
     @Test
     void addContract_persistsActiveContractAndAwardsPoints() {
+        when(mobileNumberGenerator.generate()).thenReturn("0831234567");
+
         contractService.addContract(plan(), user(), null, new byte[]{1, 2});
 
         ArgumentCaptor<ContractEntity> captor = ArgumentCaptor.forClass(ContractEntity.class);
@@ -96,6 +105,33 @@ class ContractServiceImplTest {
         assertEquals(LocalDate.now(), saved.getSignedOn());
         assertArrayEquals(new byte[]{1, 2}, saved.getSignSignature());
         verify(loyaltyFacade).earn("ivan", 40);
+    }
+
+    @Test
+    void addContract_assignsGeneratedMobileNumberToVoiceContract() {
+        when(mobileNumberGenerator.generate()).thenReturn("0839876543");
+
+        contractService.addContract(plan(), user(), null, new byte[]{1});
+
+        ArgumentCaptor<ContractEntity> captor = ArgumentCaptor.forClass(ContractEntity.class);
+        verify(contractRepository).saveAndFlush(captor.capture());
+
+        assertEquals("0839876543", captor.getValue().getMobileNumber());
+    }
+
+    @Test
+    void addContract_leavesMobileNumberNullForNonVoiceContract() {
+        InternetPlanEntity internetPlan = new InternetPlanEntity();
+        internetPlan.setName("Fiber 500");
+        internetPlan.setPrice(new BigDecimal("29.99"));
+
+        contractService.addContract(internetPlan, user(), null, new byte[]{1});
+
+        ArgumentCaptor<ContractEntity> captor = ArgumentCaptor.forClass(ContractEntity.class);
+        verify(contractRepository).saveAndFlush(captor.capture());
+
+        assertNull(captor.getValue().getMobileNumber());
+        verifyNoInteractions(mobileNumberGenerator);
     }
 
     @Test

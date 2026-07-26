@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ContractRepository extends JpaRepository<bg.greencom.greencomwebapp.model.entity.ContractEntity, Long> {
     Long id(Long id);
+
+    boolean existsByMobileNumber(String mobileNumber);
 }

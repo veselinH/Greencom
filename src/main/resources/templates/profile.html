@@ -123,6 +123,10 @@
 
                         <!-- Voice Details -->
                         <ul class="list-unstyled mb-4">
+                            <li class="mb-2" th:if="*{mobileNumber != null}">
+                                <i class="bi bi-phone-fill text-success me-2"></i>
+                                <strong th:text="*{mobileNumber}"></strong> Mobile Number
+                            </li>
                             <li class="mb-2">
                                 <i class="bi bi-telephone-fill text-success me-2"></i>
                                 <strong th:text="*{bgMinutes}"></strong> National Minutes

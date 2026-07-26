@@ -1,6 +1,7 @@
 package bg.greencom.greencomwebapp.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ public class ContractEntity extends BaseEntity{
     private byte[] signSignature;
     private byte[] unsignSignature;
     private boolean isActive;
+    private String mobileNumber;
 
     public ContractEntity() {
     }
@@ -103,5 +105,16 @@ public class ContractEntity extends BaseEntity{
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    @Column(name = "mobile_number", length = 10, unique = true)
+    @Pattern(regexp = "^083\\d{7}$", message = "Mobile number must start with 083 followed by 7 digits.")
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public ContractEntity setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+        return this;
     }
 }
